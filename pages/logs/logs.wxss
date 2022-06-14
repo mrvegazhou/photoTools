@@ -1,0 +1,24 @@
+.container .sb1 image {
+  width: 115pt;
+  height: 85pt;
+}
+
+.container .sb1 .txt1 {
+  font-size: 16pt;
+}
+
+.container .sb2 image {
+  width: 230px;
+  height: 170px;
+}
+.container .sb2 .txt2 {
+  font-size: 32px;
+}
+
+.container .sb3 image {
+  width: 460rpx;
+  height: 340rpx
+}
+.container .sb3 .txt3 {
+  font-size: 64rpx;
+}

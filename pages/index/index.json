@@ -1,0 +1,9 @@
+{
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationBarTitleText": "资讯",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "pullDownRefresh": "../../component/pullDownRefresh/pullDownRefresh",
+    "advSwiperShow": "../../component/advSwiperShow/advSwiperShow"
+  }
+}

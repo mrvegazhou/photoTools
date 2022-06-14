@@ -1,0 +1,35 @@
+<template name="dynamicList">
+  <view class="dynamic_list">
+    <view class="dynamic_state">
+      <view class="dynamic_header_box">
+        <view class="dynamic_header">
+          <image src="https://pic2.zhimg.com/61f4baf304cdf8ec43aacb07a4a5bc20_xll.jpg" mode="aspectFill" />
+        </view>
+        <view class="dynamic_header_info">
+          <view class="dynamic_info_name">王晓燕</view>
+          <view class="dynamic_info_time">昨天 13:09</view>
+        </view>
+      </view>
+      <view class="dynamic_btn" catchtap="">
+        <text class="add"></text><text class="btn-txt">关注</text>
+      </view>
+    </view>
+    <view class="dynamic_content_box">
+      <view class="dynamic_content_text">
+        一直觉得除非真的热爱科研，不要读非热门专业博士。科研资源浪费了，自己也赚不到钱，双输。 可惜学校也不会教你怎么赚钱
+      </view>
+      <view class="dynamic_content_iamges">
+        <image src="https://pic4.zhimg.com/80/v2-b75823340615a1cf6f11065a9ef63309_hd.jpg" mode="aspectFill" />
+        <image src="https://pic4.zhimg.com/80/v2-b75823340615a1cf6f11065a9ef63309_hd.jpg" mode="aspectFill" />
+        <image src="https://pic4.zhimg.com/80/v2-b75823340615a1cf6f11065a9ef63309_hd.jpg" mode="aspectFill" />
+        <image src="https://pic4.zhimg.com/80/v2-b75823340615a1cf6f11065a9ef63309_hd.jpg" mode="aspectFill" />
+      </view>
+    </view>
+    <view class="dynamic_groups">
+      <view class="dynamic_groups_item">
+        心情
+      </view>
+    </view>
+    <view style="clear: both;"></view>
+  </view>
+</template>

@@ -1,0 +1,26 @@
+<!--logs.wxml-->
+<view class="container">
+
+  <view style="font-size:{{size}}px;">默认36px默认36px默认36px默认36px默认36px默认36px默认36px默认36px默认36px默认36px默认36px
+  </view>
+  <button bindtap="clickBig">变大{{size}}px</button>
+  <button bindtap="clickSmall">变小{{size}}px</button>
+  <view style="margin-top:50px;"></view>
+  <image style="width:{{img_width}}px; height:{{img_height}}px;" src='https://pic4.zhimg.com/v2-2ae6d5f2e3f4a0ec6869f61c59b65e45_xs.jpg' mode="aspectFill"></image>
+  <input bindinput="imgInputWidth" type='text' placeholder="输入图片宽" />
+  <input bindinput="imgInputHeight" type='text' placeholder="输入图片高" />
+  <view style="margin-top:50px;"></view>
+  <view>
+    <view style="background-color:red;width:50px;margin-bottom:{{margin}}px">间距</view>
+    <view style="background-color:green;width:50px;">间距</view>
+    <input bindinput="marginInput" type='text' placeholder="输入间距" />
+  </view>
+  <view style="margin-top:50px;"></view>
+
+  <view style="height:100px;width: 100px;display:flex;flex-direction: row;">
+    <view style="background-color:red;width:50px;margin-right:{{rightMargin}}px">间距</view>
+    <view style="background-color:green;width:50px;">间距</view>
+    <input bindinput="marginInput2" type='text' placeholder="输入间距" />
+  </view>
+  <view style="margin-top:50px;"></view>
+</view>

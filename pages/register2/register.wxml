@@ -1,0 +1,38 @@
+<view class="container">
+  <view class="register-form">
+    <view class="register-name-form">
+      <view class="name-label">姓 名</view>
+      <input auto-focus class="input-name" placeholder="请输入姓名" placeholder-class="placeholder-class" />
+    </view>
+    <view class="register-age-form">
+      <view class="age-label">年 龄</view>
+      <input class="age-input" class="input-age" placeholder="请输入年龄" placeholder-class="placeholder-class" type="number"/>
+    </view>
+    <view class="register-sex-form">
+      <view class="sex-label">性 别</view>
+      <radio-group class="radio-group-sex" bindchange="radioChange">
+        <radio class="radio" value="1">
+          <text>男</text>
+        </radio>
+        <radio class="radio" value="2">
+          <text>女</text>
+        </radio>
+      </radio-group>
+    </view>
+    <view class="register-industry-form">
+      <view class="industry-label">行 业</view>
+      <input class="industry-input" class="input-industry" placeholder="请输入行业" placeholder-class="placeholder-class" />
+    </view>
+    <view class="register-company-form">
+      <view class="company-label">公 司</view>
+      <input class="company-input" class="input-company" placeholder="请输入公司" placeholder-class="placeholder-class" />
+    </view>
+    <view class="register-job-form">
+      <view class="job-label">职 位</view>
+      <input class="job-input" class="input-job" placeholder="请输入职位" placeholder-class="placeholder-class" />
+    </view>
+  </view>
+  <view class="register-btn">
+    <text>确认注册</text>
+  </view>
+</view>

@@ -1,0 +1,119 @@
+@import "../../template/theme.wxss";
+.container {
+  height: 100%;
+  margin: 0 36rpx 0 36rpx;
+  padding: 0;
+  background: #fff;
+  overflow: hidden;
+}
+
+.login-logo {
+  margin: 50rpx 0 66rpx 0;
+  text-align: center;
+  height: 253rpx;
+}
+
+.login-logo image {
+  width: 222rpx;
+  height: 253rpx;
+  margin: 0 auto;
+  vertical-align: middle;
+}
+
+.login-form {
+  margin: 0 14rpx 0 14rpx;
+}
+
+.login-form .login-mobile .login-mobile-label {
+  display: inline-block;
+  height: 31rpx;
+  line-height: 31rpx;
+  margin-bottom: 40rpx;
+}
+
+.login-form .login-mobile .login-mobile-label image, .login-form .login-pwd .login-pwd-label image {
+  width: 26rpx;
+  height: 31rpx;
+  vertical-align: middle;
+}
+
+.login-form .login-mobile .login-mobile-label text, .login-form .login-pwd .login-pwd-label text {
+  margin-left: 20rpx;
+  color: #666666;
+  font-size: 30rpx;
+  vertical-align: middle;
+}
+
+.login-form .login-mobile .mobile-placeholder-class, .login-form .login-pwd .pwd-placeholder-class {
+  color: #B2B2B2;
+  margin-bottom: 24rpx;
+  font-size: 34rpx;
+}
+.login-form .login-mobile .login-mobile-input .input-mobile {
+  border-bottom: 1rpx solid #DCDCDF;
+  height: 90rpx;
+  width: 654rpx;
+}
+
+.login-form .login-pwd .login-mobile-input {
+  display: inline-block;
+  height: 90rpx;
+  line-height: 90rpx;
+}
+
+.login-form .login-pwd .login-mobile-input .input-pwd {
+  border-bottom: 1rpx solid #DCDCDF;
+  height: 90rpx;
+  width: 615rpx;
+  float: left;
+}
+.input-eye {
+  float: left;
+  height: 90rpx;
+  border-bottom: 1rpx solid #DCDCDF;
+}
+.input-eye-img {
+  vertical-align:middle;
+  width: 36rpx;
+  height: 17rpx;
+}
+
+.login-form .login-pwd {
+  margin-top: 60rpx;
+}
+
+.login-form .login-pwd .login-pwd-label {
+  display: inline-block;
+  height: 31rpx;
+  line-height: 31rpx;
+  margin-bottom: 40rpx;
+}
+
+.login-btn {
+  margin-top: 60rpx;
+  width: 680rpx;
+  height: 90rpx;
+  background-color: #E2C586;
+  color: #FFFFFF;
+  border-radius: 45rpx;
+  font-size: 34rpx;
+  text-align: center;
+  line-height: 90rpx;
+  margin-bottom: 60rpx;
+}
+
+.login-goto-register {
+  height: 35rpx;
+  line-height: 35rpx;
+  text-align: center;
+}
+
+.login-goto-register .hint {
+  color: #888888;
+  font-size: 28rpx;
+}
+
+.login-goto-register .hint-register {
+  color: #DBB668;
+}
+

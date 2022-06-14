@@ -1,0 +1,135 @@
+@import "../../template/theme.wxss";
+.container {
+  height: 100%;
+  background-color: #F5F7F9;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding: 20rpx 20rpx 0 20rpx;
+}
+
+.chat-list {
+  flex: 1;
+}
+
+.reply{
+  display: flex;
+  justify-content: flex-start;
+  text-align:center;
+}
+
+.photo{
+  width: 76rpx;
+  height: 76rpx;
+  flex:0 0 76rpx;
+  border-radius: 76rpx;
+  margin-top: 17rpx;
+}
+
+.reply .text{
+  background-color: #FFFFFF;
+  margin: 17rpx 0 17rpx 0;
+  padding: 24rpx;
+  border-radius: 0 4rpx 4rpx 4rpx;
+  text-align: justify;
+  color: #000000;
+  font-size: 32rpx;
+}
+
+.chat{
+  display: flex;
+  justify-content:flex-end;
+  text-align:center;
+}
+
+
+.chat .text {
+  margin: 17rpx 0 17rpx 0;
+  background-color: #DBB668;
+  border-radius: 4rpx 0 4rpx 4rpx;
+  padding: 24rpx;
+  text-align: justify;
+  color: #000000;
+  font-size: 32rpx;
+}
+
+.triangle-right{
+  width: 0;
+  height: 0;
+  border-width: 11rpx 0 11rpx 11rpx;
+  border-style: solid;
+  margin-right: 10rpx;
+  margin-top: 19rpx;
+  border-color: transparent transparent transparent #DBB668;
+}
+
+.triangle-left{
+  width: 0;
+  height: 0;
+  margin-left: 10rpx;
+  margin-top: 19rpx;
+  border-width: 11rpx 11rpx 11rpx 0;
+  border-style: solid;
+  border-color: transparent #FFFFFF transparent transparent;
+}
+
+.send-msg-form {
+  position: fixed;
+  bottom:0px;
+  width: 100%;
+  z-index: 10;
+  height: 128rpx;
+  line-height: 128rpx;
+  display: inline-block;
+}
+
+.input-msg{
+  width: 590rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 40rpx;
+  background-color: #F5F7F9;
+  margin-top: 34rpx;
+  position: absolute;
+}
+.send-btn{
+  width: 100rpx;
+  position: absolute;
+  margin-left: 620rpx;
+  font-size: 34rpx;
+  margin-top: 11rpx;
+}
+
+.refresh-top {
+  background-color: #F5F7F9;
+  width: 100%;
+  text-align: center;
+  margin-top: 2px;
+}
+
+.refreshing-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.refreshing-icon-loading {
+  animation: loading 1s linear infinite;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

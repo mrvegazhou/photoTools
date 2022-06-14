@@ -1,0 +1,29 @@
+<!--pages/preIdPhoto/preIdPhoto.wxml-->
+<view class="container">
+
+  <view class="title">名称</view>
+  <view class="content-des">
+    <view class="des-item">
+      <view style="width:40%">像素尺寸：</view>
+      <view>{{px}}</view>
+    </view>
+    <view class="des-item">
+      <view style="width:40%">冲印尺寸：</view>
+      <view class="des">{{size}}</view>
+    </view>
+    <view class="des-item">
+      <view style="width:40%">分辨率：</view>
+      <view class="des">无要求</view>
+    </view>
+    <view class="des-item">
+      <view style="width:40%">照片描述：</view>
+      <view class="des">{{discription}}</view>
+    </view>
+  </view>
+
+  <view class="container-opt-btn">
+    <view bindtap="chooseImagePre" data-type="album" class="container-btn">相册选择</view>
+    <view bindtap="chooseImagePre" data-type="camera" class="container-btn">相机拍照</view>
+  </view>
+  
+</view>

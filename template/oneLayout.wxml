@@ -1,0 +1,20 @@
+<template name="oneLayout">
+    <view class="oneBodyContent">
+        <view class="content">
+            <view class="onetitle">
+                <text>{{title}}</text>
+            </view>
+             <view class="thumbImage">
+                <block wx:for="{{thumbnailPics}}" wx:for-item="imageName" wx:key="*this">
+                    <image src="{{imageName}}"></image>
+                </block>
+            </view>
+          
+        </view>
+       <!--来源-->
+            <view class="oneOriginal">
+                <text >{{authorName}}</text>
+                <text class="time">{{date}}</text>
+            </view>
+    </view>
+</template>

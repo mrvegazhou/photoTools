@@ -1,0 +1,53 @@
+<view class="container">
+  <view class="user">
+    <view class="avatar">
+      <image class="userinfo-avatar" src="https://pic4.zhimg.com/v2-2ae6d5f2e3f4a0ec6869f61c59b65e45_xs.jpg" background-size="cover"></image>
+    </view>
+    <view class="user-info">
+      <text class="userinfo-nickname">董明珠</text>
+      <text class="position">格力董事长</text>
+    </view>
+  </view>
+
+  <view class="my">
+    <view class="my-item">
+      <view class="myitem-icon">
+        <image src="../../images/me/profile.png"></image>
+      </view>
+      <view class="myitem-name">
+        <text>个人资料</text>
+      </view>
+      <view class='arrow'></view>
+    </view>
+    <view class="my-item">
+      <view class="myitem-icon">
+        <image src="../../images/me/activity.png"></image>
+      </view>
+      <view class="myitem-name">
+        <text>我的活动</text>
+      </view>
+      <view class='arrow'></view>
+    </view>
+    <view class="my-item">
+      <view class="myitem-icon">
+        <image src="../../images/me/online.png"></image>
+      </view>
+      <view class="myitem-name">
+        <text>在线服务</text>
+      </view>
+      <view class='arrow'></view>
+    </view>
+  </view>
+
+  <view class="my">
+    <view class="my-item">
+      <view class="myitem-icon">
+        <image src="../../images/me/setting.png"></image>
+      </view>
+      <view class="myitem-name">
+        <text>个人设置</text>
+      </view>
+      <view class='arrow'></view>
+    </view>
+  </view>
+</view>

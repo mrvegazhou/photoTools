@@ -1,0 +1,75 @@
+@import "../../template/theme.wxss";
+.container {
+  height: 100%;
+  margin: 0 20rpx 0 20rpx;
+  padding: 0;
+  background: #fff;
+  overflow: hidden;
+}
+
+.register-form {
+  margin-top: 20rpx;
+  margin-bottom: 80rpx;
+}
+
+.register-name-form,
+.register-age-form,
+.register-sex-form,
+.register-industry-form,
+.register-company-form,
+.register-job-form {
+  display: flex;
+  direction: row;
+  height: 110rpx;
+  line-height: 110rpx;
+  width: 730rpx;
+}
+
+.register-name-form .name-label, 
+.register-age-form .age-label,
+.register-sex-form .sex-label,
+.register-industry-form .industry-label,
+.register-company-form .company-label,
+.register-job-form .job-label {
+  width: 86rpx;
+  padding-right: 100rpx;
+  border-bottom: 1rpx solid #DCDCDF;
+  height: 110rpx;
+  line-height: 110rpx;
+}
+.register-name-form .input-name,
+.register-age-form .input-age,
+.register-industry-form .input-industry,
+.register-company-form .input-company,
+.register-job-form .input-job {
+  width: 543rpx;
+  height: 110rpx;
+  line-height: 110rpx;
+  border-bottom: 1rpx solid #DCDCDF;
+}
+
+.radio-group-sex {
+  border-bottom: 1rpx solid #DCDCDF;
+  width: 543rpx;
+}
+
+.radio-group-sex .radio {
+  margin-right: 50rpx;
+}
+
+.placeholder-class {
+  color: #B2B2B2;
+  font-size: 34rpx;
+}
+
+.register-btn {
+  width: 680rpx;
+  height: 90rpx;
+  background-color: #E2C586;
+  color: #FFFFFF;
+  border-radius: 45rpx;
+  font-size: 34rpx;
+  text-align: center;
+  line-height: 90rpx;
+  margin: auto;
+}

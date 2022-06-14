@@ -1,0 +1,36 @@
+
+<view class="container">
+  <view class="login-logo">
+    <image src="../../images/user/logo.png" mode="aspectFill"></image>
+  </view>
+  <view class="login-form">
+    <view class="login-mobile">
+      <view class="login-mobile-label">
+        <image src="../../images/user/login-mobile.png"></image>
+        <text>手机号</text>
+      </view>
+      <view class="login-mobile-input">
+        <input auto-focus class="input-mobile" placeholder="请输入手机号" placeholder-class="mobile-placeholder-class" type="number" maxlength="11"/>
+      </view>
+    </view>
+    <view class="login-pwd">
+      <view class="login-pwd-label">
+        <image src="../../images/user/login-pwd.png"></image>
+        <text>密码</text>
+      </view>
+      <view class="login-mobile-input">
+        <input class="input-pwd" password type="text" placeholder="请输入密码" placeholder-class="pwd-placeholder-class"/>
+        <view class="input-eye"><image src="../../images/user/open-eye.png" class="input-eye-img"></image></view>
+      </view>
+      <view style="clear: both;"></view>
+    </view>
+  </view>
+  <view class="login-btn">
+    登录
+  </view>
+  <view class="login-goto-register">
+    <text class="hint">还没有账户？</text>
+    <text class="hint-register">现在去注册</text>
+  </view>
+  <view style="clear: both;"></view>
+</view>

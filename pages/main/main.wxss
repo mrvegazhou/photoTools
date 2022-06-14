@@ -1,0 +1,82 @@
+/* pages/main/main.wxss */
+@import "../../template/theme.wxss";
+.container {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  overflow: hidden;
+}
+
+.container-head {
+  width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.container-content-section{
+	width: 100%;
+	padding:0 30rpx;
+  margin-top: 20rpx;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.container-content-section image {
+  width: 36rpx;
+  height: 36rpx;
+}
+.container-content{
+	height: 100%;
+	margin-top: 20rpx;
+  padding:0 30rpx;
+}
+
+.container-content-item, .container-content-item-half {
+  box-sizing: border-box;
+	width: 100%;
+	height: 200rpx;
+	padding: 25rpx 40rpx;
+	background-color: rgb(233, 233, 233);
+	border-radius: 10rpx;
+	position: relative;
+	margin-bottom: 20rpx;
+}
+.container-content-item-half {
+  width: 42%;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+.container-content-item .title {
+	font-size: 36rpx;
+}
+.container-content-item-half .title {
+  font-size: 36rpx;
+  margin-bottom: 10rpx;
+}
+.container-content-item .description {
+	font-size: 25rpx;
+	color: #919191;
+	margin-top: 50rpx;
+}
+.container-content-item-half .description {
+  font-size: 25rpx;
+	color: #919191;
+	margin-top: 10rpx;
+}
+.container-content-item image {
+	position: absolute;
+	width: 120rpx;
+	height: 120rpx;
+	right: 40rpx;
+	top: 36rpx;
+}
+.container-content-item-half image {
+  width: 100rpx;
+	height: 100rpx;
+}
+.file-tool-content, .pic-tool-content {
+  margin-top: 36rpx;
+}

@@ -1,0 +1,28 @@
+<view class="container">
+  <view class="search">
+    <view class="search-input">
+      <icon type="search" size="18" color="#A6A6A6" class="icon">
+      </icon>
+      <text>搜索</text>
+    </view>
+  </view>
+  <scroll-view class="navbar" scroll-x="true">
+    <view class="navbar-item">
+      <view class="navbar-item-wrap {{activeIndex==0?'navbar-item-active':''}}" data-index="0" catchtap="onTapNavbar">论坛</view>
+      <view class="navbar-item-wrap {{activeIndex==1?'navbar-item-active':''}}" data-index="1" catchtap="onTapNavbar">俱乐部</view>
+    </view>
+  </scroll-view>
+
+  <scroll-view>
+    <!-- wx:for="{{feedList}}" data-item='{{item.question_id}}' wx:key="index"  -->
+    <view class="activity_item">
+      <view class="activity_item_title">计算机专业转行量化分析投资，我需要怎么做？</view>
+      <image class="activity_item_img" src="https://pic1.zhimg.com/v2-4272d69a1ca1aba9efd79e0c70660fc8_540x450.jpeg"></image>
+      <view class="activity_item_main">本人研一在读（国内985、c9），计算机专业，目前从事数据挖掘、机器学习相关方向的学习。</view>
+      <view class="activity_info">
+        <view class="date">2019-10-09~2019-10-11</view>
+        <view class="number">10人参加</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

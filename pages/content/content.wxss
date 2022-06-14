@@ -1,0 +1,78 @@
+@import "../../template/theme.wxss";
+.container {
+  margin: 0 40rpx;
+}
+
+.title-content {
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid #ececec;
+}
+
+.title-content .title-text {
+  font-size: 45rpx;
+  color: #000;
+  text-align: justify;
+  font-weight: normal;
+  display: inline-block;
+  line-height: 1.5em;
+  margin-top: 50rpx;
+}
+
+.title-content .original {
+  color: #888;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 24rpx;
+  margin-top: 30rpx;
+  margin-bottom: 21rpx;
+}
+
+.title-content .original .title-avatar {
+  margin-right: 15rpx;
+}
+
+.title-content .original .title-avatar image {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 80rpx;
+}
+.title-content .original .title-position {
+  display: flex;
+  flex-direction: column;
+}
+.title-content .original .title-position .title-name {
+  margin-right: 23rpx;
+  margin-bottom: 16rpx;
+  color: #888888;
+}
+.title-content .original .title-position .title-time {
+  color: #888888;
+  font-size: 24rpx;
+}
+.title-content .original .title-position .title-job {
+  font-size: 24rpx;
+  color: #DBB668;
+  margin-left: 10rpx;
+}
+.article-content {
+  margin-top: 30rpx;
+  text-indent: 2em;
+  text-align: justify;
+  line-height: 60rpx;
+  margin-bottom: 47rpx;
+}
+
+.img {
+  margin-top: 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 30rpx;
+  color: lightgray;
+}
+.tip {
+  margin-top: 10rpx;
+}

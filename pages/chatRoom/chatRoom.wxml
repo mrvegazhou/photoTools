@@ -1,0 +1,59 @@
+<view class='container'>
+  <scroll-view style="height:{{height-128}}rpx" class='scroll-view' scroll-y="true" scroll-into-view="{{scrolltop}}" enable-back-to-top="true" bindscrolltoupper="scrollToTop" upper-threshold="0" bindtouchstart="start" bindtouchend="end" bindscroll="scroll">
+
+    <view wx:if="{{isRefresh}}" class="refresh-top">
+      <image class='refreshing-icon refreshing-icon-loading' src='../../images/loading.png'></image>
+      <!-- <view><text>正在刷新...</text></view> -->
+    </view>
+
+    <view class='chat-list'>
+      <!-- <block wx:for="{{msgList}}" wx:key="{{item.key}}"> -->
+        <view class='reply' id="scroll1">
+          <image class='photo' src='../../images/user/logo.png'></image>
+          <view class="triangle-left"></view>
+          <text class='text'>你好好啊</text>
+        </view>
+
+        <view class='chat' id="roll1">
+          <text class='text'>我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊</text>
+          <view class="triangle-right"></view>
+          <image class='photo' src='https://pic4.zhimg.com/v2-2ae6d5f2e3f4a0ec6869f61c59b65e45_xs.jpg'></image>
+        </view>
+        <view class='chat' id="roll2">
+          <text class='text'>我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊</text>
+          <view class="triangle-right"></view>
+          <image class='photo' src='https://pic4.zhimg.com/v2-2ae6d5f2e3f4a0ec6869f61c59b65e45_xs.jpg'></image>
+        </view>
+        <view class='chat' id="roll3">
+          <text class='text'>我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊</text>
+          <view class="triangle-right"></view>
+          <image class='photo' src='https://pic4.zhimg.com/v2-2ae6d5f2e3f4a0ec6869f61c59b65e45_xs.jpg'></image>
+        </view>
+        <view class='chat' id="roll4">
+          <text class='text'>我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊</text>
+          <view class="triangle-right"></view>
+          <image class='photo' src='https://pic4.zhimg.com/v2-2ae6d5f2e3f4a0ec6869f61c59b65e45_xs.jpg'></image>
+        </view>
+        <view class='chat' id="roll5">
+          <text class='text'>我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊</text>
+          <view class="triangle-right"></view>
+          <image class='photo' src='https://pic4.zhimg.com/v2-2ae6d5f2e3f4a0ec6869f61c59b65e45_xs.jpg'></image>
+        </view>
+        <view class='chat' id="roll6">
+          <text class='text'>我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊</text>
+          <view class="triangle-right"></view>
+          <image class='photo' src='https://pic4.zhimg.com/v2-2ae6d5f2e3f4a0ec6869f61c59b65e45_xs.jpg'></image>
+        </view>
+        <view class='chat' id="roll7">
+          <text class='text'>我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊我很好啊啊啊啊啊</text>
+          <view class="triangle-right"></view>
+          <image class='photo' src='https://pic4.zhimg.com/v2-2ae6d5f2e3f4a0ec6869f61c59b65e45_xs.jpg'></image>
+        </view>
+      <!-- </block> -->
+    </view>
+  </scroll-view>
+  <form class='send-msg-form'>
+    <input class='input-msg' name="msg" value=''></input>
+    <view class="send-btn">发送</view>
+  </form>
+</view>

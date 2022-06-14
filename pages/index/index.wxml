@@ -1,0 +1,63 @@
+<!--一个图片的布局-->
+<import src="../../template/oneLayout.wxml"/>
+<!--三个图片的布局-->
+<import src="../../template/threeLayout.wxml"/>
+<!--专家解读的布局-->
+<import src="../../template/expertReadLayout.wxml"/>
+<!--下拉刷新-->
+<import src="../../template/pullUpRefresh/pullUpRefresh.wxml"/>
+
+
+<pullDownRefresh refreshed="{{refreshed}}" bind:refresh="pullDownRefresh">
+<view class="container">
+  <view class="search">
+    <view class="search-input">
+        <icon type="search" size="18" color="#A6A6A6" class="icon">
+        </icon>
+        <text class="placeholder">西部时报</text>
+    </view>
+  </view>  
+  <scroll-view class="navbar" scroll-x="true">
+      <view class="navbar-item">
+        <view class="navbar-item-wrap {{activeIndex==0?'navbar-item-active':''}}" data-index="0"  catchtap="onTapNavbar">时事新闻<view class="{{activeIndex==0?'navbar-underline-active':''}} navbar-underline" data-index="0"></view></view>
+        <view class="navbar-item-wrap {{activeIndex==1?'navbar-item-active':''}}" data-index="1"  catchtap="onTapNavbar">西部时报<view class="{{activeIndex==1?'navbar-underline-active':''}} navbar-underline" data-index="1"> </view></view>
+        <view class="navbar-item-wrap {{activeIndex==2?'navbar-item-active':''}}" data-index="2"  catchtap="onTapNavbar">专家解读<view class="{{activeIndex==2?'navbar-underline-active':''}} navbar-underline" data-index="2"> </view></view>
+      </view>
+  </scroll-view>
+  <view class="loading-modal" hidden="{{loadingModalHide}}">
+      <view class="loading-text-wrap">
+          <text class="loading-text">加载中...</text>
+      </view>
+  </view>
+  
+  <!-- 时事的广告展示 -->
+  <view wx:if="{{activeIndex == 0}}" id="article">
+    <advSwiperShow imgList="{{topAdvs}}" indicatorDots='true' autoplay='true' interval='5000' duration='1000'  bind:_navigateDetail="navigateAdvDetail"></advSwiperShow>
+  </view>
+
+  <scroll-view scroll-y bindtouchstart="onTouchstartArticles" bindtouchend="onTouchendArticles">
+    <view wx:if="{{dataArr[activeIndex].length != 0}}" class="article">
+      <block wx:for="{{dataArr[activeIndex]}}" wx:key="id">
+        <view wx:if="{{activeIndex == 0 || activeIndex == 1}}">
+          <view wx:if="{{activeIndex == 1}}" class="grayLine">
+          </view>
+          <navigator url="../content/content?navTitle={{navTitle}}" hover-class="none">
+            <template is="{{item.thumbnailPics.length >= 2 ? 'threeLayout' : 'oneLayout'}}" data="{{...item}}"/>
+          </navigator>
+        </view>
+        <view wx:else>
+          <view class="grayLine"></view>
+          <navigator url="../content/content?navTitle={{}}" hover-class="none">
+            <template is="expertReadLayout" data="" />
+          </navigator>
+        </view>
+      </block>
+    </view>
+    <view wx:else>
+      <view style="height:{{height}}rpx;"></view>
+    </view>
+
+    <template is="pullUpRefresh" data="{{...upRefresh[activeIndex]}}"/>
+  </scroll-view>
+</view>
+</pullDownRefresh>

@@ -1,0 +1,53 @@
+{
+  "pages": [
+    "pages/main/main",
+    "pages/takeIdPhoto/idPhoto/idPhoto",
+    "pages/takeIdPhoto/preIdPhoto/preIdPhoto",
+    "pages/takeIdPhoto/autoCamera/autoCamera",
+    "pages/takeIdPhoto/editPhoto/editPhoto",
+    "pages/index/index",
+    "pages/dynamicState/dynamicState",
+    "pages/activity/activity",
+    "pages/me/me",
+    "pages/content/content",
+    "pages/login/login",
+    "pages/register1/register",
+    "pages/register2/register",
+    "pages/chatRoom/chatRoom",
+    "pages/logs/logs"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTitleText": "",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "selectedColor": "#69a794",
+    "borderStyle": "black",
+    "backgroundColor": "white",
+    "color": "#8a8a8a",
+    "list": [
+      {
+        "text": "资讯",
+        "pagePath": "pages/index/index",
+        "iconPath": "images/tabs/information.png",
+        "selectedIconPath": "images/tabs/information_sel.png"
+      },
+      {
+        "text": "工具包",
+        "pagePath": "pages/main/main",
+        "iconPath": "images/tabs/tool.png",
+        "selectedIconPath": "images/tabs/tool_sel.png"
+      },
+      {
+        "text": "我的",
+        "pagePath": "pages/me/me",
+        "iconPath": "images/tabs/me.png",
+        "selectedIconPath": "images/tabs/me_sel.png"
+      }
+    ]
+  },
+  "debug": true,
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,51 @@
+/* pages/preIdPhoto/preIdPhoto.wxss */
+@import "../../template/theme.wxss";
+.container {
+	height: 100vh;
+	padding: 10rpx 30rpx;
+	padding-bottom: 100rpx;
+	overflow: visible;
+	box-sizing: border-box;
+	background:#fff;
+}
+
+.content{
+	width: 100%;
+}
+.content-des {
+	width: 100%;
+	margin-bottom: 20rpx;
+	background-color: rgba(255,255,255,1);
+	line-height: 2;
+	color: #333;
+	border-radius: 10rpx;
+	font-size: 28rpx;
+	position: relative;
+}
+.des-item {
+	height: 50px;
+	display: flex;
+    justify-content: space-between;
+}
+.des{
+	white-space: nowrap;/*强制在一行显示*/
+	text-overflow:ellipsis;/*设置超出内容显示...*/
+	overflow: hidden;/*一定不能少 超出的内容进行隐藏*/
+}
+
+.container-opt-btn{
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.container-btn{
+	width: 45%;
+	height: 90rpx;
+	margin-top:80rpx;
+	border-radius: 10rpx;
+	color: #fff;
+	text-align: center;
+	line-height: 90rpx;
+	background: var(--primary-color);
+}

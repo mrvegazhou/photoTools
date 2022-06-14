@@ -1,0 +1,9 @@
+<!--banner轮播-->
+<swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
+  <block wx:key="id" wx:for="{{imgList}}">
+    <swiper-item id="{{item.id}}" bindtap="_navigateDetail" data-itemid="{{item.id}}">
+      <image src="{{item.url}}" class="slide-image" mode="widthFix" />
+      <view class="slide_title">{{item.title}}</view>
+    </swiper-item>
+  </block>
+</swiper>

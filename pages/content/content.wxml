@@ -1,0 +1,33 @@
+<view class="container">
+  <scroll-view scroll-y="true" style="height:100%;">
+    <view class="title-content">
+      <view class="title-text">
+        中国营商环境跃居全球第31位专家解读北京做何种贡献
+      </view>
+      <view class="original">
+        <view class="title-avatar">
+          <image src='https://pic4.zhimg.com/v2-2ae6d5f2e3f4a0ec6869f61c59b65e45_xs.jpg' mode="aspectFill"></image>
+        </view>
+        <view class="title-position">
+          <view class="title-name">水水水水
+            <text class="title-job">中国汽车行业协会秘书长</text>
+          </view>
+          <view class="title-time">2019-10-30 22:25</view>
+        </view>
+      </view>
+    </view>
+    <view class="article-content">
+      日前，世界银行《2020营商环境报告》正式发布，中国排名跃居全球第31位，相比去年提升15位。北京作为样本城市，得分为78.2分，在去年大幅提升的基础上，今年再次提升4.6分，跨入全球前30名行列，排名28位，排名在日本东京之前。北京对中国排名跃升在哪些方面做出了贡献？记者昨日采访了多名专家，他们就北京在办理建筑许可、保护中小投资者、获得电力、开办企业等方面指标进行了解读。 这些专家长期关注北京营商环境建设，有的专家去年还参与了这方面改革的一些调研课题的研究。 这些专家长期关注北京营商环境建设，有的专家去年还参与了这方面改革的一些调研课题的研究。
+      这些专家长期关注北京营商环境建设，有的专家去年还参与了这方面改革的一些调研课题的研究 这些专家长期关注北京营商环境建设，有的专家去年还参与了这方面改革的一些调研课题的研究
+      <view class="img">
+        <image src="https://cdn.bigquant.com/community/letter_avatar_proxy/v2/letter/h/b38774/240.png" mode="aspectFill"></image>
+        <view class="tip">2020营商环境报告</view>
+      </view>
+      
+      这些专家长期关注北京营商环境建设，有的专家去年还参与了这方面改革的一些调研课题的研究。 这些专家长期关注北京营商环境建设，有的专家去年还参与了这方面改革的一些调研课题的研究。 这些专家长期关注北京营商环境建设，有的专家去年还参与了这方面改革的一些调研课题的研究。
+    </view>
+
+    <image src="https://cdn.bigquant.com/community/letter_avatar_proxy/v2/letter/h/b38774/240.png" bindtap="preview" data-src="https://cdn.bigquant.com/community/letter_avatar_proxy/v2/letter/h/b38774/240.png"></image>
+
+  </scroll-view>
+</view>
