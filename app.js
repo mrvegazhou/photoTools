@@ -1,11 +1,19 @@
 //app.js
+import { checkLogin, doLogin } from './utils/loginAuth'
+
 App({
   onLaunch: function () {
+    checkLogin().then(res => {
+      console.log("登录成功")
+      
+    }, err => {
+      console.log(err, "登录失败 next")
+      doLogin()
+    });
 
   },
   globalData: {
-    openId: null,
-    userInfo: null,
+    originURL: null,
     pageSize: 10,
 
     photoSizeList: [{

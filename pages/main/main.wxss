@@ -1,5 +1,6 @@
 /* pages/main/main.wxss */
 @import "../../template/theme.wxss";
+@import "../../template/contentBox/contentBox.wxss";
 .container {
   height: 100%;
   margin: 0;

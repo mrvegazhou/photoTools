@@ -1,6 +1,7 @@
 // pages/preIdPhoto/preIdPhoto.js
 
-const app = getApp()
+import { checkLogin, doLogin } from '../../../utils/loginAuth'
+var apiRequest = require('../../../utils/api.js')
 
 Page({
 
@@ -8,101 +9,63 @@ Page({
    * 页面的初始数据
    */
   data: {
-    photoSizeList: app.globalData.photoSizeList,
     width: '',
     height: '',
     px: '',
     size: '自定义',
-		photoName: '自定义尺寸',
+		name: '自定义尺寸',
     discription: '',
-		authSatus:false,
-		preImgInfoList:[]
+    canClick: true
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    wx.setNavigationBarTitle({ title: this.data.photoName })
-		this.getUserAuthSatus()
+    wx.setNavigationBarTitle({ title: this.data.name })
+    const sizeDetail = JSON.parse(decodeURIComponent(options.data))
+    this.setData({
+      ...sizeDetail
+    })
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
-  },
-
-  getUserAuthSatus(){
-    const that = this
-    const openid = app.globalData.openid
-    if (!openid) return
-
-  },
 
   /**
 	 * 选择照片
 	 */
 	chooseImagePre (e) {
+    this.setData({
+      canClick: false
+    })
     const that = this
-    if(!this.data.authSatus) {
+    checkLogin().then(res => {
+
+      that.chooseImage(e.target.dataset.type)	
+      
+    }, err => {
+
       wx.getUserProfile({
 				desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
 				success: (res) => {
-					
-					// that.setUserInfo(res.userInfo)
-					that.chooseImage(e.target.dataset.type)	
+          
+					doLogin().then(login_res => {
+
+            that.chooseImage(e.target.dataset.type)
+          }, err => {
+            
+          }).catch((err) => {
+            console.log(err)
+          });
+						
 				},
 				fail(){
-					wx.showToast({ title: '请授权后继续', icon: 'none', duration: 2000 })
+          wx.showToast({ title: '请授权后继续', icon: 'none', duration: 2000 })
+          that.setData({
+            canClick: true
+          })
 				}
 			})
-    } else {
-			that.chooseImage(e.target.dataset.type)	
-		}
+    });
   },
 
   chooseImage(sourceType){
@@ -112,18 +75,28 @@ Page({
 			wx.hideLoading()
     }, 1000)
     if(sourceType==='camera') {
-      const { width, height, photoName} = this.data
+      const { 
+        width,
+        height,
+        name,
+        px,
+        size,
+        discription
+      } = this.data
       //选择相机拍照
       wx.getSetting({
         success(res) {
           if (res.authSetting['scope.camera']) {
             wx.navigateTo({
-							url: '/pages/autoCamera/autoCamera',
+							url: '/pages/takeIdPhoto/autoCamera/autoCamera',
 							success: function (res) {
 								res.eventChannel.emit('toAutoCamera', {
                   width,
                   height,
-                  photoName
+                  name,
+                  px,
+                  size,
+                  discription
 								})
 							}
 						})
@@ -131,9 +104,15 @@ Page({
             wx.authorize({
 							scope: 'scope.camera',
 							success () {
+                that.setData({
+                  canClick: true
+                })
 							},
 							fail(){
-								that.openConfirm()	
+                that.openConfirm()	
+                that.setData({
+                  canClick: true
+                })
 							}
             })
           }
@@ -152,33 +131,54 @@ Page({
 				sizeType: 'original',
 				camera: 'back',
 				success:(res)=> {
-          this.imgUpload(res.tempFiles[0].tempFilePath)
+          that.imgUpload(res.tempFiles[0].tempFilePath)
         },
         fail () {
           wx.showToast({ title: '取消选择', icon: 'none', duration: 2000 })
+          that.setData({
+            canClick: true
+          })
         }
       })
     }  
   },
 
-  // 上传原图， 后使用百度人像分割
+  // 上传原图， 后使用人像分割处理
 	imgUpload(filePath) {
-    const openId = app.globalData.openId
-    if (!openId) return
-    wx.showLoading({ title: '正在检测图像中', })
-    const fileName = filePath.split('tmp/')[1] || filePath.split('tmp_')[1];
-
-    // wx.cloud.uploadFile({
-		// 	cloudPath: `tmp/originfile/${openid}/${new Date().Format('yyyy-MM-dd')}/${fileName}`,
-		// 	filePath
-		// })
-		// .then(res => {
-		// 	 this.imageDivision(res.fileID)
-		// })
-		// .catch(error => {
-		// 	console.log(error)
-		// 	wx.showToast({ title: '失败,请重试', icon: 'loading' })
-		// })
+    const that = this
+    const openid = wx.getStorageSync('openid')
+    if (!openid) return
+    wx.showLoading({ title: '正在检测图像中' })
+    const flag = apiRequest.faceImgMatting(filePath, {openid: openid}, 
+      // 成功
+      (res) => {
+        wx.hideLoading()
+        const resData = JSON.parse(res.data)
+        if(resData.code==200) {
+          that.goEditPage(resData.data)
+        }else{
+          wx.showToast({ title: resData.msg, icon: 'error', duration: 2000 })
+        }
+        that.setData({
+          canClick: true
+        })
+      }, 
+      (err) => {
+        wx.showToast({
+          title: '图片上传失败',
+          icon: 'error'
+        })
+        that.setData({
+          canClick: true
+        })
+      }
+    );
+    if (flag===false) {
+      wx.showToast({
+        title: '图片上传失败',
+        icon: 'error'
+      })
+    }
   },
 
   openConfirm() {
@@ -199,4 +199,31 @@ Page({
 		  }
 		});
   },
+
+  // 编辑图片
+  goEditPage(data) {
+    const {
+      name,
+      px,
+      size,
+      width,
+      height,
+      discription
+    } = this.data
+    wx.navigateTo({
+      url: '/pages/takeIdPhoto/editPhoto/editPhoto',
+      success: function (res) {
+        res.eventChannel.emit('sendImageData', {
+          filePath: apiRequest.getStaticImgURL(data['mattingFaceImg']),
+          tmpOriginImgSrc: apiRequest.getStaticImgURL(data['faceImg']),
+          name,
+          px,
+          size,
+          width,
+          height,
+          discription
+        })
+      }
+    })
+  }
 })

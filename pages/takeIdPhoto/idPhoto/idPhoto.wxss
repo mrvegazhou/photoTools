@@ -33,12 +33,12 @@
 	margin-top: 30rpx;
 }
 .colors .color {
-	width: 4vw;
-	height: 4vw;
+	width: 5vw;
+	height: 5vw;
 	margin-right: 50rpx;
 	border: 1px solid #ddd;
 	border-radius: 50%;
-	overflow: hidden;
+  overflow: hidden;
 }
 .colors .color.transparent::before {
 	content: '透明';
@@ -51,7 +51,7 @@
 	line-height: 1;
 	height: 1em;
 	margin-top: -0.5em;
-	font-size: 14px;
+	font-size: 10px;
 }
 .blue {
 	background-color: rgb(67,142,219);
@@ -70,8 +70,10 @@
   margin-top: 30rpx;
   display: flex;
   flex-flow: row wrap;
+  justify-content: space-between;
 }
 .size-content .size-content-item {
+  width: 42%;
   margin: 6rpx 10rpx 10rpx 6rpx;
   padding: 20rpx;
   border-radius: 10rpx;
@@ -81,7 +83,9 @@
 }
 .size-content .size-content-item .title {
   font-size: 35rpx;
+  padding-left: 20rpx;
 }
 .size-content .size-content-item .px, .size-content .size-content-item .size{
   font-size: 28rpx;
+  padding-left: 20rpx;
 }

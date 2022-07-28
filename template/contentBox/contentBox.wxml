@@ -1,0 +1,46 @@
+<template name="contentBox">
+  <view class="content-box">
+		<view class="top">
+			<view class="top-block">
+				<view class="top-left">
+					<image style="width: 65px; height: 70px; margin-bottom: 5px " src="../../images/main/methods.png" bindtap="navigateTo" data-url="/pages/methods/index"></image>
+					<view bindtap="navigateTo" data-url="/pages/methods/index">查看攻略</view>
+				</view>
+				<view class="top-line"></view>
+				<view class="top-right">
+					<image style="width: 45px; height: 65px; margin-bottom: 5px " src="../../images/main/build.png" bindtap="navigateTo" data-url="/pages/sizeList/index"></image>
+					<view bindtap="navigateTo" data-url="/pages/sizeList/index">快速制作</view>
+				</view>
+			</view>
+		</view>
+		<view class="bottom">
+			<view class="bottom-block">
+				<view class="bottom-cell">
+					<image style="width: 30px; height: 30px; margin-right: 5px " src="../../images/main/hot.png" bindtap="navigateTo" data-url="/pages/sizeList/index"></image>
+					<view bindtap="navigateTo" data-url="/pages/sizeList/index">
+						<view>热门推荐</view>
+						<view>近期高频尺寸</view>
+					</view>
+				</view>
+				<view class="bottom-line"></view>
+				<view class="bottom-cell">
+					<image style="width: 30px; height: 30px; margin-right: 5px " src="../../images/main/custom.png"></image>
+					<view bindtap="navigateTo" data-url="/pages/custom/index">
+						<view>自定义</view>
+						<view>多种尺寸制作</view>
+					</view>
+
+				</view>
+				<view class="bottom-line"></view>
+				<view class="bottom-cell">
+					<image style="width: 30px; height: 30px; margin-right: 5px " src="../../images/main/search.png" bindtap="navigateTo" data-url="/pages/searchs/index"></image>
+					<view bindtap="navigateTo" data-url="/pages/searchs/index">
+						<view>搜索</view>
+						<view>关键字查找</view>
+					</view>
+				</view>
+			</view>
+		</view>
+
+	</view>
+</template>

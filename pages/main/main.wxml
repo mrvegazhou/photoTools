@@ -1,7 +1,8 @@
 <!--pages/main/main.wxml-->
+<import src="../../template/contentBox/contentBox.wxml"/>
 <view class="container">
   <view class="container-head">
-    <advSwiperShow imgList="{{topAdvs}}" indicatorDots='true' autoplay='true' interval='5000' duration='1000' bind:_navigateDetail="navigateAdvDetail"></advSwiperShow>
+    <advSwiperShow imgListVals="{{topAdvs}}" indicatorDots='true' autoplay='true' interval='5000' duration='1000' bind:_navigateDetail="navigateAdvDetail"></advSwiperShow>
   </view>
 
   <view class="pic-tool-content">
@@ -36,6 +37,7 @@
         <image src="/images/test/take.png"></image>
       </view>
     </view> -->
+    
   </view>
 
   <view class="file-tool-content">
@@ -45,6 +47,10 @@
         文件处理
       </view>
     </view>
+    <view class="box-1">
+      <template is="contentBox" />
+    </view>
+
   </view>
 
 </view>

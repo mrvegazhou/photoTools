@@ -88,7 +88,7 @@ Page({
   // 去选择照片页面
 	goPreIdPhotoPage (e) {
 		wx.navigateTo({
-			url: '/pages/preIdPhoto/preIdPhoto?index=' + e.currentTarget.dataset.index,
+			url: '/pages/takeIdPhoto/preIdPhoto/preIdPhoto?index=' + e.currentTarget.dataset.index + '&data=' + JSON.stringify(this.data.photoSizeList[e.currentTarget.dataset.index]),
 		})
 	},
 })

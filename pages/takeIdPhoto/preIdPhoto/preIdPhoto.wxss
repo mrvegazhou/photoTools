@@ -1,5 +1,5 @@
 /* pages/preIdPhoto/preIdPhoto.wxss */
-@import "../../template/theme.wxss";
+@import "../../../template/theme.wxss";
 .container {
 	height: 100vh;
 	padding: 10rpx 30rpx;
@@ -8,7 +8,9 @@
 	box-sizing: border-box;
 	background:#fff;
 }
-
+.title {
+  margin-bottom: 20rpx;
+}
 .content{
 	width: 100%;
 }
@@ -30,7 +32,8 @@
 .des{
 	white-space: nowrap;/*强制在一行显示*/
 	text-overflow:ellipsis;/*设置超出内容显示...*/
-	overflow: hidden;/*一定不能少 超出的内容进行隐藏*/
+  overflow: hidden;/*一定不能少 超出的内容进行隐藏*/
+  white-space:pre-wrap;
 }
 
 .container-opt-btn{

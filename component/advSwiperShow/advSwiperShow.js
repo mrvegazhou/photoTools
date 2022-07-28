@@ -28,11 +28,11 @@ Component({
    * 组件的初始数据
    */
   data: {
-    imgList: [],
-    indicatorDots: true,
-    autoplay: true,
-    interval: 5000,
-    duration: 1000
+    imgListVals: [],
+    indicatorDotsVal: true,
+    autoplayVal: true,
+    intervalVal: 5000,
+    durationVal: 1000
   },
 
   ready: function () {
@@ -46,13 +46,13 @@ Component({
     initData: function() {
       let that = this
       this.setData({
-        imgList: that.properties.imgList,
-        indicatorDots: that.properties.indicatorDots,
-        autoplay: that.properties.autoplay,
-        interval: that.properties.interval,
-        duration: that.properties.duration
+        imgListVals: that.properties.imgListVals,
+        indicatorDotsVal: that.properties.indicatorDots,
+        autoplayVal: that.properties.autoplay,
+        intervalVal: that.properties.interval,
+        durationVal: that.properties.duration
       })
-      if (!this.data.imgList && this.data.imgList.length == 0) {
+      if (!this.data.imgListVals && this.data.imgListVals.length == 0) {
         console.log("广告banner没有图片")
         return;
       }

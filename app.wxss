@@ -59,3 +59,13 @@
 .icon_noData:before {
   content: "\e642";
 }
+
+.disable_cls {
+  background-color: #74787a !important;
+  pointer-events:none  !important;
+}
+.disable_cls:before {
+  content: "⊖"  !important;
+  margin-right: 10rpx  !important;
+  font-size: 50rpx !important;
+}

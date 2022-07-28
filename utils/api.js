@@ -12,19 +12,17 @@ function request(urlStr, method, datas, header, successFn, failFn, completeFn) {
   } else {
     datas = {};
   }
+  const header_ = {
+    'Authorization': 'Bearer ' + wx.getStorageSync("jwt"),
+    'Audience': 'wechat',
+    "Content-Type": "application/json" //"application/x-www-form-urlencoded"
+  }
   return wx.request({
     url: urlStr,
     method: method ? method : 'get',
     data: datas,
-    header: header ? header : { "Content-Type": "application/json" },
+    header: header ? header : header_,
     success: function (res) {
-      var url = getCurrentPageUrl()
-      if (res.data.code === 401 && url != "pages/login/login") {
-        app.globalData.originURL = url
-        wx.reLaunch({
-          url: '/pages/login/login'
-        })
-      }
       successFn(res);
     },
     fail: function () {
@@ -45,6 +43,31 @@ function request(urlStr, method, datas, header, successFn, failFn, completeFn) {
       wx.setStorageSync("jwt", token)
     }
   });
+}
+
+// 上传图片
+function uploadFile(url, jwt, datas, filePath, successFn, failFn) {
+  return new Promise((resolve, reject) => {
+    wx.uploadFile({
+      url: url,
+      filePath: filePath,
+      name: 'imgFile',
+      formData: datas,
+      header: {
+        'Authorization': 'Bearer ' + jwt,
+        'Audience': 'wechat'
+      },
+      success: function (res) {
+        successFn(res)
+        resolve(res)
+      },
+      fail: function (err) {
+        failFn(err);
+        console.log(err)
+        reject(err)
+      }
+    })
+  })
 }
 
 // 获取用户信息
@@ -86,20 +109,68 @@ function easyRequestJwt(method, url, datas) {
   return easyRequest(method, url, datas, jwt);
 }
 
-//服务器获取行业数据，并缓存到本地
-function getIndustryData() {
-  let industryList = wx.getStorageSync(CONFIG.CACHE.INDUSTRY)
-  if (!industryList) {
-    easyRequest("POST", CONFIG.API_URL.INDUSTRY, {}).then(res=>{
-      wx.setStorageSync(CONFIG.CACHE.INDUSTRY, res.data.data)
-    });
-  }
-  return industryList;
+
+function getTopAdvs() {
+  return 1;
 }
 
+
+// 检查openid
+function checkOpenid(successFn = () => {}, failFn = () => {}, completeFn = ()=> {}, header = {}) {
+  let jwt = wx.getStorageSync("jwt").replace(/\s+/g, "")
+  if (jwt == void 0 || jwt == null || jwt == "") {
+    return false;
+  }
+  request(CONFIG.API_URL.WECHAT_CHECK_OPENID, "POST", {'openid': wx.getStorageSync("openid")}, header, successFn, failFn, completeFn);
+}
+
+// 上传图片 检查证件照头像是否正常 并抠图
+function faceImgMatting(filePath, datas = {}, successFn = () => {}, failFn = () => {}) {
+  let jwt = wx.getStorageSync("jwt").replace(/\s+/g, "")
+  if (jwt == void 0 || jwt == null || jwt == "") {
+    return false;
+  }
+  uploadFile(CONFIG.API_URL.WECHAT_FWECHAT_FACE_IMG_MATTING, jwt, datas, filePath, successFn, failFn);
+}
+
+function getStaticImgURL(name) {
+  return CONFIG.API_BASE_URL + name
+}
+
+// 合成图片
+function imageCompose(datas, {successFn=() => {}, failFn=() => {}, completeFn=()=> {}, header=null}) {
+  console.log(wx.getStorageSync("jwt"))
+  request(CONFIG.API_URL.WECHAT_IMAGE_COMPOSE, "POST", datas, header, successFn, failFn, completeFn);
+}
+
+// 将远端图片，下载到本地
+function downloadImg (url) {
+  return new Promise((resolve, reject) => {
+    wx.downloadFile({
+      url: url, //仅为示例，并非真实的资源
+      success (res) {
+        // 只要服务器有响应数据，就会把响应内容写入文件并进入 success 回调，业务需要自行判断是否下载到了想要的内容
+        if (res.statusCode === 200) {
+          console.log(res)
+          resolve(res)
+        } else {
+          reject(res)
+        }
+      },
+      fail (error) {
+        reject(error)
+      }
+    })
+  })
+}
 
 module.exports = {
   easyRequest: easyRequest,
   easyRequestJwt: easyRequestJwt,
-  getIndustryData: getIndustryData
+  getTopAdvs: getTopAdvs,
+  checkOpenid: checkOpenid,
+  faceImgMatting: faceImgMatting,
+  getStaticImgURL: getStaticImgURL,
+  imageCompose: imageCompose,
+  downloadImg: downloadImg
 }

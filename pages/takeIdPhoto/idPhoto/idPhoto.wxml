@@ -13,23 +13,19 @@
     </view>
     <view class="colors">
       <view bindtap="toggleBg" data-color="white" class="color white">
-        <view wx:if="{{bgc === 'white'}}" class="iconfont">
-          {{bgc === 'white' ? '✓' : ''}}
+        <view wx:if="{{bgc === 'white'}}" class="iconfont icon_select">
         </view>
       </view>
       <view bindtap="toggleBg" data-color="blue" class="color blue">
-        <view wx:if="{{bgc === 'blue'}}" class="iconfont">
-          {{bgc === 'blue' ? '✓' : ''}}
+        <view wx:if="{{bgc === 'blue'}}" class="iconfont icon_select">
         </view>
       </view>
       <view bindtap="toggleBg" data-color="red" class="color red">
-        <view wx:if="{{bgc === 'red'}}" class="iconfont">
-          {{bgc === 'red' ? '✓' : ''}}
+        <view wx:if="{{bgc === 'red'}}" class="iconfont icon_select">
         </view>
       </view>
       <view bindtap="toggleBg" data-color="blue2" class="color blue2">
-        <view wx:if="{{bgc === 'blue2'}}" class="iconfont">
-          {{bgc === 'blue2' ? '✓' : ''}}
+        <view wx:if="{{bgc === 'blue2'}}" class="iconfont icon_select">
         </view>
       </view>
     </view>

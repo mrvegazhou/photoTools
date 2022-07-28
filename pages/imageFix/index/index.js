@@ -1,4 +1,4 @@
-// pages/preIdPhoto/preIdPhoto.js
+// pages/imageFix/index/index.js
 Page({
 
   /**

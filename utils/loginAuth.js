@@ -1,12 +1,12 @@
 import { CONFIG } from './config'
 import { showError } from './util'
 
-var app = getApp();
 
 //判断用户有没有授权过期，登录服务器获取服务器用户信息
 function getUserInfoInServer(originURL) {
   return new Promise(function (resolve, reject) {
     if (!checkJWT()) {
+      const app = getApp()
       app.globalData.originURL = originURL
       wx.navigateTo({
         url: '../login/login',
@@ -20,9 +20,11 @@ function getUserInfoInServer(originURL) {
         wx.navigateTo({
           url: '../login/login',
         });
+      }).catch((err)=>{
+        reject(err);
       });
     }
-  });
+  })
   
 }
 
@@ -31,15 +33,16 @@ function getUserInfoInServer(originURL) {
 // 已经登录过，但是 session 过期的自动重新登录
 function checkLogin() {
   return new Promise(function(resolve, reject) {
-    if (wx.getStorageSync('userInfo') && wx.getStorageSync('jwt')) {
+    if (wx.getStorageSync('jwt')) {
       checkSession().then(
       () => {
         resolve(true);
-      }, 
+      },
       () => {
         doLogin()
         reject(false);
       }).catch((err) => {
+        console.info('checkLogin:', err)
         reject(err);
       });
     } else {
@@ -112,33 +115,30 @@ function doMobile(e) {
           console.log(res2, "----session key-----");
         })
       })
+    }).catch((err)=>{
+      reject(err);
     });
   });
 }
 
 function doLogin() {
-  let code = null
   return new Promise((resolve, reject) => {
     return login().then(res => {
-      code = res.code
-      return getUserInfo()
-    }).then(userInfo => {
-      p({
-        url: CONFIG.API_URL.WECHAT_LOGIN,
-        data: {
-          code: code,
-          rawData: userInfo.rawData, //用户非敏感信息 同一个用户有唯一的openid
-          signature: userInfo.signature, //签名
-          encrypteData: userInfo.encryptedData, //用户敏感信息
-          iv: userInfo.iv //解密算法的向量
-        },
-        method: 'POST',
-      }).then(user => {
-        wx.setStorageSync('userInfo', user.data.data);
-        resolve(user)
-      }).catch((err) => {
-        reject('request failed');
-      });
+      if(res.code) {
+        p({
+          url: CONFIG.API_URL.WECHAT_LOGIN,
+          data: {
+            platCode: res.code
+          },
+          method: 'POST',
+        }).then(res => {
+          wx.setStorageSync('jwt', res.data.data.jwt);
+          wx.setStorageSync('openid', res.data.data.openid);
+          resolve(res)
+        }).catch((err) => {
+          reject('request failed');
+        });
+      }
     }).catch((err) => {
       reject("wechat failed");
     });
@@ -171,7 +171,7 @@ function getUserInfo() {
         reject(err);
       }
     })
-  });
+  })
 }
 
 function userAuthorized() {
@@ -189,7 +189,7 @@ function userAuthorized() {
         reject(err);
       }
     });
-  });
+  })
 }
 
 function p({
@@ -213,7 +213,7 @@ function p({
         method: method,
         data: data,
         header: {
-          'content-type': 'application/x-www-form-urlencoded',
+          'content-type': 'application/json',
         },
         success: (res) => {
           resolve(res)

@@ -105,7 +105,7 @@ Page({
   //去选择照片页面
 	goIDPhotoPage (e) {
 		wx.navigateTo({
-			url: '/pages/idPhoto/idPhoto'
+			url: '/pages/takeIdPhoto/idPhoto/idPhoto'
 		})
 	},
 })

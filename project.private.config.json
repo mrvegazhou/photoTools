@@ -65,14 +65,43 @@
         },
         {
           "name": "",
-          "pathName": "pages/preIdPhoto/preIdPhoto",
+          "pathName": "pages/takeIdPhoto/editPhoto/editPhoto",
+          "query": "",
+          "launchMode": "default",
+          "scene": null,
+          "partialCompile": {
+            "enabled": true,
+            "pages": []
+          }
+        },
+        {
+          "name": "",
+          "pathName": "pages/takeIdPhoto/idPhoto/idPhoto",
           "query": "",
           "launchMode": "default",
           "scene": null
         },
         {
           "name": "",
-          "pathName": "pages/autoCamera/autoCamera",
+          "pathName": "pages/takeIdPhoto/preIdPhoto/preIdPhoto",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/takeIdPhoto/editPhoto/editPhoto",
+          "query": "",
+          "launchMode": "default",
+          "scene": null,
+          "partialCompile": {
+            "enabled": true,
+            "pages": []
+          }
+        },
+        {
+          "name": "",
+          "pathName": "pages/main/main",
           "query": "",
           "launchMode": "default",
           "scene": null

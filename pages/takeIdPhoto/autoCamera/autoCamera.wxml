@@ -7,7 +7,7 @@
   </view>
 
   <view class="person">
-    <image  mode="scaleToFill" src="../../images/autoCamera/person.png"></image>
+    <image  mode="scaleToFill" src="../../../images/autoCamera/person.png"></image>
   </view>
   <view wx:if="{{cameraImg}}">
     <view class="iconfont icon_back" bindtap="goRepeat"></view>

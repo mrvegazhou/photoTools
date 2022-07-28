@@ -234,6 +234,22 @@ function getCurrentPageUrlWithArgs() {
   return urlWithArgs
 }
 
+function processDate(_date) {
+  var y = _date.getFullYear();
+  var m = _date.getMonth() + 1;
+  m = m < 10 ? ('0' + m) : m;
+  var d = _date.getDate();
+  d = d < 10 ? ('0' + d) : d;
+  var h = _date.getHours();
+  h = h < 10 ? ('0' + h) : h;
+  var minute = _date.getMinutes();
+  minute = minute < 10 ? ('0' + minute) : minute;
+  var second = _date.getSeconds();
+  second = second < 10 ? ('0' + second) : second;
+  return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
+}
+
+
 module.exports = {
   formatTime: formatTime,
   tools: tools,
@@ -249,5 +265,6 @@ module.exports = {
   isNumber: isNumber,
   checkAge: checkAge,
   getCurrentPageUrl: getCurrentPageUrl,
-  getCurrentPageUrlWithArgs: getCurrentPageUrlWithArgs
+  getCurrentPageUrlWithArgs: getCurrentPageUrlWithArgs,
+  processDate: processDate
 }

@@ -1,1 +1,159 @@
 /* pages/editPhoto/editPhoto.wxss */
+@import "../../../template/theme.wxss";
+.container {
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+}
+/* canvas */
+.container .photo-edit-content {
+  padding: 5px;
+  padding-bottom: 15px;
+  width: 100%;
+	background: '#e6e2e';
+	box-sizing: border-box;
+}
+.container .photo-edit-content .canvas-view {
+	position: relative;
+	width: 100%;
+	height: 300px;
+	margin: 0 auto;
+	box-sizing: content-box;
+	overflow: hidden;
+}
+.container .photo-edit-content .canvas-view .people-photo {
+	position: absolute;
+	width: 100%;
+  transform-origin: center center;
+}
+.imgOpt{
+	width: 100%;
+	height: 100%;
+	background: #fff;
+}
+
+/* 颜色选择 */
+.imgOpt .colors {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around ;
+	margin-top: 50rpx;
+}
+.imgOpt .colors .color {
+	width: 12vw;
+	height: 12vw;
+	/* padding-top: 9%; */
+	border: 1px solid #ddd;
+	border-radius: 50%;
+	overflow: hidden;
+}
+.icon_select{
+	font-size: 60rpx;
+	font-weight: bold;
+  color: rgb(11, 179, 81);
+}
+.imgOpt .colors .color.transparent {
+	background-color: transparent;
+	position: relative;
+}
+.imgOpt .colors .color.transparent::before {
+	content: '透明';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 100%;
+	text-align: center;
+	color: #333;
+	line-height: 1;
+	height: 1em;
+	margin-top: -0.5em;
+	font-size: 14px;
+}
+.blue {
+	background-color: rgb(67,142,219);
+}
+.blue2 {
+	background-color: rgb(0,191,243);
+}
+.red {
+	background-color: red;
+}
+.white {
+	background-color: white;
+}
+.imgOpt .colors .color .custom {
+	padding-top: 0;
+	height: max-content;
+}
+.imgOpt .colors .color.custom .text {
+	width: 100%;
+	padding-top: 50%;
+	height: 0;
+	text-align: center;
+}
+.imgOpt .colors .color.custom .text text {
+	transform: translateY(-100%);
+	display: block;
+	font-size: 14px;
+}
+.imgOpt .colors .color .custom-bg {
+	width: 100%;
+	height: 0;
+	padding-top: 50%;
+}
+
+.download-view {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0 20rpx;
+	margin-top: 100rpx;
+}
+.download-view button {
+	margin-bottom: 20rpx;
+	box-shadow: 0 0 10rpx 5rpx rgba(67,142,219,.25);
+	background-color: var(--primary-color);
+	color: #fff !important;
+	font-weight: normal;
+	height: 90rpx;
+	padding: 0;
+	line-height: 90rpx;
+	width: 100% !important;
+	border-radius: 10rpx;
+}
+
+
+/* color picker */
+.color-picker-view {
+  position: absolute;
+  width: 100%;
+  overflow: visible;
+  z-index: 99;
+}
+
+.color-picker-view .color-picker-content {
+  height: 55vh;
+  width: 100%;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.color-picker-view .color-picker-content .current-color {
+  width: 100%;
+}
+
+.color-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.color-picker-view .color-picker-content button {
+  margin: 0 auto;
+  background-color: #2c2c2c;
+  color: #fff;
+  margin-top: 10px;
+}
