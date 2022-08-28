@@ -105,6 +105,27 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/imageFix/index/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/imageFix/complete/complete",
+          "query": "msg=&url=http%3A%2F%2F192.168.3.3%3A5000%2Fstatic%2Fpage%2Fimg%2Fb1be63b3a251413a980ed1cb7cb27c3b_fixed.png",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/imageFix/imageScan/imageScan",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

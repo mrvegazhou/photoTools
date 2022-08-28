@@ -1,0 +1,6 @@
+<view class="action-sheet {{maskAnimation}}" hidden="{{!show}}">
+  <view class="container {{animation}}"  style="height: {{height}};">
+    <slot></slot>
+    <view class="cancel" bindtap="cancelAction">取消</view>
+  </view>
+</view>

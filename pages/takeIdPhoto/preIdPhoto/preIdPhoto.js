@@ -48,13 +48,17 @@ Page({
 				desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
 				success: (res) => {
           
-					doLogin().then(login_res => {
-
+					doLogin(res.userInfo).then(login_res => {
             that.chooseImage(e.target.dataset.type)
-          }, err => {
             
+          }, err => {
+            that.setData({
+              canClick: true
+            })
           }).catch((err) => {
-            console.log(err)
+            that.setData({
+              canClick: true
+            })
           });
 						
 				},
@@ -149,7 +153,7 @@ Page({
     const openid = wx.getStorageSync('openid')
     if (!openid) return
     wx.showLoading({ title: '正在检测图像中' })
-    const flag = apiRequest.faceImgMatting(filePath, {openid: openid}, 
+    const flag = apiRequest.faceImgMatting(filePath, {openid: openid}, 120000, 
       // 成功
       (res) => {
         wx.hideLoading()
@@ -189,9 +193,8 @@ Page({
 		  success: function (res) {
 			//点击“确认”时打开设置页面
 			if (res.confirm) {
-			  console.log('用户点击确认')
 			  wx.openSetting({
-				success: (res) => { }
+				  success: (res) => { }
 			  })
 			} else {
 			  console.log('用户点击取消')

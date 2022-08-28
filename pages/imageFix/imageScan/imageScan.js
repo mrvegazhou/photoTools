@@ -14,7 +14,7 @@ Page({
     canClick: true,
     actionShow: false,
     before: '../../../images/bgcolor.png',
-    // before: 'wxfile://tmp_5d32990c04a9db7fa6b7d09f99e35b7c5daa0029bd0a1bc0.jpg',
+    // before: 'http://192.168.3.3:5000/static/page/img/b1be63b3a251413a980ed1cb7cb27c3b_fixed.png',
     after: '../../../images/bgcolor.png'
     // after: 'http://192.168.3.3:5000/static/page/img/8289146e65d44b678a48ad8828bbc136_fixed.png'
   },
@@ -49,7 +49,7 @@ Page({
         success(res) {
           if (res.authSetting['scope.camera']) {
             wx.navigateTo({
-							url: '/pages/imageFix/autoCamera/autoCamera?type=index',
+							url: '/pages/imageFix/autoCamera/autoCamera?type=imageScan',
 							success: function (res) {
 							}
 						})
@@ -190,12 +190,12 @@ Page({
     const that = this
     const beforeImgUrl = this.data.before
     if(beforeImgUrl.startsWith('http://tmp') || beforeImgUrl.startsWith('wxfile://tmp')) {
-      wx.showLoading({ title: '正在修复图像中' })
-      apiRequest.fixImg(beforeImgUrl, {'openid':openid}, 360000).then(res => {
+      wx.showLoading({ title: '正在处理图像中' })
+      apiRequest.scanImg(beforeImgUrl, {'openid':openid}).then(res => {
         const resData = JSON.parse(res.data)
         if(resData.code==200) {
           const beforeImg = CONFIG.API_URL.WECHAT_STATIC_IMG+"/"+resData.data.oldImg
-          const afterImg = CONFIG.API_URL.WECHAT_STATIC_IMG+"/"+resData.data.fixedImg
+          const afterImg = CONFIG.API_URL.WECHAT_STATIC_IMG+"/"+resData.data.scannedImg
           that.setData({
             'before': beforeImg,
             'after': afterImg
@@ -208,7 +208,7 @@ Page({
         } else {
           wx.hideLoading()
           wx.showToast({
-            title: '修复失败:'+resData.msg,
+            title: '处理失败:'+resData.msg,
             icon: 'none'
           })
           this.setData({
@@ -223,7 +223,7 @@ Page({
           })
         } else {
           wx.showToast({
-            title: '修复失败',
+            title: '处理失败~',
             icon: 'none'
           })
         }
@@ -273,7 +273,7 @@ Page({
     })
   },
 
-  // 是否保存修复照片
+  // 是否保存扫描照片
   showSaveWindows: function() {
     const that = this
     wx.showModal({

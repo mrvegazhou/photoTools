@@ -45,55 +45,6 @@ Page({
     })
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
-  },
-
   turnCameraBtn(){
     const ctx = wx.createCameraContext()
     ctx.takePhoto({
@@ -132,7 +83,6 @@ Page({
   },
 
   takePhoto() {
-    console.log(this.data.photoSrc, '222')
     if(this.data.photoSrc){
       this.imgUpload(this.data.photoSrc)
     }
@@ -144,7 +94,7 @@ Page({
     const openid = wx.getStorageSync('openid')
     if (!openid) return
 		wx.showLoading({ title: '正在检测图像中', })
-    const flag = apiRequest.faceImgMatting(filePath, {openid: openid}, 
+    const flag = apiRequest.faceImgMatting(filePath, {openid: openid}, 120000, 
       // 成功
       (res) => {
         wx.hideLoading()

@@ -41,7 +41,7 @@ wx-slider .wx-slider-handle-wrapper{
   /* background-position: center center; */
 }
 .foreground-img {
-  width: 50%;
+  /* width: 50%; */
   background-repeat: no-repeat;
   background-attachment: fixed;
   /* 让背景图基于容器大小伸缩 */

@@ -46,13 +46,14 @@ function request(urlStr, method, datas, header, successFn, failFn, completeFn) {
 }
 
 // 上传图片
-function uploadFile(url, jwt, datas, filePath, successFn, failFn) {
+function uploadFile(url, jwt, datas, filePath, timeout, successFn, failFn) {
   return new Promise((resolve, reject) => {
     wx.uploadFile({
       url: url,
       filePath: filePath,
       name: 'imgFile',
       formData: datas,
+      timeout: timeout,
       header: {
         'Authorization': 'Bearer ' + jwt,
         'Audience': 'wechat'
@@ -125,12 +126,12 @@ function checkOpenid(successFn = () => {}, failFn = () => {}, completeFn = ()=> 
 }
 
 // 上传图片 检查证件照头像是否正常 并抠图
-function faceImgMatting(filePath, datas = {}, successFn = () => {}, failFn = () => {}) {
+function faceImgMatting(filePath, datas = {}, timeout=60000, successFn = () => {}, failFn = () => {}) {
   let jwt = wx.getStorageSync("jwt").replace(/\s+/g, "")
   if (jwt == void 0 || jwt == null || jwt == "") {
     return false;
   }
-  uploadFile(CONFIG.API_URL.WECHAT_FWECHAT_FACE_IMG_MATTING, jwt, datas, filePath, successFn, failFn);
+  return uploadFile(CONFIG.API_URL.WECHAT_FWECHAT_FACE_IMG_MATTING, jwt, datas, filePath, timeout, successFn, failFn);
 }
 
 function getStaticImgURL(name) {
@@ -139,12 +140,11 @@ function getStaticImgURL(name) {
 
 // 合成图片
 function imageCompose(datas, {successFn=() => {}, failFn=() => {}, completeFn=()=> {}, header=null}) {
-  console.log(wx.getStorageSync("jwt"))
   request(CONFIG.API_URL.WECHAT_IMAGE_COMPOSE, "POST", datas, header, successFn, failFn, completeFn);
 }
 
 // 将远端图片，下载到本地
-function downloadImg (url) {
+function downloadImg(url) {
   return new Promise((resolve, reject) => {
     wx.downloadFile({
       url: url, //仅为示例，并非真实的资源
@@ -164,6 +164,24 @@ function downloadImg (url) {
   })
 }
 
+// 修复照片
+function fixImg(filePath, datas = {}, timeout=60000, successFn = () => {}, failFn = () => {}) {
+  let jwt = wx.getStorageSync("jwt").replace(/\s+/g, "")
+  if (jwt == void 0 || jwt == null || jwt == "") {
+    return false;
+  }
+  return uploadFile(CONFIG.API_URL.WHCHAT_FIX_IMG, jwt, datas, filePath, timeout, successFn, failFn);
+}
+
+// 输出打印图片
+function scanImg(filePath, datas = {}, timeout=60000, successFn = () => {}, failFn = () => {}) {
+  let jwt = wx.getStorageSync("jwt").replace(/\s+/g, "")
+  if (jwt == void 0 || jwt == null || jwt == "") {
+    return false;
+  }
+  return uploadFile(CONFIG.API_URL.WHCHAT_SCAN_IMG, jwt, datas, filePath, timeout, successFn, failFn);
+}
+
 module.exports = {
   easyRequest: easyRequest,
   easyRequestJwt: easyRequestJwt,
@@ -172,5 +190,7 @@ module.exports = {
   faceImgMatting: faceImgMatting,
   getStaticImgURL: getStaticImgURL,
   imageCompose: imageCompose,
-  downloadImg: downloadImg
+  downloadImg: downloadImg,
+  fixImg: fixImg,
+  scanImg: scanImg
 }

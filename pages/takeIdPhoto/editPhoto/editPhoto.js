@@ -249,7 +249,6 @@ Page({
 
 			// 保存图片到相册
 			await this.saveImage(tempFilePath)
-			// console.log(JSON.stringify('./complete/complete?msg=' + msg + '&tempFilePath=' + tempFilePath + '&url=' + url))
       wx.redirectTo({ url: './complete/complete?msg=' + msg + '&tempFilePath=' + tempFilePath + '&url=' + url, })
       
     } catch (error) {	
@@ -262,45 +261,72 @@ Page({
   saveImage(tempFilePath) {
     const that = this
     return new Promise((resolve, reject) => {
-      wx.saveImageToPhotosAlbum({
-        filePath: tempFilePath,
-        success: () => {
-          wx.showToast({
-            title: '下载成功'
-          })
-          resolve()
-          that.setData({
-            canClick: true
-          })
-        },
-        fail(res) {
-          wx.getSetting({
-            success(res) {
-              if (res.authSetting['scope.writePhotosAlbum']) {
-                wx.showToast({
-                  title: '下载失败，点击帮助',
-                  icon: 'none'
-                })
-                reject(new Error('错误'))
-              } else {
-                wx.openSetting({
-                  success() {},
-                  fail(res) {
-                    wx.showToast({
-                      title: '失败，写入相册权限未授权',
-                      icon: 'none'
+      wx.getSetting({
+        success(res) {
+          if (!res.authSetting['scope.writePhotosAlbum']) {
+            wx.authorize({
+              scope: 'scope.writePhotosAlbum',
+              success(res) {
+                that.saveTmp(tempFilePath, resolve, reject)  
+              },
+              fail(res) {
+                errMsg: 'authorize:fail auth deny'
+                wx.showModal({
+                  title: '提示',
+                  content: '检测到您没打开保存图片到相册功能权限，是否去设置打开？',
+                  success(res) {
+                    if (res.confirm) {
+                      wx.openSetting({
+                        success: (res) => {
+                        },
+                      })
+                    } else if (res.cancel) {
+                      console.log(22)
+                    }
+                    that.setData({
+                      canClick: true
                     })
-                    reject(new Error('错误'))
-                  }
+                  },
                 })
-              }
+              },
+            })
+          } else {
+            that.saveTmp(tempFilePath, resolve, reject)
+          }
+        }
+      })
+    })
+  },
+
+  saveTmp(tempFilePath, resolve, reject){
+    const that = this
+    wx.getImageInfo({
+      src: imgUrl,
+      success: function (sres) {
+          //授权ok
+          wx.saveImageToPhotosAlbum({
+            filePath: sres.path,
+            success(res) {
+              wx.showToast({
+                title: '下载成功'
+              })
+              resolve()
+              that.setData({
+                canClick: true
+              })
             },
-            fail() {
+            fail: (res) => {
+              wx.showToast({
+                title: '下载失败',
+                icon: "none"
+              })
               reject(new Error('错误'))
+              that.setData({
+                canClick: true
+              })
             }
           })
-        },
-      })
+      }
     })
   },
 

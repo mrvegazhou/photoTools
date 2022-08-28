@@ -67,5 +67,10 @@
 .disable_cls:before {
   content: "⊖"  !important;
   margin-right: 10rpx  !important;
-  font-size: 50rpx !important;
+  /* font-size: 50rpx !important; */
+}
+
+.disable_cls_2 {
+  background-color: #e1e8ec !important;
+  pointer-events:none  !important;
 }

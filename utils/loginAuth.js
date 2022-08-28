@@ -121,14 +121,15 @@ function doMobile(e) {
   });
 }
 
-function doLogin() {
+function doLogin(userInfo="") {
   return new Promise((resolve, reject) => {
     return login().then(res => {
       if(res.code) {
         p({
           url: CONFIG.API_URL.WECHAT_LOGIN,
           data: {
-            platCode: res.code
+            platCode: res.code,
+            userInfo: userInfo
           },
           method: 'POST',
         }).then(res => {

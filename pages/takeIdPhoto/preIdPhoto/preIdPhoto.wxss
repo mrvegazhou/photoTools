@@ -27,7 +27,7 @@
 .des-item {
 	height: 50px;
 	display: flex;
-    justify-content: space-between;
+  justify-content: space-between;
 }
 .des{
 	white-space: nowrap;/*强制在一行显示*/
@@ -44,11 +44,12 @@
 }
 .container-btn{
 	width: 45%;
-	height: 90rpx;
+  height: 90rpx;
 	margin-top:80rpx;
 	border-radius: 10rpx;
 	color: #fff;
 	text-align: center;
 	line-height: 90rpx;
-	background: var(--primary-color);
+  background: var(--primary-color);
+  vertical-align: middle;
 }

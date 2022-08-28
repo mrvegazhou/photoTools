@@ -1,3 +1,5 @@
 page{
-    --primary-color: #69a794;
+    --primary-color: #69a794; /*梧枝绿*/
+    --primary-light-gray-color: #b2bbbe; /*星灰*/
+    --primary-dark-gray-color: #74787a; /*嫩灰*/
 }

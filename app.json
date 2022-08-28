@@ -9,6 +9,9 @@
     "pages/takeIdPhoto/editPhoto/complete/complete",
 
     "pages/imageFix/index/index",
+    "pages/imageFix/autoCamera/autoCamera",
+    "pages/imageFix/complete/complete",
+    "pages/imageFix/imageScan/imageScan",
 
     "pages/dynamicState/dynamicState",
     "pages/activity/activity",

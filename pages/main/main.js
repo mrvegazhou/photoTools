@@ -103,9 +103,20 @@ Page({
   },
 
   //去选择照片页面
-	goIDPhotoPage (e) {
-		wx.navigateTo({
-			url: '/pages/takeIdPhoto/idPhoto/idPhoto'
-		})
+	goPages (e) {
+    const name = e.currentTarget.dataset.name
+    console.log(e, '--name')
+    switch ( name ) {
+      case "takeIdPhoto":
+        wx.navigateTo({
+          url: '/pages/takeIdPhoto/idPhoto/idPhoto'
+        })
+        break;
+      case "imageFix":
+        wx.navigateTo({
+          url: '/pages/imageFix/index/index'
+        })
+        break;
+    }
 	},
 })

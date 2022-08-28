@@ -13,15 +13,15 @@
       </view>
     </view>
     <view class="container-content">
-      <view class="container-content-item" bindtap="goIDPhotoPage">
+      <view class="container-content-item" bindtap="goPages" data-name="takeIdPhoto">
         <view class="title">证件照制作</view>
         <view class="description">描述</view>
         <image src="/images/main/id-photo.png"></image>
       </view>
     </view>
     <view class="container-content">
-      <view class="container-content-item">
-        <view class="title">名称</view>
+      <view class="container-content-item" bindtap="goPages" data-name="imageFix">
+        <view class="title">照片修复</view>
         <view class="description">描述</view>
         <image src="/images/main/scan-photo.png"></image>
       </view>
