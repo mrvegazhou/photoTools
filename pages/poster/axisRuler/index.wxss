@@ -1,0 +1,10 @@
+
+.container {
+  position:relative; background-color:yellow;
+}
+.scale-view {
+  position:relative;
+  /* width: 50rpx; */
+  top: 0;
+  left: 0;
+}

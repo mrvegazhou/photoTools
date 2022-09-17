@@ -1,0 +1,19 @@
+<template name="posterBottomTool">
+
+  <scroll-view scroll-y class="layer-float" hidden='{{layerShow}}'>
+    <view class="item">
+      <image src=""></image>
+      <image src=""></image>
+      <image src=""></image>
+    </view>
+  </scroll-view>
+
+ 
+  <view class="toolbar-bottom" wx:if="{{page==='mainPage'}}">
+    <view bindtap='toTextPage'><image class="icon-text" src="../../../images/img.png"></image><text class="text">加图</text></view>
+    <view bindtap='toTextPage'><image class="icon-text" src="../../../images/text.png"></image><text class="text">加字</text></view>
+    <view bindtap='toCropPage'><image class="icon-cutter" src="../../../images/cutter.png"></image><text class="text">裁剪</text></view>
+    <view bindtap='toDoodlePage'><image class="icon-pen" src="../../../images/doodle.png"></image><text class="text">涂鸦</text></view>
+    <view bindtap='showLayerPanel'><image class="icon-layer" src="../../../images/layer.png"></image><text style="{{layerShow==false ? 'color: #69a794;' : ''}}" class="text">图层</text></view>
+  </view>
+</template>

@@ -15,24 +15,6 @@
           "scene": null
         },
         {
-          "name": "pages/activity/activity",
-          "pathName": "pages/activity/activity",
-          "query": "",
-          "scene": null
-        },
-        {
-          "name": "pages/dynamicState/dynamicState",
-          "pathName": "pages/dynamicState/dynamicState",
-          "query": "",
-          "scene": null
-        },
-        {
-          "name": "pages/content/content",
-          "pathName": "pages/content/content",
-          "query": "",
-          "scene": null
-        },
-        {
           "name": "pages/logs/logs",
           "pathName": "pages/logs/logs",
           "query": "",
@@ -47,12 +29,6 @@
         {
           "name": "pages/register/register",
           "pathName": "pages/register/register",
-          "query": "",
-          "scene": null
-        },
-        {
-          "name": "pages/chatRoom/chatRoom",
-          "pathName": "pages/chatRoom/chatRoom",
           "query": "",
           "scene": null
         },
@@ -101,13 +77,6 @@
         },
         {
           "name": "",
-          "pathName": "pages/main/main",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "",
           "pathName": "pages/imageFix/index/index",
           "query": "",
           "launchMode": "default",
@@ -126,10 +95,45 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/poster/index/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/poster/edit/edit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/poster/index/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/poster/test/test",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/poster/axisRuler/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
   },
   "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
-  "libVersion": "2.23.4"
+  "libVersion": "2.25.4"
 }

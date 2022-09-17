@@ -1,0 +1,28 @@
+<!-- <view style="width: 100%;height: 100%;overflow: hidden;margin: 0;padding: 0;">
+   <canvas id="canvas" type="2d" class="rulerCanvas"  style='width:{{width}}px; height:{{height}}px;background-color: white;'/>
+</view> -->
+<view class='container'>
+
+  <scale min="0" 
+    max="200" 
+    int="{{false}}" 
+    single="10" 
+    h="8" 
+    active="{{weight}}" 
+    styles="{{styles}}" 
+    direction="horizontal"
+    id="weight"></scale>
+
+
+    <scale min="0" 
+      max="200" 
+      int="{{false}}"
+      single="10" 
+      h="8" 
+      active="{{height}}" 
+      styles="{{styles}}" 
+      direction="vertical"
+      id="height"></scale>
+
+</view>
+

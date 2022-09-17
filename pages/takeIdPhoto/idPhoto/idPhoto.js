@@ -11,6 +11,7 @@ Page({
     photoBg: '#ffffff',
     bgc: '#ffffff',
     showScale: 1,
+    demoImg: '../../'
   },
 
   /**

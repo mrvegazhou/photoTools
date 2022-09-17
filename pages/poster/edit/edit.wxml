@@ -1,0 +1,14 @@
+<import src="../../../template/poster/posterBottomTool/posterBottomTool.wxml"/>
+<view class="edit-page">
+  <!-- 隐藏canvas 保存图片用 -->
+  <canvas canvas-id="tempCanvas" disable-scroll="true" style="width:{{tempCanvasWidth}}px; height:{{tempCanvasHeight}}px; position:absolute;left:-999999px"></canvas>
+
+   <!-- 主页面 -->
+  <view class="imageView" wx:if="{{page==='mainPage'}}" style="height:{{imgViewHeight}}px">
+    <view class="saveButton" wx:if="{{!imageNotChoosed}}" bindtap='saveImgToPhone'><text class="icon-save"></text></view>
+    <image src="{{tempImageSrc}}" style="width:{{imgWidth}}px;height:{{imgHeight}}px;top:{{imgTop}}px;left:{{imgLeft}}px" disable-scroll="true"></image>
+  </view>
+
+  <!-- 主页面-底部 -->
+  <template is="posterBottomTool" data="{{page, layerShow}}" />
+</view>

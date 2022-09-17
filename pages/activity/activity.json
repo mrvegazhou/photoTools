@@ -1,9 +1,0 @@
-{
-  "navigationBarBackgroundColor": "#f5f6f8",
-  "navigationBarTitleText": "活动",
-  "enablePullDownRefresh": false,
-  "usingComponents": {
-    "pullDownRefresh": "../../component/pullDownRefresh/pullDownRefresh",
-    "advSwiperShow": "../../component/advSwiperShow/advSwiperShow"
-  }
-}

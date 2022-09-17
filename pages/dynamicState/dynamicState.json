@@ -1,9 +1,0 @@
-{
-  "navigationBarBackgroundColor": "#FFFFFF",
-  "navigationBarTitleText": "动态",
-  "enablePullDownRefresh": false,
-  "usingComponents": {
-    "pullDownRefresh": "../../component/pullDownRefresh/pullDownRefresh",
-    "advSwiperShow": "../../component/advSwiperShow/advSwiperShow"
-  }
-}

@@ -1,0 +1,102 @@
+
+/* 涂鸦窗口  */
+.toolbar-bottom{
+  display: flex;
+  align-items: center; 
+  justify-content: space-around;
+  width:100%;
+  position: fixed;
+  bottom: 0;
+  height:140rpx;
+  border-top: 1rpx solid var(--primary-dark-gray-color);
+}
+.toolbar-bottom view{
+  display: flex;
+  flex-direction: column;
+  width: 150rpx;
+  height: 100rpx;
+  font-size: 28rpx;
+  text-align: center;
+  position: relative;
+  border-radius: 10rpx;
+}
+.toolbar-bottom view:active{
+  background-color: rgba(255,255,255,0.5);
+}
+.toolbar-bottom view text{
+  display: block;
+  margin: 0 auto;
+}
+.toolbar-bottom view .text{
+  position: absolute;
+  bottom: 0;
+  left:50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.icon-cutter{
+  background-size: cover;
+  display: inline-block;
+  width: 50rpx;
+  height: 50rpx;
+  position: absolute;
+  left:50%;
+  transform: translateX(-50%);
+  bottom: 50rpx;
+}
+.icon-text{
+  background-size: cover;
+  display: inline-block;
+  width: 50rpx;
+  height: 50rpx;
+  position: absolute;
+  left:50%;
+  transform: translateX(-50%);
+  bottom: 50rpx;
+}
+.icon-pen{
+  background-size: cover;
+  display: inline-block;
+  width: 50rpx;
+  height: 50rpx;
+  position: absolute;
+  left:50%;
+  transform: translateX(-50%);
+  bottom: 55rpx;
+}
+.icon-layer{
+  background-size: cover;
+  display: inline-block;
+  width: 50rpx;
+  height: 50rpx;
+  position: absolute;
+  left:50%;
+  transform: translateX(-50%);
+  bottom: 55rpx;
+}
+
+.layer-float {
+  min-height: 400rpx;
+  max-height: 700rpx;
+  width: 270rpx;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 20000;
+  bottom: 150rpx;
+  right: 10rpx;
+  border-radius: 10rpx;
+}
+.layer-float .item {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin: 10rpx;
+}
+.layer-float .item image {
+  width: 50rpx;
+  height: 50rpx;
+  border: 1rpx solid red;
+  margin: 10rpx;
+}

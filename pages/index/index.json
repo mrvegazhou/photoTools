@@ -1,9 +1,8 @@
 {
   "navigationBarBackgroundColor": "#FFFFFF",
-  "navigationBarTitleText": "资讯",
+  "navigationBarTitleText": "工具包",
   "enablePullDownRefresh": false,
   "usingComponents": {
-    "pullDownRefresh": "../../component/pullDownRefresh/pullDownRefresh",
     "advSwiperShow": "../../component/advSwiperShow/advSwiperShow"
   }
 }

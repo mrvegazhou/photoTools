@@ -1,0 +1,17 @@
+<view class="">
+<scale min="0" 
+    max="200" 
+    int="{{false}}" 
+    single="10" 
+    h="8" 
+    styles="{{styles}}" 
+    id="weight"></scale>
+
+
+<canvas-drag2 id="canvas-drag" item="{{item}}" height="800" ></canvas-drag2>
+
+
+<view class="btn" bindtap="uploadImg">添加图片ss</view>
+<view class="btn" bindtap="addText">添加文字</view>
+<view class="btn" bindtap="openMask">打开画板</view>
+</view>

@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "canvas-drag2": "/component/canvas-drag2/index",
+    "scale": "/component/axis-ruler/index"
+  },
+  "disableScroll":true
+}

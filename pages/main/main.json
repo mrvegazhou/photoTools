@@ -1,8 +1,0 @@
-{
-  "navigationBarBackgroundColor": "#FFFFFF",
-  "navigationBarTitleText": "工具包",
-  "enablePullDownRefresh": false,
-  "usingComponents": {
-    "advSwiperShow": "../../component/advSwiperShow/advSwiperShow"
-  }
-}

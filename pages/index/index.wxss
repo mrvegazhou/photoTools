@@ -1,6 +1,6 @@
-@import "../../template/pullUpRefresh/pullUpRefresh.wxss";
-@import "../../template/expertReadLayout.wxss";
+/* pages/main/main.wxss */
 @import "../../template/theme.wxss";
+@import "../../template/contentBox/contentBox.wxss";
 .container {
   height: 100%;
   margin: 0;
@@ -9,174 +9,75 @@
   overflow: hidden;
 }
 
-.search {
+.container-head {
   width: 100%;
-  height: 90rpx;
-  padding-left: 20rpx;
-  padding-right: 20rpx;
-  background: #FFFFFF;
-  left: 0;
-  top: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
-
-.search .search-input {
-  width: 710rpx;
-  height: 72rpx;
-  background: #F5F7F9;
-  border-radius: 30rpx;
-  margin-top: 15rpx;
-  display: flex;
-}
-
-.search icon {
-  margin-left: 20rpx;
-  margin-top: 18rpx;
-}
-
-.search .placeholder {
-  color: #919AA7;
-  font-size: 28rpx;
-  margin-left: 30rpx;
-  margin-top: 18rpx;
-}
-
-.navbar {
-  white-space: nowrap;
-  background-color: #FFFFFF;
-  margin: 20rpx 0 16rpx 0;
-}
-
-.navbar-item {
-  display: flex;
-  justify-content: space-around;
-  flex-direction: row;
-  color: #515151;
-  flex-grow: 1;
-}
-
-.navbar-item-active {
-  background-color: #FFFFFF;
-  color: var(--primary-color);
+.container-content-section{
+	width: 100%;
+	padding:0 30rpx;
+  margin-top: 20rpx;
   text-align: center;
-}
-
-.navbar-underline {
-  padding-top: 17rpx;
-}
-
-.navbar-underline-active {
-  border-bottom: 8rpx solid var(--primary-color);
-  padding-top: 9rpx;
-  width: 60rpx;
-  margin-left: 29rpx;
-}
-
-.navbar-item-wrap {
-  font-size: 32rpx;
-  font-weight: bold;
-}
-
-.thumbImage {
-  display: flex;
-  flex-shrink: 1;
-  margin-top: 0;
-  height: 170rpx;
-}
-
-.thumbImage image {
-  width: 230rpx;
-  height: 170rpx;
-  margin-right: 10rpx;
-}
-
-.thumbImage image:last-child {
-  margin-right: 0;
-}
-
-/*一张图片布局css*/
-.oneBodyContent {
-  margin-top: 34rpx;
-  margin-right: 20rpx;
-  margin-left: 20rpx;
-  border-bottom: 1rpx solid #dcdcdf;
-  color: #2c2c2c;
-}
-
-.oneBodyContent .content {
   display: flex;
   flex-direction: row;
-  /* align-items: flex-start; */
-  /* padding: 0; */
-}
-
-.oneBodyContent .onetitle {
-  font-size: 36rpx;
-  text-align: justify;
-  margin-right: 16rpx;
-  line-height: 48rpx;
-}
-
-.oneBodyContent .oneOriginal {
-  display: flex;
-  font-size: 24rpx;
-  color: #888888;
-  margin-bottom: 34rpx;
-  margin-top: 8rpx;
-}
-
-.oneBodyContent .oneOriginal .time {
-  margin-left: 15rpx;
-}
-
-.bodyContent {
-  margin: 34rpx 20rpx 40rpx 20rpx;
-  border-bottom: 1rpx solid #dcdcdf;
-  font-size: 45rpx;
-  
-  color: #2c2c2c;
-  padding: 0;
-}
-
-.bodyContent .title {
-  font-size: 36rpx;
-  text-align: justify;
-  line-height: 48rpx;
-  padding-top: 0; 
-  margin-bottom: 16rpx;
-}
-
-.bodyContent .original {
-  font-size: 24rpx;
-  color: #888888;
-  padding-top: 35rpx;
-  padding-bottom: 34rpx;
-  display: flex;
-  padding-right: 20rpx;
-}
-.bodyContent .original .time {
-  margin-left: 15rpx;
-}
-
-.grayLine {
-  border-bottom: 16rpx solid #F5F7F9;
-}
-
-.loading-modal {
-  display: flex;
-  position: fixed;
-  z-index: 3;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
   align-items: center;
-  justify-content: center;
+}
+.container-content-section image {
+  width: 36rpx;
+  height: 36rpx;
+}
+.container-content{
+	height: 100%;
+	margin-top: 20rpx;
+  padding:0 30rpx;
 }
 
-.loading-text-wrap {
-  padding-bottom: 200rpx;
+.container-content-item, .container-content-item-half {
+  box-sizing: border-box;
+	width: 100%;
+	height: 200rpx;
+	padding: 25rpx 40rpx;
+	background-color: rgb(233, 233, 233);
+	border-radius: 10rpx;
+	position: relative;
+	margin-bottom: 20rpx;
 }
-
-.loading-text {
-  font-size: 90rpx;
-  color: #cfcfcf;
+.container-content-item-half {
+  width: 42%;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+.container-content-item .title {
+	font-size: 36rpx;
+}
+.container-content-item-half .title {
+  font-size: 36rpx;
+  margin-bottom: 10rpx;
+}
+.container-content-item .description {
+	font-size: 25rpx;
+	color: #919191;
+	margin-top: 50rpx;
+}
+.container-content-item-half .description {
+  font-size: 25rpx;
+	color: #919191;
+	margin-top: 10rpx;
+}
+.container-content-item image {
+	position: absolute;
+	width: 120rpx;
+	height: 120rpx;
+	right: 40rpx;
+	top: 36rpx;
+}
+.container-content-item-half image {
+  width: 100rpx;
+	height: 100rpx;
+}
+.file-tool-content, .pic-tool-content {
+  margin-top: 36rpx;
 }

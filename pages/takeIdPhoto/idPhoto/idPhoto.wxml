@@ -2,7 +2,7 @@
 <view class="container">
   <view style="background-color: rgb(233, 233, 233); padding: 20rpx;border-radius: 10rpx;">
     <view class="content-photo-demo">
-      <image src="/images/idPhoto/id-person.png" style="background-color: {{photoBg}};"></image>
+      <image src="{{demoImg}}" style="background-color: {{photoBg}};"></image>
       <view class="demo-text">
         <view class="demo-title">拍摄注意事项:</view>
         <view class="demo-item-text">① 站纯色墙前,光线充足均匀</view>

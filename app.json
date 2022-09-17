@@ -1,6 +1,5 @@
 {
   "pages": [
-    "pages/main/main",
     "pages/index/index",
     "pages/takeIdPhoto/idPhoto/idPhoto",
     "pages/takeIdPhoto/preIdPhoto/preIdPhoto",
@@ -13,14 +12,13 @@
     "pages/imageFix/complete/complete",
     "pages/imageFix/imageScan/imageScan",
 
-    "pages/dynamicState/dynamicState",
-    "pages/activity/activity",
-    "pages/me/me",
-    "pages/content/content",
-    "pages/login/login",
+    "pages/poster/index/index",
+    "pages/poster/edit/edit",
+    "pages/poster/axisRuler/index",
+    "pages/poster/test/test",
 
-    "pages/register2/register",
-    "pages/chatRoom/chatRoom",
+    "pages/me/me",
+
     "pages/logs/logs"
   ],
   "window": {
@@ -37,15 +35,9 @@
     "list": [
       {
         "text": "工具包",
-        "pagePath": "pages/main/main",
+        "pagePath": "pages/index/index",
         "iconPath": "images/tabs/tool.png",
         "selectedIconPath": "images/tabs/tool_sel.png"
-      },
-      {
-        "text": "资讯",
-        "pagePath": "pages/index/index",
-        "iconPath": "images/tabs/information.png",
-        "selectedIconPath": "images/tabs/information_sel.png"
       },
       {
         "text": "我的",
