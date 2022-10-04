@@ -1,3 +1,6 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "canvas-drag": "/component/canvas-drag/index",
+    "scale": "/component/axis-ruler/index"
+  }
 }

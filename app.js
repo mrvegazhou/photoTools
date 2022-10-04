@@ -10,8 +10,23 @@ App({
       console.log(err, "登录失败 next")
       doLogin()
     });
-
+    // wx.loadFontFace({
+    //   global: true,
+    //   family: 'Bitstream Vera Serif Bold',
+    //   source: 'url("https://sungd.github.io/Pacifico.ttf")',
+    //   scopes: ["webview", "native"],
+    //   success: function (res) {
+    //     console.log("字体加载完成")
+    //   },
+    //   fail: function (res) {
+    //       console.log("字体加载失败")
+    //   },
+    //   complete: function (res) {
+    //       console.log(res.status);
+    //   }
+    // })
   },
+
   globalData: {
     originURL: null,
     pageSize: 10,

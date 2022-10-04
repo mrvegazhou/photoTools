@@ -87,4 +87,14 @@ CanvasDrag.undo = () => {
         return CanvasDrag().undo();
     }
 };
+
+CanvasDrag.setVerticalText = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+      console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().setVerticalText();
+  }
+};
+
 export default CanvasDrag;

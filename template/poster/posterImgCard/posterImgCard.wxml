@@ -1,0 +1,33 @@
+<template name="posterImgCard">
+  <view class="mymod cardmod" wx:if="{{imgCardShow}}" catchtap="onHandelCancel">
+    <view class="share-card-box">
+      <view class="imgbox">
+        <image wx:if="{{imageUrl}}" class="canvas-img" style="width: 650rpx;height: 880rpx;" src="{{imageUrl}}" alt="" />
+        <view wx:else class="sk-box">
+          <view class="sk-header skeleton-rect"></view>
+          <view class="sk-intro">
+            <view class="sk-left">
+              <view class="skeleton-rect"></view>
+              <view class="skeleton-rect"></view>
+              <view class="skeleton-rect"></view>
+              <view class="skeleton-rect"></view>
+            </view>
+            <view class="sk-right">
+              <view class="skeleton-rect"></view>
+              <view class="skeleton-rect"></view>
+            </view>
+          </view> 
+        </view>
+      </view>
+
+      <view class="footer">
+        <view class="finish" catchtap="onSavePoster">
+          <text class="btn-finish">下 载</text>
+        </view>
+        <view class="cancel" catchtap="onHandelCancel">
+          <text class="btn-cancel">取 消</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>

@@ -249,6 +249,139 @@ function processDate(_date) {
   return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
 }
 
+function findBreakPoint4Canvas(text, width, context) {
+  var min = 0;
+  var max = text.length - 1;
+  while (min <= max) {
+    var middle = Math.floor((min + max) / 2);
+    var middleWidth = context.measureText(text.substr(0, middle)).width;
+    var oneCharWiderThanMiddleWidth = context.measureText(text.substr(0, middle + 1)).width;
+    if (middleWidth <= width && oneCharWiderThanMiddleWidth > width) {
+      return middle;
+    }
+  
+    if (middleWidth < width) {
+      min = middle + 1;
+    } else {
+      max = middle - 1;
+    }
+  }
+  return -1;
+}
+
+function breakLines4Canvas(context, text, width, font) {
+  var result = [];
+  if (font) {
+     context.font = font;
+  }
+  var textArray = text.split(/[(\r\n)\r\n]+/);
+  for (let i = 0; i < textArray.length; i++) {
+    let item = textArray[i];
+    var breakPoint = 0;
+    while ((breakPoint = findBreakPoint4Canvas(item, width, context)) !== -1) {
+        result.push(item.substr(0, breakPoint));
+        item = item.substr(breakPoint);
+    }
+    if (item) {
+      result.push(item);
+    }
+  }
+  return result;
+}
+
+function drawVerticalText4Canvas(context, text, x, y) {
+  var arrText = text.split('');
+  var arrWidth = arrText.map(function (letter) {
+    const metrics = context.measureText(letter);
+    const width = metrics.width;
+    return width + 2;
+  });
+  
+  var align = context.textAlign;
+  var baseline = context.textBaseline;
+
+  if (align == 'left') {
+    x = x + Math.max.apply(null, arrWidth) / 2;
+  } else if (align == 'right') {
+    x = x - Math.max.apply(null, arrWidth) / 2;
+  }
+  if (baseline == 'bottom' || baseline == 'alphabetic' || baseline == 'ideographic') {
+    y = y - arrWidth[0] / 2;
+  } else if (baseline == 'top' || baseline == 'hanging') {
+    y = y + arrWidth[0] / 2;
+  }
+  
+  // context.textAlign = 'center';
+  context.setTextAlign('center')
+  // context.textBaseline = 'middle';
+  context.setTextBaseline('middle');
+
+  // 开始逐字绘制
+  arrText.forEach(function (letter, index) {
+    
+    // context.save()
+    // context.beginPath();
+   
+    // 确定下一个字符的纵坐标位置
+    var letterWidth = arrWidth[index];
+    // 是否需要旋转判断
+    var code = letter.charCodeAt(0);
+
+    if (code <= 256) {
+      context.translate(x, y);
+      // 英文字符，旋转90°
+      context.rotate(90 * Math.PI / 180);
+      context.translate(-x, -y);
+    } else if (index > 0 && text.charCodeAt(index - 1) < 256) {
+      // y修正
+      y = y + arrWidth[index - 1]/2;
+    }
+    context.fillText(letter, x, y);
+
+    // 旋转坐标系还原成初始态
+    context.setTransform(1, 0, 0, 1, 0, 0);
+
+    y = y + letterWidth;
+
+    // context.closePath();
+    // context.restore()    
+  });
+  
+  // 水平垂直对齐方式还原
+  context.setTextAlign(align);
+  context.setTextBaseline(baseline);
+  return {x, y}
+}
+
+
+/**
+ * 计算旋转后的新坐标（相对于画布）
+ * @param x
+ * @param y
+ * @param centerX
+ * @param centerY
+ * @param degrees
+ * @returns {*[]}
+ * @private
+ */
+function rotatePoint(x, y, centerX, centerY, degrees) {
+  let newX = (x - centerX) * Math.cos(degrees * Math.PI / 180) - (y - centerY) * Math.sin(degrees * Math.PI / 180) + centerX;
+  let newY = (x - centerX) * Math.sin(degrees * Math.PI / 180) + (y - centerY) * Math.cos(degrees * Math.PI / 180) + centerY;
+  return [newX, newY];
+}
+/**
+ * 计算旋转后矩形四个顶点的坐标（相对于画布）
+ * @private
+ */
+function rotateSquare(x, y, w, h, centerX, centerY, rotate) {
+  return [
+    rotatePoint(x, y, centerX, centerY, rotate),
+    rotatePoint(x + w, y, centerX, centerY, rotate),
+    rotatePoint(x + w, y + h, centerX, centerY, rotate),
+    rotatePoint(x, y + h, centerX, centerY, rotate),
+  ];
+}
+
 
 module.exports = {
   formatTime: formatTime,
@@ -266,5 +399,8 @@ module.exports = {
   checkAge: checkAge,
   getCurrentPageUrl: getCurrentPageUrl,
   getCurrentPageUrlWithArgs: getCurrentPageUrlWithArgs,
-  processDate: processDate
+  processDate: processDate,
+  findBreakPoint4Canvas: findBreakPoint4Canvas,
+  breakLines4Canvas: breakLines4Canvas,
+  drawVerticalText4Canvas: drawVerticalText4Canvas
 }

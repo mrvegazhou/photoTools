@@ -1,2 +1,3 @@
 @import "../../../template/theme.wxss";
 @import "../../../template/poster/posterBottomTool/posterBottomTool.wxss";
+@import "../../../template/poster/posterImgCard/posterImgCard.wxss";

@@ -1,3 +1,4 @@
+const util = require("../../utils/util");
 
 var items = new Array();
 var index = 0;
@@ -39,6 +40,14 @@ Component({
     enableUndo: {
       type: Boolean,
       value: false,
+    },
+    height: {
+      type: Number,
+      value: 0,
+    },
+    width: {
+      type: Number,
+      value: 0,
     }
   },
 
@@ -52,7 +61,6 @@ Component({
     canvasTemImg: null,
     canvasHeight: null,
     canvasWidth: null,
-    textWriteMode: 'horizontal-tb',
   },
 
   lifetimes: {
@@ -67,12 +75,20 @@ Component({
         const codeCanvas = res[0].node
         const codeCtx = codeCanvas.getContext('2d')
 
+        var dpr = wx.getSystemInfoSync().pixelRatio
+        that.canvasWidth = res[0].width
+        that.canvasHeight = res[0].height
+        codeCanvas.width = res[0].width * dpr
+	      codeCanvas.height = res[0].height * dpr
+        codeCtx.scale(0.8, 0.8)
+        
         that.codeCanvas = codeCanvas;
         that.codeCtx = codeCtx;
+        that.dpr = dpr;
 
         that.initDraw();
+        
       })
-
     }
   },
 
@@ -81,12 +97,21 @@ Component({
    */
   methods: {
     toPx(rpx) {
-      return rpx * this.factor;
+      return rpx * this.rpx;
     },
     initBg() {
-      this.data.bgColor = '';
-      this.data.bgSourceId = '';
-      this.data.bgImage = '';
+      if (this.data.bgImage !== '') {
+        let codeBgImage = this.codeCanvas.createImage();
+        codeBgImage.src = this.data.bgImage;
+        codeBgImage.onload = () => {
+          this.codeCtx.drawImage(this.data.bgImage, 0, 0, this.toPx(this.data.width), this.toPx(this.data.height));
+        }
+      }
+
+      if (this.data.bgColor !== '') {
+        this.codeCtx.fillStyle = this.data.bgColor;
+        this.codeCtx.fillRect(0, 0, this.data.canvasWidth, this.data.canvasHeight)
+      }
     },
     initHistory() {
       this.data.history = [];
@@ -104,30 +129,38 @@ Component({
         });
     },
 
+    // 使用组件的page触发data后执行
     onItemChange(n, o) {
       if (JSON.stringify(n) === '{}') return;
       if (!n.top || !n.left) {
         n.top = 30;
         n.left = 30;
       }
-      
       if (n.type==='image') {
-        var maxWidth = 200, maxHeight = 200; // 设置最大宽高
+        var maxWidth = windowWidth, maxHeight = windowWidth; // 设置最大宽高
         var newHeight = n.height, newWidth = n.width;
+        var F = 0.6
         if (n.width > maxWidth || n.height > maxHeight) { // 原图宽或高大于最大值就执行
           if (n.width / n.height > maxWidth / maxHeight) { // 判断比n大值的宽或高作为基数计算
-            newWidth = maxWidth;
-            newHeight = Math.round(maxWidth * (n.height / n.width));
+            newWidth = Math.round(maxWidth * F);
+            newHeight = Math.round(maxWidth * (n.height / n.width) * F);
           } else {
-            newHeight = maxHeight;
-            newWidth = Math.round(maxHeight * (n.width / n.height));
+            newHeight = Math.round(maxHeight * F);
+            newWidth = Math.round(maxHeight * (n.width / n.height) * F);
           }
+        } else if (n.width < MIN_WIDTH) {
+          newHeight = Math.round(newHeight * (MIN_WIDTH/newWidth))
+          newWidth = MIN_WIDTH;
+        } else {
+          newHeight = Math.round(newHeight * F)
+          newWidth = Math.round(newWidth * F)
         }
+
         var item;
         item = Object.assign(n, {
-          x: n.left + newWidth / 2,
-          y: n.top + newHeight /2,
-          scale: 1,
+          x: Math.round(n.left + newWidth / 2),
+          y: Math.round(n.top + newHeight /2),
+          scale: 0,
           angle: 0,
           active: false,
           width: newWidth,
@@ -140,51 +173,45 @@ Component({
         if (!n.fontSize) {
           n.fontSize = 20;
         }
-        const textWidth = this.codeCtx.measureText(n.text).width;
-        const textHeight = n.fontSize + 10;
+        this.codeCtx.fontSize = n.fontSize;
+        const textWidth = this.codeCtx.measureText(n.text+'').width;
+        const textHeight = n.fontSize;
         const x = n.left + textWidth / 2;
         const y = n.top + textHeight / 2;
         item = Object.assign(n, {
-          x: x,
-          y: y,
-          scale: 1,
+          x: Math.round(x),
+          y: Math.round(y),
+          width: Math.round(textWidth),
+          height: Math.round(textHeight),
+          scale: 0,
           angle: 0,
-          active: false
+          active: false,
+          color: "#000",
+          textWriteMode: 'horizontal-tb',
+          textAlign: 'left'
         })
       }
-      
       items.push(item);
+
       this.setData({ itemList: items });
       // 参数有变化时记录历史
       this.recordHistory();
     },
 
     initDraw() {
-      if (this.data.bgImage !== '') {
-        let codeBgImage = this.codeCanvas.createImage();
-        codeBgImage.src = this.data.bgImage;
-        codeBgImage.onload = () => {
-          this.codeCtx.drawImage(this.data.bgImage, 0, 0, this.toPx(this.data.width), this.toPx(this.data.height));
-        }
-      }
-      if (this.data.bgColor !== '') {
-        this.codeCtx.save()
-        this.codeCtx.fillStyle = this.data.bgColor;
-        this.codeCtx.fillRect(0, 0, this.toPx(this.data.width), this.toPx(this.data.height))
-        this.codeCtx.restore();
-      }
 
       // 设置画布大小
-      const query = wx.createSelectorQuery().in(this)
-      query.select('.opt-container').boundingClientRect()
-      query.selectViewport().scrollOffset()
-      query.exec((res) => {
-        this.setData({
-          canvasWidth: res[0].width,
-          canvasHeight: res[0].height
-        })
-      })
+      var width = this.data.width!=0 ? this.data.width : windowWidth;
+      var height = this.data.height!=0 ? this.data.height : windowHeight;
 
+      this.codeCanvas.width = width
+      this.codeCanvas.height = height
+
+      this.setData({
+        canvasWidth: width,
+        canvasHeight: height
+      })
+      
     },
 
     // 点击图片
@@ -214,34 +241,36 @@ Component({
       var qX = parseInt(items[index].width/4);
       // 移动到最右边的判断
       if ((windowWidth-qX) <= items[index]._lx && difX>0) {
-        difX = 0;
+        items[index].left += 0  // x方向
+        items[index].x += 0
+      } else if (items[index]._lx<=qX && difX<0) { // 移动到最左边的判断
+        items[index].left += 0  // x方向
+        items[index].x += 0
+      } else {
+        //追加改动值
+        items[index].left += difX  // x方向
+        items[index].x += difX
       }
-      // 移动到最左边的判断
-      if (items[index]._lx<=qX && difX<0) {
-        difX = 0;
-      }
-      
-      //追加改动值
-      items[index].left += difX  // x方向
-      items[index].x += difX;
+
       
       var difY = items[index]._ly - items[index].ly;
       var qY = parseInt(items[index].height/4);
       // 移动最底部的判断
       if (windowHeight <= (items[index].top+items[index].height) && difY>0) {
-        difY = 0;
-      }
-      // 移动最顶部的判断
-      if (items[index]._ly<qY && difY<0) {
-        difY = 0;
+        items[index].top += 0;
+        items[index].y += 0;
+      } else if (items[index]._ly<qY && difY<0) { // 移动最顶部的判断
+        items[index].top += 0;
+        items[index].y += 0;
+      } else {
+        items[index].top += difY;
+        items[index].y += difY;
       }
       
-      items[index].top += difY;
-      items[index].y += difY;
-
       //把新的值赋给老的值
       items[index].lx = e.touches[0].clientX;
       items[index].ly = e.touches[0].clientY;
+
       this.setData({//赋值就移动了
         itemList: items
       })
@@ -249,73 +278,155 @@ Component({
 
     // 放开图片
     wraptouchEnd() {
-      // this.synthesis(); // 调用合成图方法
     },
 
     // 合成图片
-    synthesis() {
-      var that = this;
-      var itemList = this.data.itemList;
-      itemList.forEach((currentValue, index) => {
-        this.codeCtx.save();
+    async synthesis(resolve=null, reject=null) {
 
-        var new_w = currentValue.width * currentValue.scale;
-        var new_h = currentValue.height * currentValue.scale;
+        var that = this;
+        var itemList = this.data.itemList;
+        this.codeCtx.clearRect(0, 0, this.data.canvasWidth, this.data.canvasHeight);
+        this.initBg();
+        itemList.sort(function(a, b){
+          return a.id - b.id
+        });
 
-        if (currentValue.type === 'text') {
-          var fontSize = currentValue.fontSize * currentValue.scale;
-          fontSize = fontSize <= currentValue.MIN_FONTSIZE ? currentValue.MIN_FONTSIZE : fontSize;
+        for(var i = 0;i<itemList.length;i++) {
+          let currentValue = itemList[i];
+          that.codeCtx.save()
 
-          this.codeCtx.fontSize = fontSize;
-          this.codeCtx.textBaseline = 'middle';
-          this.codeCtx.textAlign = 'center';
-          this.codeCtx.fillStyle = currentValue.color;
-          var textWidth = this.codeCtx.measureText(currentValue.text).width;
-          var textHeight = currentValue.fontSize + 10;
-          // 字体区域中心点不变，左上角位移
-          currentValue.left = currentValue.x - textWidth / 2;
-          currentValue.top = currentValue.y - textHeight / 2;
-        } else {
+          that.codeCtx.translate(currentValue.x, currentValue.y); // 圆心坐标
+          that.codeCtx.rotate(Math.round(currentValue.angle) * Math.PI / 180)
+          that.codeCtx.translate(-currentValue.x, -currentValue.y);
 
-          if (currentValue.width < currentValue.height && new_w < currentValue.MIN_WIDTH) {
-            new_w = currentValue.MIN_WIDTH;
-            new_h = currentValue.MIN_WIDTH * currentValue.height / currentValue.width;
-          } else if (currentValue.height < currentValue.width && new_h < currentValue.MIN_WIDTH) {
-            new_h = currentValue.MIN_WIDTH;
-            new_w = currentValue.MIN_WIDTH * currentValue.width / currentValue.height;
+          if (currentValue.type === 'text') {
+             that._drawTextItem(currentValue)
+
+          } else {
+            await that._drawImageItem(currentValue);
           }
-        }
-        this.codeCtx.translate(0, 0);
-        this.codeCtx.translate(currentValue.x, currentValue.y); // 圆心坐标
-        this.codeCtx.translate(-(currentValue.width * currentValue.scale / 2), -(currentValue.height * currentValue.scale / 2));
-        if (currentValue.type === 'text') {
-          if (this.data.) {
 
+          that.codeCtx.restore()
+        }
+        that.codeCtx.save()
+        that.codeCtx.lineWidth = 5;
+        that.codeCtx.beginPath();
+        that.codeCtx.moveTo(0, 0)
+        that.codeCtx.lineTo(200, 200)
+        that.codeCtx.stroke();
+        that.codeCtx.closePath();
+        that.codeCtx.restore()
+        
+        wx.canvasToTempFilePath({
+          x: 0,
+          y: 0,
+          canvas: this.codeCanvas,
+          success: res => {
+            if (res && res.tempFilePath) {
+              this.setData({
+                canvasTemImg: res.tempFilePath
+              })
+              resolve(res.tempFilePath);
+            } else {
+              reject('画板异常');
+            }
           }
-          this.codeCtx.fillText(currentValue.text, currentValue.x, currentValue.y);
-        } else if (currentValue.type === 'image') {
-          this._drawImageItem(currentValue.image, currentValue.left, currentValue.top, new_w, new_h);
-        }
-
-        this.codeCtx.restore();
-      });
-
-      wx.canvasToTempFilePath({
-        canvas: this.codeCanvas,
-        success: res => {
-          this.setData({
-            canvasTemImg: res.tempFilePath
-          })
-        }
-      }, this);
+        }, that);
 
     },
 
-    _drawImageItem(src, x, y, wx, wy) {
-      const img = this.codeCanvas.createImage()
-      img.src = src
-      img.onload = () => {
-        this.codeCtx.drawImage(img, x, y, wx, wy)
+    // 生成图片
+    async _drawImageItem(currentValue) {
+      var that = this;
+      
+      var new_w = currentValue.scale!=0 ? currentValue.width * currentValue.scale : currentValue.width;
+      var new_h = currentValue.scale!=0 ? currentValue.height * currentValue.scale : currentValue.height;
+
+      if (currentValue.width < currentValue.height && new_w < currentValue.MIN_WIDTH) {
+        new_w = currentValue.MIN_WIDTH;
+        new_h = currentValue.MIN_WIDTH * currentValue.height / currentValue.width;
+      } else if (currentValue.height < currentValue.width && new_h < currentValue.MIN_WIDTH) {
+        new_h = currentValue.MIN_WIDTH;
+        new_w = currentValue.MIN_WIDTH * currentValue.width / currentValue.height;
+      }
+      currentValue.new_w = new_w
+      currentValue.new_h = new_h
+
+      let img = await that._drawImageOnload(currentValue)
+      if (img) {
+        that.codeCtx.drawImage(img, currentValue.left, currentValue.top, new_w, new_h)
+      }
+    },
+
+    // 异步加载图片
+    _drawImageOnload(currentValue) {
+      var that = this;
+      return new Promise((resolve, reject) => {
+        const img = that.codeCanvas.createImage()
+        img.src = currentValue.image
+        img.onload = () => {
+          resolve(img)
+        }
+        img.onerror = () => {
+          reject(false)
+        }
+      });
+    },
+
+    // 生成文字
+    _drawTextItem(currentValue) {
+      var that = this;
+      var fontSize = currentValue.scale!=0 ? currentValue.fontSize * currentValue.scale : currentValue.fontSize;
+      fontSize = fontSize < MIN_FONTSIZE ? MIN_FONTSIZE : fontSize;
+      that.codeCtx.font = `${fontSize}px Arial`; //Arial
+      // this.codeCtx.font = '10px sans-serif'
+      that.codeCtx.fontSize = fontSize;
+      that.codeCtx.textBaseline = 'middle';
+      that.codeCtx.textAlign = 'center';
+      that.codeCtx.fillStyle = currentValue.color;
+
+      let strArr = (currentValue.text).split(/[(\r\n)\r\n]+/)
+      let maxW = 0, maxLw = 0;
+      for(var i = 0; i<strArr.length; i++) {
+        maxW = Math.max(maxW, that.codeCtx.measureText(strArr[i]).width)
+        maxLw = Math.max(maxLw, that.codeCtx.measureText(strArr[i][0]).width) + 2
+      }
+
+      if (currentValue.textWriteMode=='vertical-lr') {
+        that.codeCtx.save()
+        let cx = currentValue.left + maxLw*3/2
+        let cy = currentValue.top + maxW/2
+        console.log(cx, cy, currentValue.x, currentValue.y)
+        // that.codeCtx.translate(cx, cx); // 圆心坐标
+        // that.codeCtx.rotate(Math.round(currentValue.angle) * Math.PI / 180)
+        // that.codeCtx.translate(-cx, -cy);
+        let leftStep = 0
+        for(var i = 0; i<strArr.length; i++) {
+          let left = currentValue.left + leftStep
+          let top = currentValue.top
+          util.drawVerticalText4Canvas(that.codeCtx, strArr[i], left, top, currentValue)
+          leftStep += maxLw
+        }
+        that.codeCtx.restore()
+      } else {
+        let result = util.breakLines4Canvas(that.codeCtx, currentValue.text||'无内容', maxW, that.codeCtx.font)
+        var currentLineHeight = 0
+        that.codeCtx.textAlign = currentValue.textAlign
+        result.forEach(function (line, index) {
+          currentLineHeight += maxLw
+          that.codeCtx.fillText(line, currentValue.left, parseInt(currentValue.top + currentLineHeight))  // currentLineHeight 表示文字在整个页面的位置：currentLineHeight + 300 表示整体下移 300px
+        });
+      }
+    },
+
+    changeTextColor(color) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].active==true) {
+          items[i].color = color
+          this.setData({
+            "itemList": items
+          })
+        }
       }
     },
 
@@ -337,28 +448,17 @@ Component({
         items[i].active = false;
 
         if (e.currentTarget.dataset.id == items[i].id) {
-          console.log('e.currentTarget.dataset.id', e.currentTarget.dataset.id)
           index = i;
-          console.log(items[index])
           items[index].active = true;
         }
       }
       //获取作为移动前角度的坐标
       items[index].tx = e.touches[0].clientX;
       items[index].ty = e.touches[0].clientY;
-      //移动前的角度
-      items[index].anglePre = this.countDeg(items[index].x, items[index].y, items[index].tx, items[index].ty)
-      console.log("移动前的角度", items[index].x, items[index].y, items[index].tx, items[index].ty, items[index].anglePre)
-      //获取图片半径
-      if (items[index].type==='image') {
-        items[index].r = this.getDistancs(items[index].x, items[index].y, items[index].left, items[index].top) - 20;//20是右下角移动图片到本图边缘的估计值，因为这个获取半径的方法跟手指的位置有关
-      } else {
-        items[index].r = this.getDistancs(items[index].x, items[index].y, items[index].tx, items[index].ty);
-        if (items[index].r<150) {
-          items[index].r = 90;
-        }
-      }
-      console.log("半径", items[index].r);
+
+      let item = items[index]
+      items[index].anglePre = this.countDeg(item.x, item.y, item.tx, item.ty)
+      items[index].beforeLine = Math.sqrt(Math.pow((item.x - item.left), 2) + Math.pow((item.y - item.top), 2));
     },
 
     touchMove: function (e) {
@@ -366,46 +466,32 @@ Component({
       items[index]._tx = e.touches[0].clientX;
       items[index]._ty = e.touches[0].clientY;
 
-      //移动的点到圆心的距离
-      
-      items[index].disPtoO = this.getDistancs(items[index].x, items[index].y, items[index]._tx - windowWidth * 0.125, items[index]._ty - 10)
+      let item = items[index]
 
-      items[index].scale = items[index].disPtoO / items[index].r; //手指滑动的点到圆心的距离与半径的比值作为图片的放大比例
+      const beforeLine = item.beforeLine;
+      const afterLine = Math.sqrt(Math.pow((item.x - item._tx), 2) + Math.pow((item.y - item._ty), 2));
 
+      if (items[index].type=='text') {
+        items[index].scale = (afterLine - beforeLine) / beforeLine + 1
+      } else {
+        items[index].scale = afterLine / beforeLine
+      }
       items[index].oScale = 1 / items[index].scale;//图片放大响应的右下角按钮同比缩小
 
       //移动后位置的角度
-      items[index].angleNext = this.countDeg(items[index].x, items[index].y, items[index]._tx, items[index]._ty)
+      items[index].angleNext = this.countDeg(item.x, item.y, item._tx, item._ty)
       //角度差
-      items[index].new_rotate = items[index].angleNext - items[index].anglePre;
-
+      let newAngle = item.angleNext - item.anglePre;
+      newAngle = Math.round(newAngle * 100) / 100;
+      
       //叠加的角度差
-      items[index].rotate += items[index].new_rotate;
-      items[index].angle = items[index].rotate; //赋值
-
-      var item = items[index];
-      if (item.type==='image') {
-        var new_w = item.w * item.scale;
-        var new_h = item.h * item.scale;
-        if (item.w < item.h && new_w < item.MIN_WIDTH) {
-          new_w = item.MIN_WIDTH;
-          new_h = item.MIN_WIDTH * item.h / item.w;
-        } else if (item.h < item.w && new_h < item.MIN_WIDTH) {
-            new_h = item.MIN_WIDTH;
-            new_w = item.MIN_WIDTH * item.w / item.h;
-        }
-      } else {
-        var fontSize = item.fontSize * item.scale;
-        fontSize = fontSize <= item.MIN_FONTSIZE ? item.MIN_FONTSIZE : fontSize;
-        items[index].fontSize = fontSize;
-      }
-
+      let angle = item.angle + newAngle;
+      items[index].angle = Math.round(angle * 100) / 100;
 
       //用过移动后的坐标赋值为移动前坐标
       items[index].tx = e.touches[0].clientX;
       items[index].ty = e.touches[0].clientY;
-      items[index].anglePre = this.countDeg(items[index].x, items[index].y, items[index].tx, items[index].ty)
-      items[index].angle = items[index].anglePre - 135;
+      items[index].anglePre = this.countDeg(item.x, item.y, item.tx, item.ty)
 
       //赋值setData渲染
       this.setData({
@@ -456,74 +542,96 @@ Component({
 
     // 设置文字为竖排
     setVerticalText() {
+      
+      items.forEach((val, idx) => {
+        if (val.active==true) {
+          val.textWriteMode = 'vertical-lr'//'sideways-rl'
+          let arr = (val.text).split(/[(\r\n)\r\n]+/)
+          let max_height = 0;
+          let max_width = 0;
+          arr.forEach((v, i) => {
+            let len = this.codeCtx.measureText(v+'').width;
+            max_height = Math.max(max_height, len)
+            max_width += this.codeCtx.measureText(v[0]+'').width;
+          });
+          val.height = Math.round(max_height + max_height/2 + 8)
+          val.width = Math.round(max_width + max_width/2 + max_width + 4)
+
+          return
+        }
+      });
       this.setData({
-        'textWriteMode': 'vertical-lr'
+        "itemList": items
       })
     },
 
-    drawVerticalText(context, text, x, y) {
-      var arrText = text.split('');
-      var arrWidth = arrText.map(function (letter) {
-        return 26;
-        // 这里为了找到那个空格的 bug 做了许多努力，不过似乎是白费力了
-        // const metrics = context.measureText(letter);
-        // console.log(metrics);
-        // const width = metrics.width;
-        // return width;
-      });
-      
-      var align = context.textAlign;
-      var baseline = context.textBaseline;
-     
-      if (align == 'left') {
-        x = x + Math.max.apply(null, arrWidth) / 2;
-      } else if (align == 'right') {
-        x = x - Math.max.apply(null, arrWidth) / 2;
-      }
-      if (baseline == 'bottom' || baseline == 'alphabetic' || baseline == 'ideographic') {
-        y = y - arrWidth[0] / 2;
-      } else if (baseline == 'top' || baseline == 'hanging') {
-        y = y + arrWidth[0] / 2;
-      }
-     
-      context.textAlign = 'center';
-      context.textBaseline = 'middle';
-     
-      // 开始逐字绘制
-      arrText.forEach(function (letter, index) {
-        // 确定下一个字符的纵坐标位置
-        var letterWidth = arrWidth[index];
-        // 是否需要旋转判断
-        var code = letter.charCodeAt(0);
-        if (code <= 256) {
-          context.translate(x, y);
-          // 英文字符，旋转90°
-          context.rotate(90 * Math.PI / 180);
-          context.translate(-x, -y);
-        } else if (index > 0 && text.charCodeAt(index - 1) < 256) {
-          // y修正
-          y = y + arrWidth[index - 1] / 2;
-        }
-        context.fillText(letter, x, y);
-        // 旋转坐标系还原成初始态
-        context.setTransform(1, 0, 0, 1, 0, 0);
-        // 确定下一个字符的纵坐标位置
-        var letterWidth = arrWidth[index];
-        y = y + letterWidth;
-      });
-      // 水平垂直对齐方式还原
-      context.textAlign = align;
-      context.textBaseline = baseline;
-    },    
-
-
     // 显示画布
     openMask() {
-      this.synthesis();
+      wx.showLoading({
+        title: '正在生成图片',
+        mask: true
+      });
+      return new Promise(async (resolve, reject) => {
+        this.synthesis(resolve, reject);
+        this.setData({
+          showCanvas: true
+        })
+        wx.hideLoading();
+      });
+    },
+
+    closseMask() {
       this.setData({
-        showCanvas: true
+        showCanvas: false
       })
-    }
-  }
+    },
+
+    downloadFile(imgurl) {
+      wx.saveImageToPhotosAlbum({
+          filePath: imgurl,         
+          success: (res) => {
+              console.log(res);
+              wx.showToast({
+                  title: '保存成功',
+                  icon: 'success',
+                  duration: 2000
+              })
+          }
+      })
+    },
+  
+    downloadImg: function () {
+      var that = this;
+      wx.getSetting({
+          success(res) {
+              if (!res.authSetting['scope.writePhotosAlbum']) {
+                  wx.authorize({
+                      scope: 'scope.writePhotosAlbum',
+                      success() { //这里是用户同意授权后的回调
+                          that.downloadFile(that.data.canvasTemImg)
+                      },
+                      fail() { //这里是用户拒绝授权后的回调
+                          wx.showModal({
+                              title: '警告',
+                              content: '授权失败，请打开相册的授权',
+                              success: (res) => {
+                                  if (res.confirm) { //去授权相册
+                                      that.toOpenSetting();
+                                  } else if (res.cancel) {
+                                      console.log('用户点击取消')
+                                  }
+                              }
+                          })
+                      }
+                  })
+              } else { //用户已经授权过了
+                  console.log("已经授权啦");
+                  // that.genCanvas();
+                  that.downloadFile(that.data.canvasTemImg)
+              }
+          }
+      })
+    },
+  },
 
 });

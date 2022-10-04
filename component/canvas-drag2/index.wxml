@@ -1,12 +1,12 @@
-<view class='opt-container'>
+<view class='opt-container' style="widht:{{canvasWidth}}px;height:{{canvasHeight}}px;background-color:{{bgColor}};background-image: url('{{bgImage}}') no-repeat;">
   <block wx:for="{{itemList}}" wx:key="id">
-    <view class='touchWrap' style='transform: scale({{item.scale}});top:{{item.top}}px;left:{{item.left}}px; '>
+    <view class='touchWrap' style='transform: scale({{item.scale==0 ? 1 : item.scale}});top:{{item.top}}px;left:{{item.left}}px; '>
       <view class='imgWrap {{item.active? "touchActive":""}}' style="transform: rotate({{item.angle}}deg); border:{{item.active ? 1 : 0}}rpx gray dashed;">
         <block wx:if="{{item.type==='image'}}">
           <image src='{{item.image}}' data-id='{{item.id}}' style='width:{{item.width}}px;height:{{item.height}}px;' bindtouchstart='wraptouchStart' bindtouchmove='wraptouchMove' bindtouchend='wraptouchEnd'></image>
         </block>
         <block wx:if="{{item.type==='text'}}">
-          <text data-id='{{item.id}}' style='width:{{item.width}}px;height:{{item.height}}px;font-size:{{item.fontSize*item.scale}};writing-mode:{{textWriteMode}};' bindtouchstart='wraptouchStart' bindtouchmove='wraptouchMove' bindtouchend='wraptouchEnd'>{{item.text}}</text>
+          <text data-id='{{item.id}}' style='word-break:keep-all;width:{{item.width}}px; color:{{item.color}}; height:{{item.height}}px;font-size:{{item.scale==0 ? item.fontSize : item.fontSize*item.scale}};writing-mode:{{item.textWriteMode}};' bindtouchstart='wraptouchStart' bindtouchmove='wraptouchMove' bindtouchend='wraptouchEnd'>{{item.text}}</text>
         </block>
         <image wx:if = "{{item.active}}" class='x' src='./icon/close.png' style='transform: scale({{item.oScale}});transform-origin:center;' data-id='{{item.id}}' bindtap='deleteItem'></image>
         <image wx:if = "{{item.active}}" class='o' src='./icon/scale.png' style='transform: scale({{item.oScale}});transform-origin:center;' data-id='{{item.id}}' bindtouchstart='touchStart' bindtouchmove='touchMove' bindtouchend='touchEnd'></image>
@@ -17,18 +17,17 @@
 
 
 
-  <!-- 保存显示效果图 -->
-  <view class='canvasWrap' hidden="{{!showCanvas}}">
-    <image class="resImg" bindlongtap="saveImg" src="{{canvasTemImg}}" mode="widthFix"></image>
+  <!-- 保存显示效果图 --> 
+  <view class='canvasWrap' style="background-color:red;display:{{showCanvas==true ? 'block' : 'none'}};">
+    <image class="resImg" bindlongtap="saveImg" style="width:{{canvasWidth}}px; height:{{canvasHeight}}px;" src="{{canvasTemImg}}" mode="aspectFit"></image>
     <view class='btn_view'>
-      <button bindtap='saveImg'>保存到手机</button>
-      <button bindtap='disappearCanvas'>关闭</button>
+      <button bindtap='downloadImg'>保存到手机</button>
+      <button bindtap='closseMask'>关闭</button>
     </view>
   </view>
-
-  <!-- 画布 -->
-  <canvas class='maskCanvas' type='2d' id="myCanvas" style='width:{{canvasWidth}}px; height:{{canvasHeight}}px;'></canvas>
-
-
+  <view style='position:fixed;top:99999999999px;'>
+    <!-- 画布 -->
+    <canvas type='2d' id="myCanvas" style='width:{{canvasWidth}}px; height:{{canvasHeight}}px;'></canvas>
+  </view>
 </view>
 

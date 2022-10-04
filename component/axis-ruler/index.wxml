@@ -9,14 +9,14 @@
         <view class='scale-wrapper'>
             <view class='scale-grip'
               wx:for="{{grid}}"
-              wx:key="{{index}}"
+              wx:key="index"
               style='height:{{h}}px;border-color:{{styles.line}};'>
 
               <view class='scale-grip-item' 
               wx:for-item="it"
               wx:for-index="idx"
               wx:for="{{5}}" 
-              wx:key="{{idx}}"
+              wx:key="idx"
               style="width:{{single}}px;height:{{idx==4?'100':'50'}}%;border-color:{{styles.line}};"
               >
             </view>
@@ -28,7 +28,7 @@
           <view class='scale-value first-scale-value' style='width:{{single*5}}px'>{{min}}</view>
           <view class='scale-vaule' 
           wx:for="{{grid}}" 
-          wx:key="{{index}}" 
+          wx:key="index" 
           style='width:{{single*5}}px;'>{{min+5*(index+1)}}</view>
         </view>
       </view>
@@ -49,13 +49,13 @@
         <view class='scale-wrapper' style='height:{{single*5*grid}}px;margin-top: 10rpx;'>
           <view class='scale-grip'
               wx:for="{{grid}}"
-              wx:key="{{index}}">
+              wx:key="index">
               
               <view class='scale-grip-item' 
               wx:for-item="it"
               wx:for-index="idx"
               wx:for="{{5}}" 
-              wx:key="{{idx}}"
+              wx:key="idx"
               style="height:{{single}}px;width:{{idx==4?'100':'50'}}%;border-color:{{styles.line}};"
               >
               </view>
@@ -67,7 +67,7 @@
           <view class='scale-value'>{{min}}</view>
           <view class='scale-vaule' 
           wx:for="{{grid}}" 
-          wx:key="{{index}}" 
+          wx:key="index" 
           style='height:{{single*5}}px;line-height:{{single*5}}px;'>{{min+5*(index+1)}}</view>
         </view>
       </view>

@@ -1,5 +1,4 @@
 import { CONFIG } from './config'
-import Promise from './es6-promise'
 import { getCurrentPageUrl } from './util.js'
 
 let DEBUG = true;// 切换数据入口

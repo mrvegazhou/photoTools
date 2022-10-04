@@ -37,7 +37,7 @@
   height: 100%;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: white;/**rgba(0, 0, 0, 0.6);**/
   z-index: 999;
   text-align: center;
 }

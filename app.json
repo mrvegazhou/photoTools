@@ -14,7 +14,6 @@
 
     "pages/poster/index/index",
     "pages/poster/edit/edit",
-    "pages/poster/axisRuler/index",
     "pages/poster/test/test",
 
     "pages/me/me",

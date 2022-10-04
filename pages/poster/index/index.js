@@ -68,12 +68,15 @@ Page({
   },
 
   addText() {
+    index += 1
     this.setData({
       item: {
           type: 'text',
-          text: 'helloworld我是大王',
-          id: ++index,
-          fontSize: 10,
+          text: '我是司法鉴定快王赚大钱\r\n要赚钱我要赚钱\r\n上档次的赚大钱'+index,
+          id: index,
+          fontSize: 20,
+          top:100,
+          left:100
       }
     });
   },
@@ -104,6 +107,14 @@ Page({
   // 查看canvas画板
   openMask() {
     CanvasDrag.openMask()
+  },
+
+  setVerticalText() {
+    CanvasDrag.setVerticalText()
+  },
+
+  changeTextColor() {
+    CanvasDrag.changeTextColor('purple')
   }
 
 
