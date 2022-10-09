@@ -6,22 +6,89 @@ Page({
    * 页面的初始数据
    */
   data: {
-    imgCardShow: true,
+    menu: {
+      mainPageShow: 'mainPage',
+      menuShow: '', // img.加图 txt.加字 clip.裁剪 doodle.涂鸦 layer.图层
+      menuShowLeft: 0,
+      secondMenu:'',
+      showColorPicker: false, // 颜色选择器
+      rpxRatio: 1, //此值为你的屏幕CSS像素宽度/750，单位rpx实际像素
+      colorData: {
+        //基础色相，即左侧色盘右上顶点的颜色，由右侧的色相条控制
+        hueData: {
+          colorStopRed: 255,
+          colorStopGreen: 0,
+          colorStopBlue: 0,
+        },
+        //选择点的信息（左侧色盘上的小圆点，即你选择的颜色）
+        pickerData: {
+          x: 0, //选择点x轴偏移量
+          y: 480, //选择点y轴偏移量
+          red: 0,
+          green: 0,
+          blue: 0,
+          hex: '#000000'
+        },
+        //色相控制条的位置
+        barY: 0
+      },
+      //字体菜单下拉框
+      fontFamilySelect: ['最新发布', '推荐排序', '租金由低到高', '租金由高到低', '面积由小到大', '面积由大到小'],
+      fontFamilyIndex: 0,
+      fontFamilyShow: false,
+      fontFamilyShowVal: '',
+      sliderFontSize: 0,
+    },
+    styles: {
+      line: '#dbdbdb',
+      bginner: '#fbfbfb',
+      bgoutside: '',
+      font: '#404040',
+      fontColor: '#404040',
+      fontSize: 8
+    },
+
+    imgCardShow: false,
     imageUrl: '../../../images/img.png',
-    layerShow: true,
-    mainPageShow: 'mainPage',
+    itemText: {
+      css:{
+        top: 0,
+        left: 0,
+        fontSize: 0,
+        color: '',
+        fontWeight: 'normal',
+        background: '',
+        textAlign: 'center',
+        textStyle: 'normal',
+        textDecoration: '',
+        textVertical: false
+      }, 
+      type:'text', 
+      text:''
+    },
+    itemImg: {
+      type: 'image',
+      url:'',
+      css: {
+        width: "",
+        height: "",
+      }
+    },
     items: {
       item_1: {
         type:'image', px:0, py:0, width: 10, height: 10, ox: 5, oy: 5, degree: 90
       }
-    }
+    },
+
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    
+    this.setRpxRatio()
+    this.getFontFamilySelect()
   },
 
   /**
@@ -29,11 +96,6 @@ Page({
    */
   onReady() {
     
-  },
-
-  showLayerPanel() {
-    var show = this.data['layerShow']
-    this.setData({layerShow: !show})
   },
 
   onHandelCancel() {
@@ -109,6 +171,135 @@ Page({
       fail(errMsg) {
         console.log('保存失败: ', errMsg);
       }
+    })
+  },
+
+  //-----------------------------------菜单动作----------------------------------------------------//
+  showSecondMenu(e) {
+    var left = e.target.offsetLeft
+    const type = e.currentTarget.dataset['type'];
+    var menuShow = type
+    if (type==this.data.menu.menuShow) {
+      menuShow = ''
+    }
+    var menu = this.data.menu
+    switch(type) {
+      case 'txt':
+        menu.secondMenu = 'txt.edit'
+        break;
+      default:
+        menu.secondMenu = ''
+    }
+    menu.menuShow = menuShow
+    menu.menuShowLeft = left+5
+    this.setData({menu: menu})
+  },
+  // 加图...
+  getPhotos(e) {
+    const type = e.currentTarget.dataset['type'];
+    var menu = this.data.menu
+    menu.secondMenu = type
+    this.setData({menu: menu})
+    switch(type) {
+      case 'img.album':
+
+        break;
+    }
+  },
+  // 编辑文字...
+  closeTxtEdit() {
+    var menu = this.data.menu
+    menu.menuShow = ''
+    this.setData({menu: menu})
+  },
+  // 编辑文字确认
+  editTxtOk(e) {
+    let item = this.data.itemText
+    item.text = ''
+  },
+  // 编辑文字取消
+  editTxtCancel(e) {
+    let item = this.data.itemText
+    item.text = ''
+    this.setData({
+      item: item
+    })
+    this.closeTxtEdit()
+  },
+  textAreaBlur(e){
+    let item = this.data.itemText
+    item.text = e.detail.value
+    this.setData({
+      item: item
+    })
+  },
+  //选择改色时触发（在左侧色盘触摸或者切换右侧色相条）
+  onChangeColor(e) {
+    //返回的信息在e.detail.colorData中
+    var menu = this.data.menu
+    var item = this.data.itemText
+    menu.colorData = e.detail.colorData
+    item.css.color = e.detail.colorData.pickerData.hex
+    this.setData({
+      menu: menu,
+      itemText: item
+    })
+  },
+  //关闭拾色器
+  closeColorPicker() {
+    var menu = this.data.menu
+    menu.showColorPicker = false
+    this.setData({
+      menu: menu
+    })
+  },
+  // 设置屏幕宽度比例
+	setRpxRatio () {
+		const _this = this
+		wx.getSystemInfo({
+			success(res) {
+				_this.setData({ rpxRatio: res.screenWidth / 750 })
+			}
+		})
+  },
+  // 编辑文字样式
+  editText(e) {
+    const type = e.currentTarget.dataset['type'];
+    var menu = this.data.menu
+    switch (type) {
+      case 'txt.edit':
+        menu.secondMenu = 'txt.edit'
+        break;
+      case 'txt.color':
+        menu.showColorPicker = true
+        menu.secondMenu = 'txt.color'
+        break;
+      case 'txt.css':
+        menu.secondMenu = 'txt.css'
+        break;
+    }
+    this.setData({menu: menu})
+  },
+  // 选择字体
+  selectFontFamily() {
+
+  },
+  // 获取选中的字体
+  getFontFamilySelect() {
+    let menu = this.data.menu
+    let fontFamilySelect = menu.fontFamilySelect
+    let fontFamilyIndex = menu.fontFamilyIndex
+    menu.fontFamilyShowVal = fontFamilySelect[fontFamilyIndex]
+    this.setData({
+      menu:menu
+    })
+  },
+  // 显示下拉框
+  showFontFamilySelect() {
+    let menu = this.data.menu
+    menu.fontFamilyShow = !menu.fontFamilyShow
+    this.setData({
+      menu:menu
     })
   },
 

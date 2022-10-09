@@ -22,10 +22,10 @@
 
       <view class="footer">
         <view class="finish" catchtap="onSavePoster">
-          <text class="btn-finish">下 载</text>
+          <text class="btn-finish">下载</text>
         </view>
         <view class="cancel" catchtap="onHandelCancel">
-          <text class="btn-cancel">取 消</text>
+          <text class="btn-cancel">取消</text>
         </view>
       </view>
     </view>

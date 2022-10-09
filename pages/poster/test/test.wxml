@@ -1,10 +1,6 @@
-<view class='contentWarp'>
-
-  <canvas-drag id="canvas-drag" graph="{{graph}}" width="700" height="750" ></canvas-drag>
-  
-</view>
 
 
-<view class="btn" bindtap="onAddText">添加文字</view>
-<view class="btn" bindtap="onExport">导出图片</view>
-<view class="btn" bindtap="setVerticalText">文字竖排</view>
+
+
+<!-- 标尺-->
+<scale min="0" max="200" int="{{false}}" single="10" h="8" styles="{{styles}}" id="weight"></scale>

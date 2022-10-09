@@ -1,6 +1,23 @@
-<canvas canvas-id='canvas-label' 
-disable-scroll="true"
-bindtouchstart="start"
-bindtouchmove="move"
-bindtouchend="end"
- style='width: {{width}}rpx; height: {{height}}rpx;'></canvas>
+
+<!--背景区域-->
+<view class="siteContainer" style="align-items:{{siteCenter ? 'center' : 'flex-start'}}">
+  <image wx:if="{{bgImage.src}}" id="siteImg" class="siteImg" src="{{bgImage.src}}" mode="aspectFit" style="width:{{bgImage.width}}px;height:{{bgImage.height}}px;"></image>
+  <view wx:if="{{bgColor}}" style="background-color: {{bgColor}};width: 100%; height: 100%;"></view>
+</view>
+<!-- 操作区域 -->
+<view class="contentWarp" catchtap="hideControls">
+  <block wx:for="{{carList}}" wx:key="id">
+    <view class="touchWrap" style="transform:scale({{item.scale}});top:{{item.top}}px;left:{{item.left}}px;z-index:{{item.active?100:1}};">
+      <view class="imgWrap {{item.active? 'touchActive':''}}" style="transform:rotate({{item.angle}}deg);">
+        <image src="{{item.src}}" data-id="{{item.id}}" style="width:{{item.width}}px;height:{{item.height}}px;" bindtouchstart="WraptouchStart" bindtouchmove="WraptouchMove" bindtouchend="WraptouchEnd"></image>
+        <image class="x" src="./icon/x.png" style="transform:scale({{item.oScale}});transform-origin:center;" data-id="{{item.id}}" catchtap="deleteCar"></image>
+        <image class="o" src="./icon/o.png" style="transform:scale({{item.oScale}});transform-origin:center;" data-id="{{item.id}}" bindtouchstart="oTouchStart" bindtouchmove="oTouchMove" bindtouchend="WraptouchEnd"></image>
+      </view>
+    </view>
+  </block>
+</view>
+
+<view style='position:fixed;top:99999999999px;'>
+  <!-- 画布 -->
+  <canvas type='2d' id="myCanvas" style='width:{{canvasWidth}}px; height:{{canvasHeight}}px;'></canvas>
+</view>

@@ -7,6 +7,9 @@ const defaultStyles = {
   fontSize: 4 //字体大小
 }
 Component({
+  options:{
+    styleIsolation:'isolated'
+  },
 
   /**
    * 组件的属性列表

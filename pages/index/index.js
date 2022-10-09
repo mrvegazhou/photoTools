@@ -116,6 +116,11 @@ Page({
           url: '/pages/imageFix/index/index'
         })
         break;
+      case "poster":
+        wx.navigateTo({
+          url: '/pages/poster/edit/edit'
+        })
+        break;
     }
 	},
 })

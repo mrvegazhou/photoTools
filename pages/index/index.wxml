@@ -26,6 +26,13 @@
         <image src="/images/main/scan-photo.png"></image>
       </view>
     </view>
+    <view class="container-content">
+      <view class="container-content-item" bindtap="goPages" data-name="poster">
+        <view class="title">海报制作</view>
+        <view class="description">描述</view>
+        <image src="/images/main/scan-photo.png"></image>
+      </view>
+    </view>
     <!-- <view class="container-content">
       <view class="container-content-item-half">
         <view class="title">名称</view>

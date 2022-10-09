@@ -1,4 +1,5 @@
 @import "../../../template/theme.wxss";
+@import "../../../template/iconfont/iconfont.wxss";
 wx-slider .wx-slider-handle-wrapper{
   height:0rpx;
 }
@@ -157,6 +158,12 @@ slider{
   justify-content: left;
   margin-top: 20rpx;
 }
+.sheet-text .sheet-text-1{
+  font-size: 35rpx;
+}
+.sheet-text .cancel {
+  font-size: 35rpx;
+}
 .sheet-text .sheet-text-2 {
   margin-top: 5rpx;
   font-size: 26rpx;
@@ -166,9 +173,9 @@ slider{
   margin-top: 20rpx;
   margin-right: 80rpx;
 }
-.sheet-icon image {
-  width: 50rpx;
-	height: 50rpx;
+.sheet-icon .iconfont {
+  font-size: 65rpx;
+  color: var(--primary-light-gray-color);
 }
 
 .marking {

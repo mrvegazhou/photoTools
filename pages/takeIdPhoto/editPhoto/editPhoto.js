@@ -40,7 +40,6 @@ Page({
 		rpxRatio: 1, //此值为你的屏幕CSS像素宽度/750，单位rpx实际像素
     array: sizeNameList,
     
-
 		index: 0,
 		initImgWidth: 0,
 		initImgHeight: 0,

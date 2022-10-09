@@ -1,19 +1,118 @@
 <template name="posterBottomTool">
-
-  <scroll-view scroll-y class="layer-float" hidden='{{layerShow}}'>
+  <view class="toolbar-bottom" wx:if="{{menu.mainPageShow==='mainPage'}}">
+    <view bindtap='showSecondMenu' data-type="img">
+      <text class="icon-item iconfont icon-tianjiatupian_huaban {{menu.menuShow=='img'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='img'?'menu-select':''}}">加图</text>
+    </view>
+    <view bindtap='showSecondMenu' data-type="txt">
+      <text class="icon-item iconfont icon-wenzi {{menu.menuShow=='txt'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='txt'?'menu-select':''}}">加字</text>
+    </view>
+    <view bindtap='showSecondMenu' data-type="clip">
+      <text class="icon-item iconfont icon-caijian {{menu.menuShow=='clip'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='clip'?'menu-select':''}}">裁剪</text>
+    </view>
+    <view bindtap='showSecondMenu' data-type="doodle">
+      <text class="icon-item iconfont icon-huabi {{menu.menuShow=='doodle'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='doodle'?'menu-select':''}}">涂鸦</text>
+    </view>
+    <view bindtap='showSecondMenu' data-type="layer">
+      <text class="icon-item iconfont icon-tuceng {{menu.menuShow=='layer'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='layer'?'menu-select':''}}">图层</text>
+    </view>
+  </view>
+  <!--二级菜单-->
+  <view class="tool-children" style="display: {{menu.menuShow=='img' ? 'block' : 'none'}};left:{{menu.menuShowLeft}}rpx;">
+    <view class="section-title">
+      选择图片:
+    </view>
+    <!--菜单-->
+    <view class="second-menu">
+      <view bindtap="getPhotos" data-type="img.album" class="{{menu.secondMenu=='img.album' ? 'select' : ''}}">
+        <text class="tool_child_icon iconfont icon-xiangcetupian"></text>
+        <text class="tool_text">相册</text>
+      </view>
+      <view bindtap="getPhotos" data-type="img.camera" class="{{menu.secondMenu=='img.camera' ? 'select' : ''}}">
+        <text class="tool_child_icon iconfont icon-zhaoxiangji"></text>
+        <text class="tool_text">拍照</text>
+      </view>
+      <view bindtap="getPhotos" data-type="img.talk" class="{{menu.secondMenu=='img.talk' ? 'select' : ''}}">
+        <text class="tool_child_icon iconfont icon-web-icon-"></text>
+        <text class="tool_text">聊天</text>
+      </view>
+      <view bindtap="getPhotos" data-type="img.gallery" class="{{menu.secondMenu=='img.gallery' ? 'select' : ''}}">
+        <text class="tool_child_icon iconfont icon-tuku"></text>
+        <text class="tool_text">图库</text>
+      </view>
+    </view>
+  </view>
+  <!--文字编辑层-->
+  <view class="text-edit-pop" wx:if="{{menu.menuShow=='txt'}}">
+    <view class="popbg" bindtap="closeTxtEdit" data-type="txt"></view>
+    <view class="popup" style="height:{{menu.showColorPicker?'55vh':'470rpx'}}">
+      <!--拾色器-->
+      <view class="color-picker-view" wx:if="{{menu.showColorPicker}}">
+        <view class="color-picker-content">
+          <color-picker class="color-picker" colorData="{{menu.colorData}}" rpxRatio="{{menu.rpxRatio}}" bindchangecolor="onChangeColor"></color-picker>
+          <text bindtap="closeColorPicker" class="icon-item iconfont icon-queren1"></text>
+        </view>
+      </view>
+      <!-- 字体样式 -->
+      <view class="text-edit-css" wx:if="{{menu.secondMenu=='txt.css'}}">
+        <view>
+          <view class="edit-css-select">
+            <text class="label">字体:</text>
+            <view class="edit-css-content" bindtap="showFontFamilySelect">{{menu.fontFamilyShowVal}}
+            <text class="iconfont {{menu.fontFamilyShow?'icon-shangla':'icon-xiala1'}}" style="color:#5e616d;"></text></view>
+          </view>
+          <view class="edit-css {{menu.fontFamilyShow ? 'show':'disappear'}}">
+            <view wx:for="{{menu.fontFamilySelect}}" wx:key="index" bindtap='selectFontFamily' data-index="{{index}}" class="line {{menu.fontFamilyIndex==index?'checked':''}}">
+              {{item}}
+            </view>
+          </view>
+        </view>
+        <view class="eidt-font-size">
+          <text class="label">字号:</text>
+          <slider class="slider" block-size="15" activeColor="#69a794" bindchange="changeFontSize" min="1" max="100" value="{{menu.sliderFontSize}}" show-value/>
+        </view>
+        <view class="edit-font-bold">
+          <text class="iconfont icon-cuti {{itemText.css.fontWeight=='bold'?'checked':''}}">粗体</text>
+          <text class="iconfont icon-zitixieti" {{itemText.css.textStyle=='italic'?'checked':''}}">斜体</text>
+          <text class="iconfont icon-xiahuaxian" {{itemText.css.textDecoration=='underline'?'checked':''}}">下划线</text>
+          <text class="iconfont icon-zitishanchuxian" {{itemText.css.textDecoration=='line-through'?'checked':''}}">删除线</text>
+          <text class="iconfont icon-directionhorizontal" {{itemText.css.textVertical==true?'checked':''}}">方向</text>
+          <text class="iconfont icon-juzhong" {{itemText.css.fontWeight=='bold'?'checked':''}}">居中</text>
+          <text class="iconfont icon-zijianju" {{itemText.css.fontWeight=='bold'?'checked':''}}">间距</text>
+        </view>
+      </view>
+      <!-- 透明度 -->
+      <view class="text-edit-opacity" wx:if="{{menu.secondMenu=='txt.opacity'}}">
+        <slider class="slider" block-size="15" activeColor="#69a794" bindchange="changeFontOpacity" min="1" max="100" value="{{menu.sliderFont}}" show-value/>
+      </view>
+      <view class="edit-pannel" style="display:{{(menu.secondMenu=='txt.edit' || menu.secondMenu=='txt.color')?'block':'none'}};">
+        <textarea class="input" placeholder="请输入文字" placeholder-class="place-holder" maxlength='500' value="{{item.text}}" bindblur='textAreaBlur'/>
+      </view>
+      <view class="text-edit-menu">
+        <view class="item {{menu.secondMenu=='txt.edit'?'select':''}}" bindtap="editText" data-type="txt.edit">
+          <text class="iconfont icon-bianji">编辑</text>
+        </view>
+        <view class="item {{menu.secondMenu=='txt.color'?'select':''}}" bindtap="editText" data-type="txt.color">
+          <text class="iconfont icon-yanse" style="color:{{menu.colorData.pickerData.hex}}">颜色</text>
+        </view>
+        <view class="item {{menu.secondMenu=='txt.css'?'select':''}}" bindtap="editText" data-type="txt.css">
+          <text class="iconfont icon--zitiyangshi">样式</text>
+        </view>
+        <view class="item {{menu.secondMenu=='txt.opacity'?'select':''}}" bindtap="editText" data-type="txt.opacity">
+          <text class="iconfont icon-toumingdu">透明度</text>
+        </view>
+      </view>
+      <view class="btn">
+        <text class="icon-item iconfont icon-queren1" bindtap="editTxtOk"></text>
+        <text class="icon-item iconfont icon-quxiao1" bindtap="editTxtCancel"></text>
+      </view>
+    </view>
+  </view>
+  <!--图层编辑层-->
+  <scroll-view scroll-y class="layer-float" style="display: {{menu.menuShow=='layer' ? 'block' : 'none'}};">
     <view class="item">
       <image src=""></image>
       <image src=""></image>
       <image src=""></image>
     </view>
   </scroll-view>
-
- 
-  <view class="toolbar-bottom" wx:if="{{mainPageShow==='mainPage'}}">
-    <view bindtap='toTextPage'><image class="icon-text" src="../../../images/img.png"></image><text class="text">加图</text></view>
-    <view bindtap='toTextPage'><image class="icon-text" src="../../../images/text.png"></image><text class="text">加字</text></view>
-    <view bindtap='toCropPage'><image class="icon-cutter" src="../../../images/cutter.png"></image><text class="text">裁剪</text></view>
-    <view bindtap='toDoodlePage'><image class="icon-pen" src="../../../images/doodle.png"></image><text class="text">涂鸦</text></view>
-    <view bindtap='showLayerPanel'><image class="icon-layer" src="../../../images/layer.png"></image><text style="{{layerShow==false ? 'color: #69a794;' : ''}}" class="text">图层</text></view>
-  </view>
 </template>

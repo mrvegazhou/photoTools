@@ -1,3 +1,4 @@
+@import "../../../template/iconfont/iconfont.wxss";
 @import "../../../template/theme.wxss";
 @import "../../../template/poster/posterBottomTool/posterBottomTool.wxss";
 @import "../../../template/poster/posterImgCard/posterImgCard.wxss";

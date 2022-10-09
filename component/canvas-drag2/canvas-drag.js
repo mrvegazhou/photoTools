@@ -97,31 +97,4 @@ CanvasDrag.setVerticalText = () => {
   }
 };
 
-CanvasDrag.openMask = () => {
-  const canvasDrag = CanvasDrag();
-  if (!canvasDrag) {
-      console.error('请设置组件的id="canvas-drag"!!!');
-  } else {
-      return CanvasDrag().openMask();
-  }
-};
-
-CanvasDrag.download = () => {
-  const canvasDrag = CanvasDrag();
-  if (!canvasDrag) {
-      console.error('请设置组件的id="canvas-drag"!!!');
-  } else {
-      return CanvasDrag().download();
-  }
-};
-
-CanvasDrag.changeTextColor = (color) => {
-  const canvasDrag = CanvasDrag();
-  if (!canvasDrag) {
-      console.error('请设置组件的id="canvas-drag"!!!');
-  } else {
-      return CanvasDrag().changeTextColor(color);
-  }
-};
-
 export default CanvasDrag;

@@ -34,21 +34,27 @@
         <view class="sheet-text-1" catchtap="doChooseImage" data-type="camera">拍照</view>
         <view class="sheet-text-2" catchtap="doChooseImage" data-type="camera">立即拍摄所需的照片</view>
       </view>
-      <view class="sheet-icon"><image catchtap="doChooseImage" data-type="camera" src="../../../images/photo-gray.png"></image></view>
+      <view class="sheet-icon">
+        <text catchtap="doChooseImage" data-type="camera" class="iconfont icon-zhaoxiangji"></text>
+      </view>
     </view>
     <view class="action-sheet-item" bindtap="doChooseImage" data-type="album">
       <view class="sheet-text">
         <view class="sheet-text-1" catchtap="doChooseImage" data-type="album">相册</view>
         <view class="sheet-text-2" catchtap="doChooseImage" data-type="album">选择手机相册中的图片</view>
       </view>
-      <view class="sheet-icon"><image catchtap="doChooseImage" data-type="album" src="../../../images/album-gray.png"></image></view>
+      <view class="sheet-icon">
+        <text catchtap="doChooseImage" data-type="album" class="iconfont icon-xiangcetupian"></text>
+      </view>
     </view>
     <view class="action-sheet-item" bindtap="doChooseImage" data-type="talk">
       <view class="sheet-text">
         <view class="sheet-text-1" catchtap="doChooseImage" data-type="talk">导入</view>
         <view class="sheet-text-2" catchtap="doChooseImage" data-type="talk">从微信聊天记录中导入照片</view>
       </view>
-      <view class="sheet-icon"><image catchtap="doChooseImage" data-type="talk" src="../../../images/talk-gray.png"></image></view>
+      <view class="sheet-icon">
+        <text catchtap="doChooseImage" data-type="talk" class="iconfont icon-web-icon-"></text>
+      </view>
     </view>
   </view>
 </custom-action-sheet>

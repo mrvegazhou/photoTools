@@ -1,5 +1,11 @@
 page{
     --primary-color: #69a794; /*梧枝绿*/
-    --primary-light-gray-color: #b2bbbe; /*星灰*/
-    --primary-dark-gray-color: #74787a; /*嫩灰*/
+    --primary-light-gray-color: #8a988e; /*明灰*/
+    --primary-dark-gray-color: #5e616d; /*鱼尾灰*/
+    --primary-white: #fff;
+    --primary-text-color: #333;
+    --primary-border-color: #ccc;
+    --primary-select-bg: #aec4b7; /* #aec4b7 淡灰绿*/
+    --primary-font-size: 26rpx;
+    --primary-icon-size: 50rpx;
 }
