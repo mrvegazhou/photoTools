@@ -16,7 +16,7 @@
       <text class="icon-item iconfont icon-tuceng {{menu.menuShow=='layer'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='layer'?'menu-select':''}}">图层</text>
     </view>
   </view>
-  <!--二级菜单-->
+  <!--加图二级菜单-->
   <view class="tool-children" style="display: {{menu.menuShow=='img' ? 'block' : 'none'}};left:{{menu.menuShowLeft}}rpx;">
     <view class="section-title">
       选择图片:
@@ -72,12 +72,12 @@
         </view>
         <view class="edit-font-bold">
           <text class="iconfont icon-cuti {{itemText.css.fontWeight=='bold'?'checked':''}}">粗体</text>
-          <text class="iconfont icon-zitixieti" {{itemText.css.textStyle=='italic'?'checked':''}}">斜体</text>
-          <text class="iconfont icon-xiahuaxian" {{itemText.css.textDecoration=='underline'?'checked':''}}">下划线</text>
-          <text class="iconfont icon-zitishanchuxian" {{itemText.css.textDecoration=='line-through'?'checked':''}}">删除线</text>
-          <text class="iconfont icon-directionhorizontal" {{itemText.css.textVertical==true?'checked':''}}">方向</text>
-          <text class="iconfont icon-juzhong" {{itemText.css.fontWeight=='bold'?'checked':''}}">居中</text>
-          <text class="iconfont icon-zijianju" {{itemText.css.fontWeight=='bold'?'checked':''}}">间距</text>
+          <text class="iconfont icon-zitixieti {{itemText.css.textStyle=='italic'?'checked':''}}">斜体</text>
+          <text class="iconfont icon-xiahuaxian {{itemText.css.textDecoration=='underline'?'checked':''}}">下划线</text>
+          <text class="iconfont icon-zitishanchuxian {{itemText.css.textDecoration=='line-through'?'checked':''}}">删除线</text>
+          <text class="iconfont icon-directionhorizontal {{itemText.css.textVertical==true?'checked':''}}">方向</text>
+          <text class="iconfont icon-juzhong {{itemText.css.fontWeight=='bold'?'checked':''}}">居中</text>
+          <text class="iconfont icon-zijianju {{itemText.css.fontWeight=='bold'?'checked':''}}">间距</text>
         </view>
       </view>
       <!-- 透明度 -->
@@ -106,6 +106,19 @@
         <text class="icon-item iconfont icon-quxiao1" bindtap="editTxtCancel"></text>
       </view>
     </view>
+  </view>
+  <!-- 裁剪工具 -->>
+  <view class="img-edit-clip" wx:if="{{menu.menuShow=='clip'}}">
+    <clipper 
+          class="clip-node"
+          src="{{clipper.src}}"
+          rotate="{{clipper.rotate}}"
+          bindimgUrl="getUrl"
+        ></clipper>
+
+        <view class="edit-clip-foot">
+        <button size="mini" bindtap="chooseImage">选择照片</button>
+      </view>
   </view>
   <!--图层编辑层-->
   <scroll-view scroll-y class="layer-float" style="display: {{menu.menuShow=='layer' ? 'block' : 'none'}};">

@@ -1,6 +1,6 @@
 {
   "usingComponents": {
-    "canvas-drag": "/component/canvas-drag/index",
-    "scale": "/component/axis-ruler/index"
+    "clipper": "/component/clipper/index",
+    "image-cropper": "/component/image-cropper/image-cropper"
   }
 }

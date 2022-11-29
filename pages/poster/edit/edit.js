@@ -32,6 +32,14 @@ Page({
         //色相控制条的位置
         barY: 0
       },
+      // 裁剪
+      clipper: {
+        src: '',
+        width: 0,
+        height: 0,
+        screenRatio: 0,
+        rotate: 0
+      },
       //字体菜单下拉框
       fontFamilySelect: ['最新发布', '推荐排序', '租金由低到高', '租金由高到低', '面积由小到大', '面积由大到小'],
       fontFamilyIndex: 0,
@@ -61,7 +69,7 @@ Page({
         textAlign: 'center',
         textStyle: 'normal',
         textDecoration: '',
-        textVertical: false
+        textVertical: false,
       }, 
       type:'text', 
       text:''
@@ -95,7 +103,6 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
-    
   },
 
   onHandelCancel() {
@@ -187,6 +194,19 @@ Page({
       case 'txt':
         menu.secondMenu = 'txt.edit'
         break;
+      case 'clip':
+        const screenRatio = 750 / wx.getSystemInfoSync().screenWidth;
+        const navBarHeight = wx.getSystemInfoSync().statusBarHeight + 44;
+        this.setData({
+          clipper: {
+            src: '',
+            width: wx.getSystemInfoSync().windowWidth,
+            height: wx.getSystemInfoSync().windowHeight - 150 - navBarHeight,
+            screenRatio: screenRatio,
+            rotate: 0
+          }
+        })
+        break;
       default:
         menu.secondMenu = ''
     }
@@ -194,6 +214,7 @@ Page({
     menu.menuShowLeft = left+5
     this.setData({menu: menu})
   },
+
   // 加图...
   getPhotos(e) {
     const type = e.currentTarget.dataset['type'];
@@ -277,6 +298,9 @@ Page({
       case 'txt.css':
         menu.secondMenu = 'txt.css'
         break;
+      case 'txt.opacity':
+        menu.secondMenu = 'txt.opacity'
+        break;
     }
     this.setData({menu: menu})
   },
@@ -303,4 +327,22 @@ Page({
     })
   },
 
+  //-----------------------------------裁剪动作----------------------------------------------------//
+  chooseImage() {
+    let _self = this;
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['original', 'compressed'],
+      sourceType: ['album', 'camera'],
+      success (res) {
+        // tempFilePath可以作为img标签的src属性显示图片
+        const tempFilePaths = res.tempFilePaths[0];
+        let clipperTmp = _self.data.clipper;
+        clipperTmp.src = tempFilePaths;
+        _self.setData({
+          clipper: clipperTmp
+        })
+      }
+    })
+  },
 })

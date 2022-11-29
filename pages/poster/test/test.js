@@ -36,10 +36,20 @@ Page({
       font: '#404040',
       fontColor: '#404040',
       fontSize: 8
-    }
+    },
+
+
+    // 裁剪
+    clipper: {
+      src: './img/1.jpeg',
+      width: 0,
+      height: 0,
+      screenRatio: 0,
+      rotate: 0
+    },
   },
   // 页面初始化
-  onLoad: function(options) {
+  onLoad2: function(options) {
     index = 0, cars = [], carId = 0;
 
 
@@ -381,5 +391,42 @@ Page({
     this.setData({
       carList: cars
     })
-  }
+  },
+
+  chooseImage() {
+    let _self = this;
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['original', 'compressed'],
+      sourceType: ['album', 'camera'],
+      success (res) {
+        // tempFilePath可以作为img标签的src属性显示图片
+        const tempFilePaths = res.tempFilePaths[0];
+        // let clipperTmp = _self.data.clipper;
+        // clipperTmp.src = tempFilePaths;
+        // _self.setData({
+        //   clipper: clipperTmp
+        // })
+
+        const cropper = _self.selectComponent("#image-cropper-node");
+        cropper.init({
+            imgPath: tempFilePaths,  //imgPath是需要裁剪图片的图片路径，只支持本地或临时路径
+            success(res){
+                console.log(res) //res即裁剪成功后的图片临时路径
+            },
+            fail(error){
+                console.log(error) //有两种:cancel代表点击了叉，fail代表wx.canvasToTempFilePath生成图片失败
+            }        
+        });
+      }
+    })
+  },
+
+  setRotate() {
+    let { clipper } = this.data;
+    clipper.rotate = clipper.rotate === 270 ? 0 : clipper.rotate + 90
+    this.setData({
+      clipper: clipper
+    })
+  },
 })

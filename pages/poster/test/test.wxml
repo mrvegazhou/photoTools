@@ -1,6 +1,14 @@
+<view>
+  <clipper id="image-cropper-node" style="width: 100%;height: 100%;"></clipper>
 
 
+        <view class="edit-clip-foot">
+        <button size="mini" bindtap="chooseImage">选择照片</button>
+        <button class="rotate" size="mini" bindtap="setRotate">旋转</button>
+      </view>
+</view>
 
-
-<!-- 标尺-->
-<scale min="0" max="200" int="{{false}}" single="10" h="8" styles="{{styles}}" id="weight"></scale>
+<!-- <view style="display: flex;flex-direction: column;flex-direction: column;position: relative;">
+  <image-cropper id="image-cropper-node" style="width: 100%;height: 100%;"></image-cropper>
+  <button size="mini" bindtap="chooseImage">选择照片2</button>
+</view> -->

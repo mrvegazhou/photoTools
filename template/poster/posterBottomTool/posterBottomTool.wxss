@@ -289,4 +289,19 @@
   margin: 0 30rpx 23rpx 0;
   width: 120rpx;
 }
+.text-edit-pop .text-edit-opacity{
+  margin: 80rpx;
+}
 /* 文字编辑层 end */
+
+/* 裁剪样式 begin */
+.img-edit-clip{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.edit-clip-foot{
+  bottom: 200rpx;
+}
+/* 裁剪样式 end */
