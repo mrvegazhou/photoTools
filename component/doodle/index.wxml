@@ -1,0 +1,108 @@
+<view class="doodle-edit-pop">
+  <view class="doodle-board">
+    <!--画板-->
+    <view class="doodle-paint">
+      <view class="{{canvasHidden?'canvas-left':''}}">
+        <canvas type="2d" 
+                id="doodle-canvas"
+                disable-scroll="false"
+                bindtouchstart="doodleTouchStart"
+                bindtouchmove="doodleTouchMove"
+                bindtouchend="doodleTouchEnd"
+                bindtap="doodleGetCanvas"
+                style="width:{{windowWidth}}px;height:{{windowHeight}}px;"
+        ></canvas>
+      </view>
+      <image hidden="{{!canvasHidden}}" bindtap="clickImg" class="imgCanvas" src="{{imgCanvas}}"
+            style="width:{{windowWidth}}px;height:{{windowHeight}}px;"></image>
+    </view>
+    <view class="doodle-tools">
+      <view class="doodle-icon {{name=='pen'?'menu-select':''}}">
+        <text data-type='pen' bindtap="doodleEidt" class="iconfont icon-bianjiqianbi"></text>
+        <text class="txt" data-type='pen' bindtap="doodleEidt">铅笔</text>
+      </view>
+      <view class="doodle-icon {{name=='eraser'?'menu-select':''}}">
+        <text data-type='eraser' bindtap="doodleEidt" class="iconfont icon-xiangpica"></text>
+        <text class="txt" data-type='eraser' bindtap="doodleEidt">橡皮</text>
+      </view>
+      <view class="doodle-icon {{name=='color'?'menu-select':''}}">
+        <text data-type='color' bindtap="doodleEidt" class="iconfont icon-XX_051"></text>
+        <text class="txt" data-type='color' bindtap="doodleEidt">颜色</text>
+      </view>
+      <view class="doodle-icon {{name=='rectangle'?'menu-select':''}}">
+        <text data-type='rectangle' bindtap="doodleEidt" class="iconfont icon-xingzhuang-juxing"></text>
+        <text class="txt" data-type='rectangle' bindtap="doodleEidt">矩形</text>
+      </view>
+      <view class="doodle-icon {{name=='circle'?'menu-select':''}}">
+        <text data-type='circle' bindtap="doodleEidt" class="iconfont icon-xingzhuang-tuoyuanxing"></text>
+        <text class="txt" data-type='circle' bindtap="doodleEidt">圆形</text>
+      </view>
+      <view class="doodle-icon {{name=='brush'?'menu-select':''}}">
+        <text data-type='brush' bindtap="doodleEidt" class="iconfont icon-shuazi"></text>
+        <text class="txt" data-type='brush' bindtap="doodleEidt">笔刷</text>
+      </view>
+      <view class="doodle-icon {{name=='colorPicker'?'menu-select':''}}">
+        <text data-type='colorPicker' bindtap="doodleEidt" class="iconfont icon-xiguan"></text>
+        <text class="txt" data-type='colorPicker' bindtap="doodleEidt">取色</text>
+      </view>
+    </view>
+    <view class="doodle-tool-children" hidden="{{!showTool}}">
+      <!--铅笔-->
+      <view class="text-center" wx:if="{{name == 'pen'}}">
+        <view class="pen-size-box" style="width:{{penSize}}px;height:{{penSize}}px;background:{{penColor}}"></view>
+        <slider bindchange="sliderPenchange" value="{{penSize}}" min="1" max="30" show-value activeColor="#69a794"
+        block-size="15"/>
+        <text class="">笔大小</text>
+      </view>
+      <view class="text-center" wx:if="{{name == 'eraser'}}">
+        <view class="pen-size-box" 
+          style="width:{{eraserSize}}px;height:{{eraserSize}}px;background:rgba(255,255,255,{{eraserOpacity}})"></view>
+        <view class="slider-box">
+          <text>尺寸:</text>
+          <slider bindchange="sliderPenchange" value="{{eraserSize}}" min="1" max="60" show-value activeColor="#69a794"
+          block-size="15"/>
+        </view>
+        <view class="slider-box">
+          <text>透明度:</text>
+          <slider bindchange="changeEraserOpacity" value="{{eraserOpacity}}" min="0.1" max="1" step="0.1"
+          show-value block-size="15" activeColor="#69a794"/>
+        </view>
+      </view>
+      <view class="text-center color-picker" wx:if="{{name == 'color'}}">
+        <view class="tab-wapper">
+          <view wx:for="{{colorPlateTabs}}" wx:for-item="cItem" 
+            wx:for-index="cIndex" wx:key="cIndex" class="{{cIndex==colorPlateSelect?'select':'tab-item'}}"
+            data-param="{{cIndex}}"
+            bindtap="changeColorPlate">{{cItem}}</view>
+        </view>
+        <color-plate wx:if="{{colorPlateSelect==1}}" colorData="{{penColor}}" bindchangecolor="changePenColor" 
+          alpha="{{transparency}}"></color-plate>
+        <color-picker2 wx:else colorData="{{penColor}}" bindchangecolor="changePenColor"></color-picker2>
+      </view>
+      <view class="brush-list" wx:if="{{name == 'brush'}}">
+        <view wx:for="{{brushList}}" wx:for-index="key" wx:key="key" data-param="{{key}}"
+          class="{{brushType==key?'select':'brush-btn'}}"
+          bindtap="setBrushType"> 
+          {{item}}
+        </view>
+      </view>
+      <view class="text-center" wx:if="{{name == 'circle'}}">
+        <view class="circle-switch">
+          <text style="margin-right: 10rpx;">填充颜色:</text>
+          <switch bindchange="changeFillColor" data-type="circle" color="#69a794" checked="{{isFillCircleColor}}" />
+        </view>
+        <view class="slider-box">
+          <text>半径:</text>
+          <slider bindchange="changeCircleRadius" value="{{radius}}" min="5" max="100" step="1"
+          show-value block-size="15" activeColor="#69a794"/>
+        </view>
+      </view>
+      <view class="text-center" wx:if="{{name == 'rectangle'}}">
+        <view class="circle-switch">
+          <text style="margin-right: 10rpx;">填充颜色:</text>
+          <switch bindchange="changeFillColor" data-type="rectangle" color="#69a794" checked="{{isFillRectColor}}"/>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

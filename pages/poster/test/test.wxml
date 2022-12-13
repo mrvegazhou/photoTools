@@ -1,5 +1,6 @@
 <view>
-  <clipper id="image-cropper-node" style="width: 100%;height: 100%;"></clipper>
+  <image-cropper id="image-cropper" bindload="cropperload" bindimageload="loadimage" bindtapcut="clickcut" width="{{clipper.width}}" height="{{clipper.height}}" imgSrc="{{clipper.src}}" angle="{{clipper.angle}}" >
+    </image-cropper>
 
 
         <view class="edit-clip-foot">

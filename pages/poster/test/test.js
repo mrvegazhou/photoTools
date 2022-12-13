@@ -41,11 +41,14 @@ Page({
 
     // 裁剪
     clipper: {
-      src: './img/1.jpeg',
-      width: 0,
-      height: 0,
-      screenRatio: 0,
-      rotate: 0
+      src: '',
+      width: 250, //宽度
+      height: 250, //高度
+      max_width: 300,
+      max_height: 300,
+      disable_rotate: true, //是否禁用旋转
+      disable_ratio: false, //锁定比例
+      limit_move: true, //是否限制移动
     },
   },
   // 页面初始化
@@ -391,6 +394,16 @@ Page({
     this.setData({
       carList: cars
     })
+  },
+
+  onLoad: function (options) {
+    this.cropper = this.selectComponent("#image-cropper");
+    this.setData({
+        src: options.imgSrc
+    });
+    if(!options.imgSrc){
+        this.cropper.upload(); //上传图片
+    }
   },
 
   chooseImage() {

@@ -8,4 +8,5 @@ page{
     --primary-select-bg: #aec4b7; /* #aec4b7 淡灰绿*/
     --primary-font-size: 26rpx;
     --primary-icon-size: 50rpx;
+    --primary-box-shadow: 5px 5px 5px #eee;
 }

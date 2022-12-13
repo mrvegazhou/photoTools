@@ -3,7 +3,8 @@
     "canvas-drag": "/component/canvas-drag/index",
     "scale": "/component/axis-ruler/index",
     "color-picker": "/component/color-picker/color-picker",
-    "clipper": "/component/clipper/index"
+    "doodle":"/component/doodle/index",
+    "image-cropper": "/component/image-cropper/image-cropper"
   },
   "disableScroll":true
 }

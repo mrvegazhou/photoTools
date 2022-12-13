@@ -1,6 +1,5 @@
 {
   "usingComponents": {
-    "clipper": "/component/clipper/index",
     "image-cropper": "/component/image-cropper/image-cropper"
   }
 }

@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "color-picker2": "/component/color-picker2/color-picker",
+    "color-plate":"/component/colorplate/color-plate"
+  }
+}

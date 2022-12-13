@@ -1,3 +1,5 @@
+import ImageCropper from '../../../component/image-cropper/cropper';
+import MyDoodleCpt from '../../../component/doodle/doodle';
 const app = getApp()
 var openStatus = true;
 Page({
@@ -30,15 +32,18 @@ Page({
           hex: '#000000'
         },
         //色相控制条的位置
-        barY: 0
+        barY: 0,
       },
       // 裁剪
-      clipper: {
+      cropper: {
         src: '',
-        width: 0,
-        height: 0,
-        screenRatio: 0,
-        rotate: 0
+        width: 250, //宽度
+        height: 250, //高度
+        max_width: 300,
+        max_height: 300,
+        disable_rotate: true, //是否禁用旋转
+        disable_ratio: false, //锁定比例
+        limit_move: true, //是否限制移动
       },
       //字体菜单下拉框
       fontFamilySelect: ['最新发布', '推荐排序', '租金由低到高', '租金由高到低', '面积由小到大', '面积由大到小'],
@@ -194,24 +199,17 @@ Page({
       case 'txt':
         menu.secondMenu = 'txt.edit'
         break;
-      case 'clip':
-        const screenRatio = 750 / wx.getSystemInfoSync().screenWidth;
-        const navBarHeight = wx.getSystemInfoSync().statusBarHeight + 44;
-        this.setData({
-          clipper: {
-            src: '',
-            width: wx.getSystemInfoSync().windowWidth,
-            height: wx.getSystemInfoSync().windowHeight - 150 - navBarHeight,
-            screenRatio: screenRatio,
-            rotate: 0
-          }
-        })
+      case 'cropper':
+        this.chooseImage()
         break;
+      case 'img':
+        menu.menuShowLeft = left+5
+      case 'doodle':
+        // MyDoodleCpt.initDoodle();
       default:
         menu.secondMenu = ''
     }
     menu.menuShow = menuShow
-    menu.menuShowLeft = left+5
     this.setData({menu: menu})
   },
 
@@ -337,12 +335,51 @@ Page({
       success (res) {
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths[0];
-        let clipperTmp = _self.data.clipper;
-        clipperTmp.src = tempFilePaths;
+        let temp = _self.data.menu;
+        temp.cropper.src = tempFilePaths;
         _self.setData({
-          clipper: clipperTmp
+          menu: temp
         })
       }
     })
   },
+  cropTop() {
+    ImageCropper.setTransform({y: -3});
+  },
+  cropBottom() {
+    ImageCropper.setTransform({y: 3});
+  },
+  cropLeft() {
+    ImageCropper.setTransform({x: -3});
+  },
+  cropRight() {
+    ImageCropper.setTransform({x: 3});
+  },
+  cropNarrow() {
+    ImageCropper.setTransform({scale: -0.02});
+  },
+  cropEnlarge() {
+    ImageCropper.setTransform({scale: 0.02});
+  },
+  cropRotateLeft() {
+    //在用户旋转的基础上旋转90°
+    ImageCropper.setAngle(90);
+  },
+  cropRotateRight() {
+    //在用户旋转的基础上旋转90°
+    ImageCropper.setAngle(-90);
+  },
+  cropImg() {
+    ImageCropper.getImg((res)=>{
+      
+    });
+    
+  },
+  cropRecover() {
+    const src = this.data.menu.cropper.src;
+    ImageCropper.pushImg(src);
+  },
+
+  //-----------------------------------涂鸦动作----------------------------------------------------//
+  
 })

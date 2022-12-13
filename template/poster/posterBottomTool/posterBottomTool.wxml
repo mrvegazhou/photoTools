@@ -1,3 +1,4 @@
+<import src="../../../template/poster/doodle/doodle.wxml" />
 <template name="posterBottomTool">
   <view class="toolbar-bottom" wx:if="{{menu.mainPageShow==='mainPage'}}">
     <view bindtap='showSecondMenu' data-type="img">
@@ -6,8 +7,8 @@
     <view bindtap='showSecondMenu' data-type="txt">
       <text class="icon-item iconfont icon-wenzi {{menu.menuShow=='txt'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='txt'?'menu-select':''}}">加字</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="clip">
-      <text class="icon-item iconfont icon-caijian {{menu.menuShow=='clip'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='clip'?'menu-select':''}}">裁剪</text>
+    <view bindtap='showSecondMenu' data-type="cropper">
+      <text class="icon-item iconfont icon-caijian {{menu.menuShow=='cropper'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='clip'?'menu-select':''}}">裁剪</text>
     </view>
     <view bindtap='showSecondMenu' data-type="doodle">
       <text class="icon-item iconfont icon-huabi {{menu.menuShow=='doodle'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='doodle'?'menu-select':''}}">涂鸦</text>
@@ -108,17 +109,25 @@
     </view>
   </view>
   <!-- 裁剪工具 -->>
-  <view class="img-edit-clip" wx:if="{{menu.menuShow=='clip'}}">
-    <clipper 
-          class="clip-node"
-          src="{{clipper.src}}"
-          rotate="{{clipper.rotate}}"
-          bindimgUrl="getUrl"
-        ></clipper>
-
-        <view class="edit-clip-foot">
-        <button size="mini" bindtap="chooseImage">选择照片</button>
+  <view class="img-edit-cropper" wx:if="{{menu.menuShow=='cropper'}}">
+    <image-cropper id="image-cropper" bindload="cropperload" bindimageload="loadimage" bindtapcut="clickcut" width="{{menu.cropper.width}}" height="{{menu.cropper.height}}" imgSrc="{{menu.cropper.src}}" angle="{{menu.cropper.angle}}" >
+    </image-cropper>
+    <view class="edit-cropper-foot">
+      <view bindtap="cropImg">截图</view>
+      <view class="cropper-op">
+        <text bindtap='cropLeft' class="iconfont icon-xiangzuosanjiaoxing"></text>
+        <view class="cropper-op-mid">
+          <text bindtap='cropTop' class="iconfont icon-xiangshangsanjiaoxing"></text>
+          <text bindtap='cropBottom' class="iconfont icon-xiangxiasanjiaoxing"></text>
+        </view>
+        <text bindtap='cropLeft' class="iconfont icon-xiangyousanjiaoxing"></text>
       </view>
+      <text bindtap='cropRotateRight' class="iconfont icon-xuanzhuan-2"></text>
+      <text bindtap="cropRotateLeft" class="iconfont icon-xuanzhuan-1"></text>
+      <text bindtap='cropEnlarge' class="iconfont icon-fangda"></text>
+      <text bindtap='cropNarrow' class="iconfont icon-suoxiao"></text>
+      <view style="margin-left:25rpx;" bindtap="cropRecover">恢复</view>
+    </view>
   </view>
   <!--图层编辑层-->
   <scroll-view scroll-y class="layer-float" style="display: {{menu.menuShow=='layer' ? 'block' : 'none'}};">
@@ -128,4 +137,9 @@
       <image src=""></image>
     </view>
   </scroll-view>
+  <!--涂鸦编辑层-->
+  <view wx:if="{{menu.menuShow=='doodle'}}">
+    <doodle id="myDoodleCpt"></doodle>
+  </view>
+
 </template>
