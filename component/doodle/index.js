@@ -49,6 +49,9 @@ Component({
 
     //圆半径
     radius: 50,
+
+    isSave: false,
+    isClear: false,
   },
 
   lifetimes: {
@@ -106,6 +109,16 @@ Component({
         case "circle":
           this.setDrawCircle()
           break;
+        case "brush":
+          // 默认笔刷是 星星
+          let type = 'star';
+          this.setBrush(type)
+          break;
+        case "colorPicker":
+          this.changeDataStatus({ isColorPicker: !this.data.isColorPicker })
+          break;
+        case "":
+          this.setData({name: "more"})
         default:
           break;
 
@@ -180,8 +193,8 @@ Component({
         isCircle: false,
         isPen: false,
         brushType: '',
-        // isFillCircleColor: false,
-        // isFillRectColor: false
+        isSave: false,
+        isClear: false
       }, obj)
       this.setData(data)
     },
@@ -192,6 +205,12 @@ Component({
     //设置笔刷
     setBrushType(e){
       let type = e.currentTarget.dataset.param;
+      this.setBrush(type)
+    },
+    setBrush(type){
+      if (type=="") {
+        return;
+      }
       let param = {}
       if (type != "colorstar"){
         param = Object.assign({},param,{
@@ -206,9 +225,6 @@ Component({
       });
       let brush = new brushStroke(Object.assign({},param,{type}), this.context)
       this.brushStroke = brush
-      this.setData({
-        showBrush: false
-      })
     },
     setFillStyle(color = this.data.penColor){
       this.context.fillStyle = color
@@ -310,12 +326,6 @@ Component({
         return
       }
       this.context.save();
-      // if (this.data.isRect){//存放绘图矩形
-        // let type = this.data.isFillRectColor?'fillRect':'rect';
-        // let startX1 = this.data.prevX, startY1 = this.data.prevY;
-        // let width = startX1 - this.startX, height = startY1 - this.startY;
-        // this.changeDrawArr({x:this.startX, y:this.startY, w:width, h:height, type})
-      // }
     },
 
     //开启圆形
@@ -323,49 +333,6 @@ Component({
       this.changeDataStatus({isCircle: !this.data.isCircle})
       this.setData({ showTool: false });
       this.showCanvas();
-    },
-
-    //存储绘图数组
-    changeDrawArr({ x, y, w, h, type = 'text', color = this.data.penColor, size = this.data.penSize, alpha=this.data.transparency}) {
-      let _this = this
-      let graph = new dragGraph(
-        {
-          x, y, w, h, type,
-          color, size, alpha,
-          drawStyle() {
-            let res = {}
-            switch (type) {
-              case 'rect':
-              case 'circle':
-                _this.setLineStyle(color,size)
-                break;
-              case 'fillRect':
-              case 'fillCircle':
-                _this.setFillStyle(color,alpha)
-                break;
-            }
-            return res
-          },
-          draw(x, y, w, h) {
-            switch (type) {
-              case 'rect':
-                _this.drawRectGraph(x, y, w, h)
-                break;
-              case 'fillRect':
-                _this.drawRectGraph(x, y, w, h, true)
-                break;
-              case 'circle':
-                _this.drawCircleHandler(x, y)
-                break;
-              case 'fillCircle':
-                _this.drawCircleHandler(x, y, true);
-                break;
-            }
-          },
-        },
-        this.context
-      )
-      // this.drawArr.push(graph);
     },
     
     //画圆形
@@ -384,27 +351,7 @@ Component({
       this.context.save()
       let newW = startX1 - this.startX, newH = startY1 - this.startY;
       let prevStartX = this.startX, prevStartY = this.startY
-      if (newW < 0) {
-        prevStartX += 1
-      } else {
-        prevStartX -= 1
-      }
-      if (newH < 0) {
-        prevStartY += 1
-      } else {
-        prevStartY -= 1
-      }
       let prevWidth = this.data.prevX - prevStartX, prevHeight = this.data.prevY - prevStartY;
-      if (prevWidth < 0) {
-        prevWidth -= 1
-      } else {
-        prevWidth += 1
-      }
-      if (prevHeight < 0) {
-        prevHeight -= 1
-      } else {
-        prevHeight += 1
-      }
       this.context.clearRect(prevStartX, prevStartY, prevWidth, prevHeight)//清除之前的矩形
       this.drawRectGraph(this.startX, this.startY, newW, newH)
       this.context.restore()
@@ -453,6 +400,17 @@ Component({
     },
     doodleGetCanvas() {
       this.setData({showTool: false, name: ''})
+
+      if (!this.data.isColorPicker) return;
+      var startX = e.detail.x;
+      var startY = e.detail.y;
+      let imgData = this.context.getImageData(startX, startY, 3, 3)
+      if (imgData) {
+        let data = imgData.data
+        let rgba = "rgba(" + data[0] + "," + data[1] + "," + data[2] + ",1)";
+        this.changeDataStatus({ isPen: true })
+        this.setData({penColor: rgba, transparency: 1})
+      }
     },
     //圆形 是否填充颜色
     changeFillColor(e){
@@ -466,6 +424,56 @@ Component({
     //圆形 半径
     changeCircleRadius(e) {
       this.setData({ radius: e.detail.value, isCircle: true, isRect: false })
+    },
+    moreOpt(e) {
+      let type = e.currentTarget.dataset.param;
+      if(type=='save') {
+        this.setData({isSave: true, isClear: false})
+      } else if(type=='clear')  {
+        this.setData({isClear: true, isSave: false})
+      }
+    },
+    //保存提示
+    confirmSave(){
+      this.saveAsImg();
+      this.setData({showTool: false, name:'', isSave: false, canvasHidden: false})
+    },
+    cancelSave(){
+      this.changeDataStatus()
+      this.setData({showTool: false, name:'', isSave: false, canvasHidden: false})
+    },
+    //保存图片
+    saveAsImg() {
+      wx.showLoading({
+        title: '生成图片中',
+        mask: true
+      })
+      this.saveCanvas().then(()=>{
+        wx.saveImageToPhotosAlbum({
+          filePath: this.data.imgCanvas,
+          success: (res) => {
+            wx.hideLoading()
+            wx.showToast({
+              title: '已保存到相册和海报中',
+              icon: 'success',
+              duration: 1500
+            })
+          },
+          fail: (err) => {
+            wx.hideLoading()
+            console.error(err)
+          }
+        })
+      })
+    },
+    confirmClear() {
+      this.changeDataStatus()
+      this.context.clearRect(0, 0, this.data.windowWidth, this.data.windowHeight);
+      this.setData({showTool: false, name:'', isClear: false, canvasHidden: false})
+    },
+    cancelClear(){
+      this.changeDataStatus()
+      this.setData({showTool: false, name:'', isClear: false, canvasHidden: false})
     },
   },
 });

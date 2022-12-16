@@ -20,7 +20,6 @@
 }
 .doodle-paint{
   height: 80%;
-  /* border: 1rpx solid var(--primary-light-gray-color); */
   background: #ffffff;
 }
 .doodle-board text{
@@ -31,23 +30,22 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   flex-wrap: wrap;
-  margin-top: 20rpx;
+  margin: 20rpx 20rpx 0 20rpx;
 }
 .doodle-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100rpx;
+  /* width: 90rpx; */
 }
 .doodle-icon .txt{
   font-size: 24rpx;
 }
 .doodle-tool-children{
   position:absolute;
-  /* border:1px solid var(--primary-color); */
   text-align:center;
   border-radius:3px;
   bottom: 20%;
@@ -106,7 +104,7 @@
   border-radius: 5rpx;
   background: var(--primary-select-bg);
 }
-.doodle-tool-children .brush-list{
+.doodle-tool-children .item-list{
   display: flex;
   flex-direction: row;
   justify-content:space-around;
@@ -121,7 +119,7 @@
   right:0;
   margin: 0 auto;
 }
-.doodle-tool-children .brush-btn{
+.doodle-tool-children .item-btn{
   color: #fff; 
   font-size: 24rpx;
 }

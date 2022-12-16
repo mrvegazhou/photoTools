@@ -45,6 +45,9 @@
         <text data-type='colorPicker' bindtap="doodleEidt" class="iconfont icon-xiguan"></text>
         <text class="txt" data-type='colorPicker' bindtap="doodleEidt">取色</text>
       </view>
+      <view class="doodle-icon {{name=='more'?'menu-select':''}}">
+        <text data-type='more' bindtap="doodleEidt" class="iconfont icon-gengduo"></text>
+      </view>
     </view>
     <view class="doodle-tool-children" hidden="{{!showTool}}">
       <!--铅笔-->
@@ -79,9 +82,9 @@
           alpha="{{transparency}}"></color-plate>
         <color-picker2 wx:else colorData="{{penColor}}" bindchangecolor="changePenColor"></color-picker2>
       </view>
-      <view class="brush-list" wx:if="{{name == 'brush'}}">
+      <view class="item-list" wx:if="{{name == 'brush'}}">
         <view wx:for="{{brushList}}" wx:for-index="key" wx:key="key" data-param="{{key}}"
-          class="{{brushType==key?'select':'brush-btn'}}"
+          class="{{brushType==key?'select':'item-btn'}}"
           bindtap="setBrushType"> 
           {{item}}
         </view>
@@ -103,6 +106,22 @@
           <switch bindchange="changeFillColor" data-type="rectangle" color="#69a794" checked="{{isFillRectColor}}"/>
         </view>
       </view>
+      <view class="item-list" wx:if="{{name == 'more'}}">
+        <view class="{{isSave?'select':'item-btn'}}" bindtap="moreOpt" data-param="save"> 
+          <text class="iconfont icon-baocun"></text>
+          保存画布
+        </view>
+        <view class="{{isClear?'select':'item-btn'}}" bindtap="moreOpt" data-param="clear"> 
+          <text class="iconfont icon-delete"></text>
+          清空画布
+        </view>
+      </view>
     </view>
   </view>
 </view>
+<modal hidden="{{!isSave}}" title="提示" confirm-text="保存" cancel-text="取消" bindcancel="cancelSave" bindconfirm="confirmSave" no-cancel="{{nocancel}}">
+是否保存当前图片？
+</modal>
+<modal hidden="{{!isClear}}" title="提示" confirm-text="清空" cancel-text="取消" bindcancel="cancelClear" bindconfirm="confirmClear" no-cancel="{{nocancel}}">
+是否清空当前画布？
+</modal>
