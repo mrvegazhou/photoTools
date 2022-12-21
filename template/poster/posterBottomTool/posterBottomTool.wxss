@@ -176,6 +176,7 @@
 .text-edit-pop .btn text{
   width: 200rpx;
   text-align: center;
+  margin-top: 10rpx;
 }
 
 /* color picker */
@@ -184,14 +185,15 @@
   width: 100%;
   overflow: visible;
   z-index: 99992;
+  background-color: #fff;
 }
 .color-picker-view .color-picker-content {
   height: 55vh;
-  width: 100%;
-  background-color: #fff;
+  justify-content: space-around;
+  align-items: center;
   display: flex;
+  text-align: center;
   flex-direction: column;
-  justify-content: center;
 }
 .color-picker-view .color-picker-content .current-color {
   width: 100%;
@@ -203,8 +205,7 @@
   justify-content: center;
 }
 .color-picker-view .color-picker-content .icon-item {
-  margin: 0 auto;
-  padding: 10rpx;
+  margin: 0 auto 20rpx auto;
 }
 /* 字体样式下拉框 */
 .text-edit-pop .text-edit-css{

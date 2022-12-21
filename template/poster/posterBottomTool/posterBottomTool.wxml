@@ -1,4 +1,4 @@
-<import src="../../../template/poster/doodle/doodle.wxml" />
+<import src="../camera/camera.wxml" />
 <template name="posterBottomTool">
   <view class="toolbar-bottom" wx:if="{{menu.mainPageShow==='mainPage'}}">
     <view bindtap='showSecondMenu' data-type="img">
@@ -49,7 +49,7 @@
       <!--拾色器-->
       <view class="color-picker-view" wx:if="{{menu.showColorPicker}}">
         <view class="color-picker-content">
-          <color-picker class="color-picker" colorData="{{menu.colorData}}" rpxRatio="{{menu.rpxRatio}}" bindchangecolor="onChangeColor"></color-picker>
+          <color-picker2 colorData="{{menu.colorData.color}}" bindchangecolor="onChangeColor"></color-picker2>
           <text bindtap="closeColorPicker" class="icon-item iconfont icon-queren1"></text>
         </view>
       </view>
@@ -58,18 +58,25 @@
         <view>
           <view class="edit-css-select">
             <text class="label">字体:</text>
-            <view class="edit-css-content" bindtap="showFontFamilySelect">{{menu.fontFamilyShowVal}}
-            <text class="iconfont {{menu.fontFamilyShow?'icon-shangla':'icon-xiala1'}}" style="color:#5e616d;"></text></view>
+            <view class="edit-css-content" bindtap="showFontFamilySelect">
+              <block wx:if="{{menu.fontFamilyShowVal=='系统默认字体'}}">
+                <text>样例 ABC 123</text>
+              </block>
+              <block wx:else>
+                <text style="font-family:{{menu.fontFamilyShowVal}};">样例 ABC 123</text>
+              </block>
+              <text class="iconfont {{menu.fontFamilyShow?'icon-shangla':'icon-xiala1'}}" style="color:#5e616d;"></text>
+            </view>
           </view>
           <view class="edit-css {{menu.fontFamilyShow ? 'show':'disappear'}}">
             <view wx:for="{{menu.fontFamilySelect}}" wx:key="index" bindtap='selectFontFamily' data-index="{{index}}" class="line {{menu.fontFamilyIndex==index?'checked':''}}">
-              {{item}}
+              <text style="font-family:{{item}};white-space:nowrap;overflow:hidden;">{{item}}</text>
             </view>
           </view>
         </view>
         <view class="eidt-font-size">
           <text class="label">字号:</text>
-          <slider class="slider" block-size="15" activeColor="#69a794" bindchange="changeFontSize" min="1" max="100" value="{{menu.sliderFontSize}}" show-value/>
+          <slider class="slider" block-size="15" activeColor="#69a794" bindchange="changeFontSize" min="1" max="100" value="{{itemText.css.fontSize}}" show-value/>
         </view>
         <view class="edit-font-bold">
           <text class="iconfont icon-cuti {{itemText.css.fontWeight=='bold'?'checked':''}}">粗体</text>
@@ -93,7 +100,7 @@
           <text class="iconfont icon-bianji">编辑</text>
         </view>
         <view class="item {{menu.secondMenu=='txt.color'?'select':''}}" bindtap="editText" data-type="txt.color">
-          <text class="iconfont icon-yanse" style="color:{{menu.colorData.pickerData.hex}}">颜色</text>
+          <text class="iconfont icon-yanse" style="color:{{menu.colorData.color}}">颜色</text>
         </view>
         <view class="item {{menu.secondMenu=='txt.css'?'select':''}}" bindtap="editText" data-type="txt.css">
           <text class="iconfont icon--zitiyangshi">样式</text>
@@ -141,5 +148,8 @@
   <view wx:if="{{menu.menuShow=='doodle'}}">
     <doodle id="myDoodleCpt"></doodle>
   </view>
-
+  <!--二级菜单照相功能-->
+  <view class="popbg" wx:if="{{menu.carema.showCamera}}" style="z-index: 99999;background: rgba(0, 0, 0, 0.9);">
+    <template is="cameraView" data="{{menu}}" />
+  </view>
 </template>

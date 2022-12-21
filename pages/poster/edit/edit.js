@@ -1,6 +1,25 @@
 import ImageCropper from '../../../component/image-cropper/cropper';
 import MyDoodleCpt from '../../../component/doodle/doodle';
+import CanvasDrag from '../../../component/canvas-drag/canvas-drag';
+const util = require("../../../utils/util");
 const app = getApp()
+const families =
+  [ "系统默认字体",
+    "'Courier New', Courier, monospace", 
+    "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif",
+    "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
+    "'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif",
+    "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    "'Times New Roman', Times, serif",
+    "'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif",
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+    "Arial, Helvetica, sans-serif",
+    "Cambria, Cochin, Georgia, Times, 'Times New Roman', serif",
+    "cursive",
+    "fantasy",
+    "Georgia, 'Times New Roman', Times, serif",
+    "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+  ]
 var openStatus = true;
 Page({
 
@@ -14,25 +33,9 @@ Page({
       menuShowLeft: 0,
       secondMenu:'',
       showColorPicker: false, // 颜色选择器
-      rpxRatio: 1, //此值为你的屏幕CSS像素宽度/750，单位rpx实际像素
       colorData: {
-        //基础色相，即左侧色盘右上顶点的颜色，由右侧的色相条控制
-        hueData: {
-          colorStopRed: 255,
-          colorStopGreen: 0,
-          colorStopBlue: 0,
-        },
-        //选择点的信息（左侧色盘上的小圆点，即你选择的颜色）
-        pickerData: {
-          x: 0, //选择点x轴偏移量
-          y: 480, //选择点y轴偏移量
-          red: 0,
-          green: 0,
-          blue: 0,
-          hex: '#000000'
-        },
-        //色相控制条的位置
-        barY: 0,
+        transparency: 1,
+        color: '#333333',
       },
       // 裁剪
       cropper: {
@@ -46,12 +49,22 @@ Page({
         limit_move: true, //是否限制移动
       },
       //字体菜单下拉框
-      fontFamilySelect: ['最新发布', '推荐排序', '租金由低到高', '租金由高到低', '面积由小到大', '面积由大到小'],
+      fontFamilySelect: families,
       fontFamilyIndex: 0,
       fontFamilyShow: false,
       fontFamilyShowVal: '',
-      sliderFontSize: 0,
+
+      //照相
+      camera: {
+        showCamera: false,
+        cameraPos: 'back',
+        cameraHasImg: false,
+        imgUrl: '',
+        imgWidth: 0,
+        imgHeight: 0,
+      },
     },
+    //画布标尺
     styles: {
       line: '#dbdbdb',
       bginner: '#fbfbfb',
@@ -67,7 +80,8 @@ Page({
       css:{
         top: 0,
         left: 0,
-        fontSize: 0,
+        fontSize: 20,
+        fontFamily: '',
         color: '',
         fontWeight: 'normal',
         background: '',
@@ -83,16 +97,10 @@ Page({
       type: 'image',
       url:'',
       css: {
-        width: "",
-        height: "",
       }
     },
-    items: {
-      item_1: {
-        type:'image', px:0, py:0, width: 10, height: 10, ox: 5, oy: 5, degree: 90
-      }
-    },
-
+    items: [
+    ],
   },
 
   /**
@@ -216,113 +224,65 @@ Page({
   // 加图...
   getPhotos(e) {
     const type = e.currentTarget.dataset['type'];
-    var menu = this.data.menu
-    menu.secondMenu = type
-    this.setData({menu: menu})
-    switch(type) {
-      case 'img.album':
-
-        break;
+    const that = this
+    this.setData({'menu.secondMenu': type})
+    if(type==='img.camera') {
+      wx.getSetting({
+        success(res) {
+          if (res.authSetting['scope.camera']) {
+            that.setData({'menu.carema.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':''});
+          } else {
+            wx.authorize({
+							scope: 'scope.camera',
+							success () {
+                wx.showToast({ title: '获取拍照权限成功', icon: 'none', duration: 2000 });
+							},
+							fail(){
+                util.openConfirm();
+							}
+            })
+          }
+        },
+				fail () {
+					wx.showToast({ title: '获取拍照权限失败', icon: 'none', duration: 2000 });
+				}
+      })
+    } else if(type==='img.album') {
+        //选择打开相册
+        wx.chooseMedia({
+          count: 1,
+          mediaType: 'image',
+          sourceType: ['album'],
+          sizeType: 'original',
+          camera: 'back',
+          success:(res)=> {
+            that.addItemImg(res.tempFiles[0].tempFilePath);
+            that.setData({'menu.menuShow': '', 'menu.secondMenu':''});
+          },
+          fail () {
+            wx.showToast({ title: '取消选择', icon: 'none', duration: 2000 });
+          }
+        })
+    } else if(type==='img.talk') {
+      wx.chooseMessageFile({
+        count: 1,
+        type: 'image',
+        success (res) {
+          // tempFilePath可以作为 img 标签的 src 属性显示图片
+          const tempFilePaths = res.tempFiles
+          that.addItemImg(tempFilePaths[0].path);
+          that.setData({'menu.menuShow': '', 'menu.secondMenu':''});
+        }
+      })
+    } else {
+      wx.showToast({ title: '敬请期待', icon: 'none', duration: 2000 })
     }
   },
-  // 编辑文字...
-  closeTxtEdit() {
-    var menu = this.data.menu
-    menu.menuShow = ''
-    this.setData({menu: menu})
-  },
-  // 编辑文字确认
-  editTxtOk(e) {
-    let item = this.data.itemText
-    item.text = ''
-  },
-  // 编辑文字取消
-  editTxtCancel(e) {
-    let item = this.data.itemText
-    item.text = ''
+  // 在海报组件中调用隐藏主菜单
+  hideMenu() {
     this.setData({
-      item: item
-    })
-    this.closeTxtEdit()
-  },
-  textAreaBlur(e){
-    let item = this.data.itemText
-    item.text = e.detail.value
-    this.setData({
-      item: item
-    })
-  },
-  //选择改色时触发（在左侧色盘触摸或者切换右侧色相条）
-  onChangeColor(e) {
-    //返回的信息在e.detail.colorData中
-    var menu = this.data.menu
-    var item = this.data.itemText
-    menu.colorData = e.detail.colorData
-    item.css.color = e.detail.colorData.pickerData.hex
-    this.setData({
-      menu: menu,
-      itemText: item
-    })
-  },
-  //关闭拾色器
-  closeColorPicker() {
-    var menu = this.data.menu
-    menu.showColorPicker = false
-    this.setData({
-      menu: menu
-    })
-  },
-  // 设置屏幕宽度比例
-	setRpxRatio () {
-		const _this = this
-		wx.getSystemInfo({
-			success(res) {
-				_this.setData({ rpxRatio: res.screenWidth / 750 })
-			}
-		})
-  },
-  // 编辑文字样式
-  editText(e) {
-    const type = e.currentTarget.dataset['type'];
-    var menu = this.data.menu
-    switch (type) {
-      case 'txt.edit':
-        menu.secondMenu = 'txt.edit'
-        break;
-      case 'txt.color':
-        menu.showColorPicker = true
-        menu.secondMenu = 'txt.color'
-        break;
-      case 'txt.css':
-        menu.secondMenu = 'txt.css'
-        break;
-      case 'txt.opacity':
-        menu.secondMenu = 'txt.opacity'
-        break;
-    }
-    this.setData({menu: menu})
-  },
-  // 选择字体
-  selectFontFamily() {
-
-  },
-  // 获取选中的字体
-  getFontFamilySelect() {
-    let menu = this.data.menu
-    let fontFamilySelect = menu.fontFamilySelect
-    let fontFamilyIndex = menu.fontFamilyIndex
-    menu.fontFamilyShowVal = fontFamilySelect[fontFamilyIndex]
-    this.setData({
-      menu:menu
-    })
-  },
-  // 显示下拉框
-  showFontFamilySelect() {
-    let menu = this.data.menu
-    menu.fontFamilyShow = !menu.fontFamilyShow
-    this.setData({
-      menu:menu
-    })
+      'menu.menuShow': ''
+    });
   },
 
   //-----------------------------------裁剪动作----------------------------------------------------//
@@ -381,5 +341,135 @@ Page({
   },
 
   //-----------------------------------涂鸦动作----------------------------------------------------//
-  
+
+  //-----------------------------------照相 begin-------------------------------------------------//
+  //相机前后镜头转换
+  changeCameraPos() {
+    this.setData({
+      'menu.camera.cameraPos': this.data.menu.camera.cameraPos == "back" ? "front" : "back"
+    })
+  },
+  //关闭相机
+  closeCamera() {
+    this.setData({
+      'menu.carema.showCamera': false,
+    })
+  },
+  // 照相
+  takeCameraImg() {
+    var context = wx.createCameraContext()
+    // 照相功能
+    context.takePhoto({
+      quality: "high",
+      success: res => {
+        this.setData({
+          'menu.camera.imgUrl': res.tempImagePath,
+          'menu.camera.imgWidth': res.width,
+          'menu.camera.imgHeight': res.height,
+          'menu.camera.cameraHasImg': true
+        })
+        this.addItemImg(res.tempImagePath);
+      },
+      fail: () => {
+        wx.showToast({
+          title: '出现错误',
+        })
+      }
+    })
+  },
+  goCameraRepeat(){
+    this.setData({
+      'menu.camera.cameraHasImg':false,
+      'menu.camera.imgUrl':''
+    })
+  },
+  //-----------------------------------照相 end---------------------------------------------------//
+  //-----------------------------------画布 begin-------------------------------------------------//
+  addItemImg(imgUrl) {
+    if(imgUrl=='') return;
+    this.setData({ 'itemImg.url': imgUrl })
+    this.setData({
+      items: [this.data.itemImg]
+    });
+  },
+  //-----------------------------------画布 end---------------------------------------------------//
+  //-----------------------------------文字编辑 begin-------------------------------------------------//
+  addTextItem() {
+
+  },
+  // 编辑文字...
+  closeTxtEdit() {
+    this.setData({'menu.menuShow': ''})
+  },
+  // 编辑文字确认
+  editTxtOk(e) {
+    let item = this.data.itemText
+    item.text = ''
+  },
+  // 编辑文字取消
+  editTxtCancel(e) {
+    this.setData({
+      'itemText.text': ''
+    })
+    this.closeTxtEdit()
+  },
+  textAreaBlur(e){
+    this.setData({
+      'itemText.text': e.detail.value
+    })
+  },
+  //选择改色时触发
+  onChangeColor(e) {
+    let rgba = e.detail.rgba;
+    this.setData({
+      'menu.colorData.color': rgba,
+      'menu.colorData.transparency': e.detail.alpha || 1,
+      'itemText.css.color': rgba
+    })
+  },
+  //关闭拾色器
+  closeColorPicker() {
+    this.setData({
+      'menu.showColorPicker': false
+    })
+  },
+  // 编辑文字样式
+  editText(e) {
+    const type = e.currentTarget.dataset['type'];
+    switch (type) {
+      case 'txt.color':
+        this.setData({'menu.showColorPicker': true})
+        break;
+    }
+    this.setData({'menu.secondMenu': type})
+  },
+  // 选择字体
+  selectFontFamily(e) {
+    let index = e.currentTarget.dataset['index'];
+    this.setData({
+      'menu.fontFamilyShowVal': families[index],
+      'menu.fontFamilyIndex': index,
+      
+    });
+    if(index>0) {
+      this.setData({'itemText.css.fontFamily': families[index]})
+    }
+  },
+  // 获取选中的字体
+  getFontFamilySelect() {
+    let menu = this.data.menu
+    let fontFamilySelect = menu.fontFamilySelect
+    let fontFamilyIndex = menu.fontFamilyIndex
+    menu.fontFamilyShowVal = fontFamilySelect[fontFamilyIndex]
+    this.setData({
+      menu:menu
+    })
+  },
+  // 显示下拉框
+  showFontFamilySelect() {
+    this.setData({
+      'menu.fontFamilyShow': !this.data.menu.fontFamilyShow
+    })
+  },
+  //-----------------------------------文字编辑 end---------------------------------------------------//
 })

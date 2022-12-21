@@ -466,6 +466,10 @@ Component({
         })
       })
     },
+    // 移动到海报窗口
+    move2Post() {
+      return this.data.imgCanvas;
+    },
     confirmClear() {
       this.changeDataStatus()
       this.context.clearRect(0, 0, this.data.windowWidth, this.data.windowHeight);

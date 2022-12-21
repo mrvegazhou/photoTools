@@ -1,12 +1,13 @@
 const util = require("../../utils/util");
 
-var items = new Array();
-var index = 0;
+var list = new Array();
+var index = 0, itemId = 0;
 var MIN_WIDTH = 20;
 var MIN_FONTSIZE = 10;
-const SCALE_MAX = 1, SCALE_MIN = 0.5;      // 缩放比例范围
+const SCALE_MAX = 2.5, SCALE_MIN = 0.5;      // 缩放比例范围
 const MARGIN_X = 0, MARGIN_Y = 110;         // 可移动边界偏移量
 const canvasPre = 1;                        // 展示的canvas占mask的百分比（用于设置图片质量）
+const maxWidth = 200, maxHeight = 200; // 设置最大宽高
 
 Component({
 
@@ -18,22 +19,18 @@ Component({
    * 组件的属性列表
   */
   properties: {
-    item: {
+    items: {
       type: Object,
-      value: {},
-      observer: 'onItemChange',
+      value: [],
+      observer: 'onItemsChange',
+    },
+    bgImg: {
+      type: String,
+      value: '',
     },
     bgColor: {
       type: String,
       value: '',
-    },
-    bgImage: {
-      type: {},
-      value: '',
-    },
-    enableUndo: {
-      type: Boolean,
-      value: false,
     },
     height: {
       type: Number,
@@ -42,7 +39,7 @@ Component({
     width: {
       type: Number,
       value: 0,
-    }
+    },
   },
 
   /**
@@ -51,10 +48,13 @@ Component({
   data: {
     history: [],
     itemList: [],
-    showCanvas: false,
     canvasTemImg: null,
     canvasHeight: null,
     canvasWidth: null,
+    bgData: {},
+    bgCenter: false,
+    isScale: true,  // 是否支持缩放
+    syncScale: 1,   // 同步缩放比例（同步场地与车辆图片的缩放）
   },
 
   lifetimes: {
@@ -85,6 +85,7 @@ Component({
           })
         }
       });
+      this.initBg(this.bgImg, this.bgColor);
     }
   },
 
@@ -92,9 +93,131 @@ Component({
    * 组件的方法列表
    */
   methods: {
-    toPx(rpx) {
-      return rpx * this.rpx;
+    // 初始化背景
+    initBg(bgImg, bgColor) {
+      let data = {}
+      if (bgImg!='') {
+        wx.getImageInfo({
+          src: bgImg,
+          success: res => {
+            // 初始化数据
+            data.width = res.width; //宽度
+            data.height = res.height; //高度
+            data.bgImg = imgSrc;
+            data.top = 0; //top定位
+            data.left = 0; //left定位
+            // 图片中心坐标
+            data.x = data.left + data.width / 2;
+            data.y = data.top + data.height / 2;
+            data.scale = 1; //scale缩放
+            // 计算最佳缩放
+            let scale = 1;
+            if(this.sysData.windowWidth <= data.width){
+              scale = this.sysData.windowWidth / data.width;
+              data.height = data.height * scale
+              data.width = this.sysData.windowWidth
+            }
+            if(this.sysData.windowHeight <= data.height){
+              scale = this.sysData.windowHeight / data.height
+              data.width = data.width * scale
+              data.height = this.sysData.windowHeight
+            }
+            data.scale = scale;
+            this.setData({
+              bgData: data,
+              syncScale: scale
+            })
+          }
+        })
+      } else if (bgColor!='') {
+        data.bgColor = bgColor;
+        this.setData({
+          bgData: data
+        });
+      }
+      
     },
+    // 初始化图片数据
+    initItems(items) {
+      for (let i = 0; i < items.length; i++) {
+        let item = items[i]
+        // 初始化标志，判断是否读取已有item
+        let flag = Boolean(item)
+        let bgData = this.data.bgData
+        let data = {css:{}}
+        let that = this;
+        if(item.type=='image') {
+          wx.getImageInfo({
+            src: item.url,
+            success: res => {
+              // 初始化数据
+              data.id = itemId++;
+              data.url = item.url;
+              data.css.width = res.width; //item.css.width; //宽度
+              data.css.height = res.height; //item.css.height; //高度
+              var newHeight = res.height, newWidth = res.width;
+              if (data.css.width > maxWidth || data.css.height > maxHeight) { // 原图宽或高大于最大值就执行
+                if (data.css.width / data.css.height > maxWidth / maxHeight) { // 判断比n大值的宽或高作为基数计算
+                  newWidth = maxWidth;
+                  newHeight = Math.round(maxWidth * (data.css.height / data.css.width));
+                } else {
+                  newHeight = maxHeight;
+                  newWidth = Math.round(maxHeight * (data.css.width / data.css.height));
+                }
+              }
+              data.css.width = newWidth
+              data.css.height = newHeight
+              // 图片中心坐标
+              data.x =  (flag && JSON.stringify(bgData)!="{}") ? (bgData.x + item.relative_x * bgData.scale) : (data.css.width / 2)
+              data.y =  (flag && JSON.stringify(bgData)!="{}") ? (bgData.y + item.relative_y * bgData.scale) : (data.css.height / 2)
+              // 定位坐标
+              data.css.left = flag ? (data.x - data.css.width / 2) : 0; //left定位
+              data.css.top = flag ? (data.y - data.css.height / 2) : 0; //top定位
+              // data.scale = 1; //scale缩放
+              item.scale = 1;
+              data.scale = flag ? item.scale * that.data.syncScale : that.data.syncScale;
+              // data.oScale = 1; //控件缩放
+              data.oScale = 1 / data.scale;
+              data.angle = 0;
+              data.active = false; //选中状态
+              data.type = 'image';
+              list[list.length] = data;
+              that.setData({
+                itemList: list
+              })
+              console.log(this.data.itemList, '---s---')
+            }
+          })
+        } else if(item.type=='text') {
+          if (!item.text || typeof(item.text)=='undefined' || item.text=="") {
+            return
+          }
+          const textWidth = this.codeCtx.measureText(item.text).width;
+          const textHeight = item.css.fontSize + 10;
+          const x = n.left + textWidth / 2;
+          const y = n.top + textHeight / 2;
+          item = Object.assign(data, {
+            x: x,
+            y: y,
+            scale: flag ? item.scale * this.data.syncScale : this.data.syncScale,
+            angle: flag ? item.angle : 0,
+            active: false,
+            css:{
+              width: textWidth,
+              height: textHeight,
+              // 定位坐标
+              left: flag ? (data.x - data.css.width / 2) : 0,
+              top: flag ? (data.y - data.css.height / 2) : 0,
+            }
+          })
+          list[list.length] = item;
+          that.setData({
+            itemList: list
+          })
+        }
+      }
+    },
+
     initHistory() {
       this.data.history = [];
     },
@@ -112,70 +235,10 @@ Component({
     },
 
     // 使用组件的page触发data后执行
-    onItemChange(n, o) {
-      if (JSON.stringify(n) === '{}') return;
-      if (!n.top || !n.left) {
-        n.top = 30;
-        n.left = 30;
-      }
-      if (n.type==='image') {
-        var maxWidth = windowWidth, maxHeight = windowWidth; // 设置最大宽高
-        var newHeight = n.height, newWidth = n.width;
-        var F = 0.6
-        if (n.width > maxWidth || n.height > maxHeight) { // 原图宽或高大于最大值就执行
-          if (n.width / n.height > maxWidth / maxHeight) { // 判断比n大值的宽或高作为基数计算
-            newWidth = Math.round(maxWidth * F);
-            newHeight = Math.round(maxWidth * (n.height / n.width) * F);
-          } else {
-            newHeight = Math.round(maxHeight * F);
-            newWidth = Math.round(maxHeight * (n.width / n.height) * F);
-          }
-        } else if (n.width < MIN_WIDTH) {
-          newHeight = Math.round(newHeight * (MIN_WIDTH/newWidth))
-          newWidth = MIN_WIDTH;
-        } else {
-          newHeight = Math.round(newHeight * F)
-          newWidth = Math.round(newWidth * F)
-        }
+    onItemsChange(newItems, oldItems) {
+      if (JSON.stringify(newItems) === '[]') return;
 
-        var item;
-        item = Object.assign(n, {
-          x: Math.round(n.left + newWidth / 2),
-          y: Math.round(n.top + newHeight /2),
-          scale: 0,
-          angle: 0,
-          active: false,
-          width: newWidth,
-          height: newHeight
-        })
-      } else {
-        if (!n.text || typeof(n.text)=='undefined' || n.text=="") {
-          return
-        }
-        if (!n.fontSize) {
-          n.fontSize = 20;
-        }
-        this.codeCtx.fontSize = n.fontSize;
-        const textWidth = this.codeCtx.measureText(n.text+'').width;
-        const textHeight = n.fontSize;
-        const x = n.left + textWidth / 2;
-        const y = n.top + textHeight / 2;
-        item = Object.assign(n, {
-          x: Math.round(x),
-          y: Math.round(y),
-          width: Math.round(textWidth),
-          height: Math.round(textHeight),
-          scale: 0,
-          angle: 0,
-          active: false,
-          color: "#000",
-          textWriteMode: 'horizontal-tb',
-          textAlign: 'left'
-        })
-      }
-      items.push(item);
-
-      this.setData({ itemList: items });
+      this.initItems(newItems);
       // 参数有变化时记录历史
       this.recordHistory();
     },
@@ -192,11 +255,11 @@ Component({
     },
 
     deleteItem(e) {
-      for (let i = 0; i < items.length; i++) {
-        if (e.currentTarget.dataset.id == items[i].id) {
-          items.splice(i, 1);
+      for (let i = 0; i < list.length; i++) {
+        if (e.currentTarget.dataset.id == list[i].id) {
+          list.splice(i, 1);
           this.setData({
-            "itemList": items
+            "itemList": list
           })
         }
       }
@@ -254,76 +317,75 @@ Component({
     // 手指触摸开始（图片）
     WraptouchStart: function(e) {
       // 找到点击的那个图片对象，并记录
-      for (let i = 0; i < items.length; i++) {
-        items[i].active = false;
-        if (e.currentTarget.dataset.id == items[i].id) {
+      for (let i = 0; i < list.length; i++) {
+        list[i].active = false;
+        if (e.currentTarget.dataset.id == list[i].id) {
           index = i;
-          items[index].active = true;
+          list[index].active = true;
         }
       }
       this.setData({
-        itemList: items
+        itemList: list
       })
 
       // 记录触摸开始坐标
-      items[index].lx = e.touches[0].clientX;
-      items[index].ly = e.touches[0].clientY;
-      // console.log(items[index])
+      list[index].lx = e.touches[0].clientX;
+      list[index].ly = e.touches[0].clientY;
     },
     // 手指触摸移动（图片）
     WraptouchMove(e) {
       // console.log('WraptouchMove', e)
       // 记录移动时触摸的坐标
-      items[index]._lx = e.touches[0].clientX;
-      items[index]._ly = e.touches[0].clientY;
+      list[index]._lx = e.touches[0].clientX;
+      list[index]._ly = e.touches[0].clientY;
       // 计算图片位置及圆心坐标
-      items[index].left += items[index]._lx - items[index].lx;
-      items[index].top += items[index]._ly - items[index].ly;
-      items[index].x += items[index]._lx - items[index].lx;
-      items[index].y += items[index]._ly - items[index].ly;
+      list[index].css.left += list[index]._lx - list[index].lx;
+      list[index].css.top += list[index]._ly - list[index].ly;
+      list[index].x += list[index]._lx - list[index].lx;
+      list[index].y += list[index]._ly - list[index].ly;
       // 边界移动阻止
-      this.boundaryStop(items[index]._lx - items[index].lx, items[index]._ly - items[index].ly)
+      this.boundaryStop(list[index]._lx - list[index].lx, list[index]._ly - list[index].ly)
       // 替换当前触摸坐标为触摸开始坐标
-      items[index].lx = e.touches[0].clientX;
-      items[index].ly = e.touches[0].clientY;
+      list[index].lx = e.touches[0].clientX;
+      list[index].ly = e.touches[0].clientY;
 
       this.setData({
-        itemList: items
+        itemList: list
       })
     },
     // 移动到边界阻止(参数1：x轴移动的距离；参数2：y轴移动的距离)，如果图片到达边界则回退移动状态（即阻止移动）
     boundaryStop(range_x, range_y) {
       // 计算宽高受缩放所致的差值
-      let diff_width =  items[index].width * (1 - items[index].scale) / 2
-      let diff_height =  items[index].height * (1 - items[index].scale) / 2
+      let diff_width =  list[index].css.width * (1 - list[index].scale) / 2
+      let diff_height =  list[index].css.height * (1 - list[index].scale) / 2
       // 记录可移动边界
-      let margin_left = 0 - MARGIN_X * items[index].scale
-      let margin_right = this.sysData.windowWidth + MARGIN_X * items[index].scale
-      let margin_up = 0 - MARGIN_Y * items[index].scale
-      let margin_down = this.sysData.windowHeight + MARGIN_Y * items[index].scale
-      if(items[index].left + diff_width < margin_left || items[index].left + items[index].width - diff_width > margin_right){
-        items[index].left -= range_x;
-        items[index].x -= range_x;
+      let margin_left = 0 - MARGIN_X * list[index].scale
+      let margin_right = this.sysData.windowWidth + MARGIN_X * list[index].scale
+      let margin_up = 0 - MARGIN_Y * list[index].scale
+      let margin_down = this.sysData.windowHeight + MARGIN_Y * list[index].scale
+      if(list[index].css.left + diff_width < margin_left || list[index].css.left + list[index].css.width - diff_width > margin_right){
+        list[index].css.left -= range_x;
+        list[index].x -= range_x;
         // 横轴超出，强制移动到边缘
-        if(items[index].left + diff_width < margin_left){
-          items[index].left = -diff_width
-          items[index].x = items[index].width / 2 - diff_width 
-        }else if(items[index].left + items[index].width - diff_width > margin_right){
-          items[index].left = this.sysData.windowWidth - (items[index].width - diff_width)
-          items[index].x = this.sysData.windowWidth - (items[index].width / 2 - diff_width) 
+        if(list[index].css.left + diff_width < margin_left){
+          list[index].css.left = -diff_width
+          list[index].x = list[index].css.width / 2 - diff_width 
+        }else if(list[index].css.left + list[index].css.width - diff_width > margin_right){
+          list[index].css.left = this.sysData.windowWidth - (list[index].css.width - diff_width)
+          list[index].x = this.sysData.windowWidth - (list[index].css.width / 2 - diff_width) 
         }
       }
-      if(items[index].top + diff_height < margin_up || items[index].top + items[index].height - diff_height > margin_down){
-        items[index].top -= range_y;
-        items[index].y -= range_y;
+      if(list[index].css.top + diff_height < margin_up || list[index].css.top + list[index].css.height - diff_height > margin_down){
+        list[index].top -= range_y;
+        list[index].y -= range_y;
         // 纵轴超出，强制移动到边缘
-        if(items[index].top + diff_height < margin_up){
-          items[index].top = -diff_height
-          items[index].y = items[index].height / 2 - diff_height 
-        }else if(items[index].top + items[index].height - diff_height > margin_down){
-          console.log(diff_height)
-          items[index].top = this.sysData.windowHeight - (items[index].height - diff_height)
-          items[index].y = this.sysData.windowHeight - (items[index].height / 2 - diff_height) 
+        if(list[index].css.top + diff_height < margin_up){
+          list[index].css.top = -diff_height
+          list[index].y = list[index].css.height / 2 - diff_height 
+        }else if(list[index].css.top + list[index].css.height - diff_height > margin_down){
+
+          list[index].css.top = this.sysData.windowHeight - (list[index].css.height - diff_height)
+          list[index].y = this.sysData.windowHeight - (list[index].css.height / 2 - diff_height) 
         }
       }
     },
@@ -334,57 +396,65 @@ Component({
     // 手指触摸开始（控件）
     oTouchStart(e) {
       // 找到点击的那个图片对象，并记录
-      for (let i = 0; i < items.length; i++) {
-        items[i].active = false;
-        if (e.currentTarget.dataset.id == items[i].id) {
+      for (let i = 0; i < list.length; i++) {
+        list[i].active = false;
+        if (e.currentTarget.dataset.id == list[i].id) {
           index = i;
-          items[index].active = true;
+          list[index].active = true;
         }
       }
       // 记录触摸开始坐标
-      items[index].tx = e.touches[0].clientX;
-      items[index].ty = e.touches[0].clientY;
+      list[index].tx = e.touches[0].clientX;
+      list[index].ty = e.touches[0].clientY;
       // 记录移动开始时的角度
-      items[index].anglePre = this.countDeg(items[index].x, items[index].y, items[index].tx, items[index].ty)
+      list[index].anglePre = this.countDeg(list[index].x, list[index].y, list[index].tx, list[index].ty)
       // 获取初始图片半径
-      items[index].r = this.getDistance(items[index].x, items[index].y, items[index].left, items[index].top);
-      // console.log(items[index])
+      // list[index].r = this.getDistance(list[index].x, list[index].y, list[index].css.left, list[index].css.top);
+      //获取图片半径
+      if (list[index].type==='image') {
+        list[index].r = this.getDistance(list[index].x, list[index].y, list[index].css.left, list[index].css.top) - 20;//20是右下角移动图片到本图边缘的估计值，因为这个获取半径的方法跟手指的位置有关
+      } else {
+        list[index].r = this.getDistance(list[index].x, list[index].y, list[index].tx, list[index].ty);
+        if (list[index].r<150) {
+          list[index].r = 90;
+        }
+      }
     },
     // 手指触摸移动（控件）
     oTouchMove: function(e) {
       // 记录移动后的位置
-      items[index]._tx = e.touches[0].clientX;
-      items[index]._ty = e.touches[0].clientY;
+      list[index]._tx = e.touches[0].clientX;
+      list[index]._ty = e.touches[0].clientY;
       // 计算移动后的点到圆心的距离
-      items[index].disPtoO = this.getDistance(items[index].x, items[index].y, items[index]._tx-10, items[index]._ty - 10)
+      list[index].disPtoO = this.getDistance(list[index].x, list[index].y, list[index]._tx-10, list[index]._ty-10)
       if(this.data.isScale){
         let scale = 1
-        if(items[index].disPtoO / items[index].r < SCALE_MIN){
+        if(list[index].disPtoO / list[index].r < SCALE_MIN){
           scale = SCALE_MIN
-        }else if(items[index].disPtoO / items[index].r > SCALE_MAX){
+        }else if(list[index].disPtoO / list[index].r > SCALE_MAX){
           scale = SCALE_MAX
         }else{
-          scale = items[index].disPtoO / items[index].r
+          scale = list[index].disPtoO / list[index].r
         }
         // 通过上面的值除以图片原始半径获得缩放比例
-        items[index].scale = scale;
+        list[index].scale = scale;
         // 控件反向缩放，即相对视口保持原来的大小不变
-        items[index].oScale = 1 / items[index].scale;
+        list[index].oScale = 1 / list[index].scale;
       }
       // 计算移动后位置的角度
-      items[index].angleNext = this.countDeg(items[index].x, items[index].y, items[index]._tx, items[index]._ty)
+      list[index].angleNext = this.countDeg(list[index].x, list[index].y, list[index]._tx, list[index]._ty)
       // 计算角度差
-      items[index].new_rotate = items[index].angleNext - items[index].anglePre;
+      list[index].new_rotate = list[index].angleNext - list[index].anglePre;
       // 计算叠加的角度差
-      items[index].angle += items[index].new_rotate;
+      list[index].angle += list[index].new_rotate;
       // 替换当前触摸坐标为触摸开始坐标
-      items[index].tx = e.touches[0].clientX;
-      items[index].ty = e.touches[0].clientY;
+      list[index].tx = e.touches[0].clientX;
+      list[index].ty = e.touches[0].clientY;
       // 更新移动角度
-      items[index].anglePre = this.countDeg(items[index].x, items[index].y, items[index].tx, items[index].ty)
+      list[index].anglePre = this.countDeg(list[index].x, list[index].y, list[index].tx, list[index].ty)
       // 渲染图片
       this.setData({
-        itemList: items
+        itemList: list
       })
     },
     // 计算两点之间距离
@@ -417,42 +487,43 @@ Component({
     /* 全局控件部分 */
     // 汽车移动
     carMove(attr, speed) {
-      items[index][attr] += speed
-      items[index][attr == 'left' ? 'x' : 'y'] += speed
+      list[index][attr] += speed
+      list[index][attr == 'left' ? 'x' : 'y'] += speed
       // 边界移动阻止
       this.boundaryStop((attr == 'left' ? speed : 0), (attr == 'top' ? speed : 0))
       this.setData({
-        itemList: items
+        itemList: list
       })
     },
     // 汽车旋转
     carRotate(attr, speed) {
-      items[index][attr] += speed
+      list[index][attr] += speed
       this.setData({
-        itemList: items
+        itemList: list
       })
     },
     
     // 点击图片以外隐藏控件
     hideControls(e) {
+      this.triggerEvent('hideMenu', {});
       // 记录移动后的位置
       let x = e.touches[0].clientX;
       let y = e.touches[0].clientY;
       // 判断是否有图片被选中
       let isActive = false
-      for (let i = 0; i < items.length; i++) {
-        if(items[i].active){
+      for (let i = 0; i < list.length; i++) {
+        if(list[i].active){
           index = i
           isActive = true
           break
         }
       }
       // 若有图片被选中则当点击图片以外的区域取消选中状态（安全区域扩大10个像素）
-      if(isActive && (x < items[index].left - 10 || x > items[index].left + items[index].width + 10||
-      y < items[index].top - 10 || y > items[index].top + items[index].height + 10)){
-        items[index].active = false
+      if(isActive && (x < list[index].css.left - 10 || x > list[index].css.left + list[index].css.width + 10||
+      y < list[index].css.top - 10 || y > list[index].css.top + list[index].css.height + 10)){
+        list[index].active = false
         this.setData({
-          itemList: items
+          itemList: list
         })
       }
     }

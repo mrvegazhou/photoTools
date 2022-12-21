@@ -1,13 +1,8 @@
-/* pages/autoCamera/autoCamera.wxss */
-page{
-  overflow: hidden;
-  height: 100%;
-}
-.container {
+.camera-container {
   position: relative;
 	box-sizing: border-box;
 	width: 100vw;
-	height: 100vh;
+  height: 100vh;
 }
 .container-photo {
   width: 100%;
@@ -49,4 +44,8 @@ image{
   right: 70rpx;
   bottom: 50rpx;
   color: #fff;
+}
+.icon{
+  color: #fff;
+  font-size: 32rpx;
 }

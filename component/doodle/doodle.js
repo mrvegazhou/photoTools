@@ -18,7 +18,15 @@ MyDoodleCpt.initDoodle = () => {
   if (!myDoodleCpt) {
         console.error('请设置组件的id="myDoodleCpt"!!!');
   } else {
-  return MyDoodleCpt().initDoodle();
+    return MyDoodleCpt().initDoodle();
+  }
+};
+MyDoodleCpt.move2Post = () => {
+  const myDoodleCpt = MyDoodleCpt();
+  if (!myDoodleCpt) {
+        console.error('请设置组件的id="myDoodleCpt"!!!');
+  } else {
+    return MyDoodleCpt().move2Post();
   }
 };
 export default MyDoodleCpt;

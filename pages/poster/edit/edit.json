@@ -2,7 +2,7 @@
   "usingComponents": {
     "canvas-drag": "/component/canvas-drag/index",
     "scale": "/component/axis-ruler/index",
-    "color-picker": "/component/color-picker/color-picker",
+    "color-picker2": "/component/color-picker2/color-picker",
     "doodle":"/component/doodle/index",
     "image-cropper": "/component/image-cropper/image-cropper"
   },

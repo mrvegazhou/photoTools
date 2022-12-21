@@ -382,6 +382,25 @@ function rotateSquare(x, y, w, h, centerX, centerY, rotate) {
   ];
 }
 
+function openConfirm() {
+  wx.showModal({
+    content: '检测到您没打开访问摄像头权限，是否打开？',
+    confirmText: "确认",
+    cancelText: "取消",
+    success: function (res) {
+    //点击“确认”时打开设置页面
+    if (res.confirm) {
+      console.log('用户点击确认')
+      wx.openSetting({
+        success: (res) => { }
+      })
+    } else {
+      console.log('用户点击取消')
+    }
+    }
+  });
+}
+
 
 module.exports = {
   formatTime: formatTime,
@@ -402,5 +421,6 @@ module.exports = {
   processDate: processDate,
   findBreakPoint4Canvas: findBreakPoint4Canvas,
   breakLines4Canvas: breakLines4Canvas,
-  drawVerticalText4Canvas: drawVerticalText4Canvas
+  drawVerticalText4Canvas: drawVerticalText4Canvas,
+  openConfirm: openConfirm
 }
