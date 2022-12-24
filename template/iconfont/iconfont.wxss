@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3687307 */
-  src: url('//at.alicdn.com/t/c/font_3687307_xbi8h9keti.woff2?t=1671465501626') format('woff2'),
-       url('//at.alicdn.com/t/c/font_3687307_xbi8h9keti.woff?t=1671465501626') format('woff'),
-       url('//at.alicdn.com/t/c/font_3687307_xbi8h9keti.ttf?t=1671465501626') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_3687307_gxvb7kngait.woff2?t=1671726349173') format('woff2'),
+       url('//at.alicdn.com/t/c/font_3687307_gxvb7kngait.woff?t=1671726349173') format('woff'),
+       url('//at.alicdn.com/t/c/font_3687307_gxvb7kngait.ttf?t=1671726349173') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,22 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-left-text:before {
+  content: "\e62e";
+}
+
+.icon-youduiqi:before {
+  content: "\ec82";
+}
+
+.icon-zuoduiqi:before {
+  content: "\ec86";
+}
+
+.icon-beijingse:before {
+  content: "\e619";
 }
 
 .icon-fanzhuanjingtou:before {
@@ -159,10 +175,6 @@
 
 .icon-yanse:before {
   content: "\e822";
-}
-
-.icon-toumingdu:before {
-  content: "\e60d";
 }
 
 .icon-tuku:before {

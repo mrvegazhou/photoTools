@@ -1,3 +1,4 @@
+<wxs src="../../../utils/tools.wxs" module="tools" />
 <import src="../camera/camera.wxml" />
 <template name="posterBottomTool">
   <view class="toolbar-bottom" wx:if="{{menu.mainPageShow==='mainPage'}}">
@@ -45,7 +46,7 @@
   <!--文字编辑层-->
   <view class="text-edit-pop" wx:if="{{menu.menuShow=='txt'}}">
     <view class="popbg" bindtap="closeTxtEdit" data-type="txt"></view>
-    <view class="popup" style="height:{{menu.showColorPicker?'55vh':'470rpx'}}">
+    <view class="popup" style="height:{{menu.txtPopHeight}}">
       <!--拾色器-->
       <view class="color-picker-view" wx:if="{{menu.showColorPicker}}">
         <view class="color-picker-content">
@@ -79,21 +80,36 @@
           <slider class="slider" block-size="15" activeColor="#69a794" bindchange="changeFontSize" min="1" max="100" value="{{itemText.css.fontSize}}" show-value/>
         </view>
         <view class="edit-font-bold">
-          <text class="iconfont icon-cuti {{itemText.css.fontWeight=='bold'?'checked':''}}">粗体</text>
-          <text class="iconfont icon-zitixieti {{itemText.css.textStyle=='italic'?'checked':''}}">斜体</text>
-          <text class="iconfont icon-xiahuaxian {{itemText.css.textDecoration=='underline'?'checked':''}}">下划线</text>
-          <text class="iconfont icon-zitishanchuxian {{itemText.css.textDecoration=='line-through'?'checked':''}}">删除线</text>
-          <text class="iconfont icon-directionhorizontal {{itemText.css.textVertical==true?'checked':''}}">方向</text>
-          <text class="iconfont icon-juzhong {{itemText.css.fontWeight=='bold'?'checked':''}}">居中</text>
-          <text class="iconfont icon-zijianju {{itemText.css.fontWeight=='bold'?'checked':''}}">间距</text>
+          <text bindtap="selectFontStyle" data-type='fontWeight#bold' class="iconfont icon-cuti {{itemText.css.fontWeight=='bold'?'checked':''}}">粗体</text>
+          <text bindtap="selectFontStyle" data-type='textStyle#italic' class="iconfont icon-zitixieti {{itemText.css.textStyle=='italic'?'checked':''}}">斜体</text>
+          <text bindtap="selectFontStyle" data-type='textDecoration#underline' class="iconfont icon-xiahuaxian {{tools.strInclude(itemText.css.textDecoration+'', 'underline')!=-1 ? 'checked' : ''}}">下划线</text>
+          <text bindtap="selectFontStyle" data-type='textDecoration#line-through' class="iconfont icon-zitishanchuxian {{tools.strInclude(itemText.css.textDecoration, 'line-through')!=-1 ? 'checked' : ''}}">删除线</text>
+          <text bindtap="selectFontStyle" data-type='direction' class="iconfont icon-directionhorizontal {{itemText.css.textVertical==true?'checked':''}}">垂直</text>
+          <text bindtap="selectFontStyle" data-type='textAlign#center' class="iconfont icon-juzhong {{itemText.css.textAlign=='center'?'checked':''}}">居中</text>
+          <text bindtap="selectFontStyle" data-type='textAlign#left' class="iconfont icon-zuoduiqi {{itemText.css.textAlign=='left'?'checked':''}}">左对齐</text>
+          <text bindtap="selectFontStyle" data-type='textAlign#right' class="iconfont icon-youduiqi {{itemText.css.textAlign=='right'?'checked':''}}">右对齐</text>
+          <text bindtap="selectFontStyle" data-type='textStyle#stroke' class="iconfont icon-left-text {{itemText.css.textStyle=='stroke'?'checked':''}}">镂空</text>
+          <text bindtap="selectFontStyle" data-type='cancel' class="iconfont icon-quxiao1">取消</text>
         </view>
       </view>
-      <!-- 透明度 -->
-      <view class="text-edit-opacity" wx:if="{{menu.secondMenu=='txt.opacity'}}">
-        <slider class="slider" block-size="15" activeColor="#69a794" bindchange="changeFontOpacity" min="1" max="100" value="{{menu.sliderFont}}" show-value/>
+      <!-- 背景色 -->
+      <view class="text-edit-css" wx:if="{{menu.secondMenu=='txt.background'}}">
+        <view>
+          <view style="display: flex;flex-direction: row;">
+            <text class="input-label">背景色:</text>
+            <view>{{itemText.css.background}}</view>
+          </view>
+          <view class="edit-css-content text-background">
+            <color-picker2 colorData="{{menu.backgroundColor.color}}" bindchangecolor="onChangeBackColor"></color-picker2>
+          </view>
+        </view>
+        <view style="display: flex;flex-direction: row; margin-bottom: 20rpx;">
+          <text class="input-label">背景色边际与文字间距:</text>
+          <input value="{{itemText.css.padding}}"  class="text-input"/>
+        </view>
       </view>
-      <view class="edit-pannel" style="display:{{(menu.secondMenu=='txt.edit' || menu.secondMenu=='txt.color')?'block':'none'}};">
-        <textarea class="input" placeholder="请输入文字" placeholder-class="place-holder" maxlength='500' value="{{item.text}}" bindblur='textAreaBlur'/>
+      <view class="edit-pannel" style="display:{{(menu.secondMenu=='txt.edit')?'block':'none'}};">
+        <textarea class="input" placeholder="请输入文字" placeholder-class="place-holder" maxlength='500' value="{{item.text}}" bindinput='textAreaBlur'/>
       </view>
       <view class="text-edit-menu">
         <view class="item {{menu.secondMenu=='txt.edit'?'select':''}}" bindtap="editText" data-type="txt.edit">
@@ -105,8 +121,8 @@
         <view class="item {{menu.secondMenu=='txt.css'?'select':''}}" bindtap="editText" data-type="txt.css">
           <text class="iconfont icon--zitiyangshi">样式</text>
         </view>
-        <view class="item {{menu.secondMenu=='txt.opacity'?'select':''}}" bindtap="editText" data-type="txt.opacity">
-          <text class="iconfont icon-toumingdu">透明度</text>
+        <view class="item {{menu.secondMenu=='txt.background'?'select':''}}" bindtap="editText" data-type="txt.background">
+          <text class="iconfont icon-beijingse">背景色</text>
         </view>
       </view>
       <view class="btn">

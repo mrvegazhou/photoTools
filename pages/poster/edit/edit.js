@@ -37,6 +37,10 @@ Page({
         transparency: 1,
         color: '#333333',
       },
+      backgroundColor: {
+        transparency: 1,
+        color: '',
+      },
       // 裁剪
       cropper: {
         src: '',
@@ -63,6 +67,9 @@ Page({
         imgWidth: 0,
         imgHeight: 0,
       },
+
+      //文字编辑层高度
+      txtPopHeight: '470rpx',
     },
     //画布标尺
     styles: {
@@ -78,15 +85,16 @@ Page({
     imageUrl: '../../../images/img.png',
     itemText: {
       css:{
-        top: 0,
-        left: 0,
+        top: 50,
+        left: 50,
         fontSize: 20,
         fontFamily: '',
         color: '',
         fontWeight: 'normal',
         background: '',
-        textAlign: 'center',
-        textStyle: 'normal',
+        padding: 10,
+        textAlign: '',
+        textStyle: 'fill',
         textDecoration: '',
         textVertical: false,
       }, 
@@ -97,6 +105,8 @@ Page({
       type: 'image',
       url:'',
       css: {
+        top: 50,
+        left: 50,
       }
     },
     items: [
@@ -107,8 +117,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    
-    this.setRpxRatio()
+    // this.setRpxRatio()
     this.getFontFamilySelect()
   },
 
@@ -206,6 +215,7 @@ Page({
     switch(type) {
       case 'txt':
         menu.secondMenu = 'txt.edit'
+        menu.txtPopHeight = '470rpx'
         break;
       case 'cropper':
         this.chooseImage()
@@ -394,24 +404,86 @@ Page({
   },
   //-----------------------------------画布 end---------------------------------------------------//
   //-----------------------------------文字编辑 begin-------------------------------------------------//
-  addTextItem() {
-
-  },
   // 编辑文字...
   closeTxtEdit() {
     this.setData({'menu.menuShow': ''})
   },
   // 编辑文字确认
-  editTxtOk(e) {
-    let item = this.data.itemText
-    item.text = ''
+  editTxtOk() {
+    let item = this.data.itemText;
+    let content = item.text;
+    let type = item.type;
+    if(type!='text')
+      return;
+    if(content.trim()=='') {
+      wx.showToast({
+        title: '文字内容不能为空',
+        icon: 'none',
+        duration: 3000
+      })
+      return
+    }
+    item.css.fontFamily = this.data.menu.fontFamilyShowVal;
+    item.css.color = this.data.menu.colorData.color;
+    item.css.background = this.data.menu.backgroundColor.color;
+    let items = this.data.items;
+    items = [item]
+    this.setData({
+      items: items
+    });
+    this.closeTxtEdit()
+  },
+  //设置字号
+  changeFontSize(e) {
+    this.setData({'itemText.css.fontSize': e.detail.value})
+  },
+  //设置样式
+  selectFontStyle(e){
+    let type = e.currentTarget.dataset['type'];
+    let typeNames = type.split('#');
+    switch(typeNames[0]){
+      case "direction":
+        this.setData({"itemText.css.textVertical": !this.data.itemText.css.textVertical})
+        break;
+      case "textAlign":
+        this.setData({"itemText.css.textAlign": (this.data.itemText.css.textAlign=='' || this.data.itemText.css.textAlign!=typeNames[1]) ? typeNames[1] : ''})
+        break;
+      case "fontWeight":
+        this.setData({"itemText.css.fontWeight": this.data.itemText.css.fontWeight=='' ? typeNames[1] : ''})
+        break;
+      case "textDecoration":
+        let textDec = this.data.itemText.css.textDecoration
+        if(textDec.indexOf(typeNames[1])!=-1) {
+          textDec = textDec.replace(typeNames[1], "");
+          this.setData({"itemText.css.textDecoration": textDec.trim()});
+        } else {
+          this.setData({"itemText.css.textDecoration": textDec+" "+typeNames[1]});
+        }
+        break;
+      case "textStyle":
+        this.setData({"itemText.css.textStyle": (this.data.itemText.css.textStyle=='' || this.data.itemText.css.textStyle!=typeNames[1]) ? typeNames[1] : ''})
+        break;
+      case "cancel":
+        this.setData({
+          'itemText.css.fontFamily': '',
+          'itemText.css.fontWeight': 'normal',
+          'itemText.css.background': '',
+          'itemText.css.padding': 10,
+          'itemText.css.textAlign': '',
+          'itemText.css.textStyle': 'fill',
+          'itemText.css.textDecoration': '',
+          'itemText.css.textVertical': false,
+        })
+        break;
+    }
   },
   // 编辑文字取消
-  editTxtCancel(e) {
+  editTxtCancel() {
     this.setData({
       'itemText.text': ''
     })
     this.closeTxtEdit()
+    this.initTextData()
   },
   textAreaBlur(e){
     this.setData({
@@ -424,13 +496,15 @@ Page({
     this.setData({
       'menu.colorData.color': rgba,
       'menu.colorData.transparency': e.detail.alpha || 1,
-      'itemText.css.color': rgba
+      'itemText.css.color': rgba,
+      'menu.secondMenu': 'txt.edit'
     })
   },
   //关闭拾色器
   closeColorPicker() {
     this.setData({
-      'menu.showColorPicker': false
+      'menu.showColorPicker': false,
+      'menu.txtPopHeight':'470rpx'
     })
   },
   // 编辑文字样式
@@ -438,8 +512,13 @@ Page({
     const type = e.currentTarget.dataset['type'];
     switch (type) {
       case 'txt.color':
-        this.setData({'menu.showColorPicker': true})
+        this.setData({'menu.showColorPicker': true, 'menu.txtPopHeight':'55vh'});
         break;
+      case 'txt.background':
+        this.setData({'menu.txtPopHeight':'70vh'});
+        break;
+      default:
+        this.setData({'menu.txtPopHeight':'470rpx'});
     }
     this.setData({'menu.secondMenu': type})
   },
@@ -449,11 +528,11 @@ Page({
     this.setData({
       'menu.fontFamilyShowVal': families[index],
       'menu.fontFamilyIndex': index,
-      
     });
     if(index>0) {
       this.setData({'itemText.css.fontFamily': families[index]})
     }
+    this.showFontFamilySelect()
   },
   // 获取选中的字体
   getFontFamilySelect() {
@@ -471,5 +550,32 @@ Page({
       'menu.fontFamilyShow': !this.data.menu.fontFamilyShow
     })
   },
+
+  //更改背景色
+  onChangeBackColor(e) {
+    let rgba = e.detail.rgba;
+    this.setData({
+      'menu.backgroundColor.color': rgba,
+      'menu.backgroundColor.transparency': e.detail.alpha || 1,
+      'itemText.css.background': rgba
+    })
+  },
+  initTextData() {
+    this.setData({
+      'itemText.css.top': 0,
+      'itemText.css.left': 0,
+      'itemText.css.fontSize': 20,
+      'itemText.css.color': '#000000',
+      'itemText.css.fontFamily': '',
+      'itemText.css.fontWeight': 'normal',
+      'itemText.css.background': '',
+      'itemText.css.padding': 10,
+      'itemText.css.textAlign': '',
+      'itemText.css.textStyle': 'fill',
+      'itemText.css.textDecoration': '',
+      'itemText.css.textVertical': false,
+    })
+  },
+
   //-----------------------------------文字编辑 end---------------------------------------------------//
 })

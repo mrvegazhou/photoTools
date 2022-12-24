@@ -46,7 +46,7 @@
         <text class="txt" data-type='colorPicker' bindtap="doodleEidt">取色</text>
       </view>
       <view class="doodle-icon {{name=='more'?'menu-select':''}}">
-        <text data-type='more' bindtap="doodleEidt" class="iconfont icon-gengduo"></text>
+        <text data-type='more' bindtap="doodleEidt" class="iconfont icon-gengduo" style="padding-right:30rpx;"></text>
       </view>
     </view>
     <view class="doodle-tool-children" hidden="{{!showTool}}">

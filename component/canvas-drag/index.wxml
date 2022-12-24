@@ -14,7 +14,7 @@
           <image src='{{item.url}}' data-id='{{item.id}}' style='width:{{item.css.width}}px;height:{{item.css.height}}px;' bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'></image>
         </block>
         <block wx:if="{{item.type==='text'}}">
-          <text data-id='{{item.id}}' style='width:{{item.css.width}}px;height:{{item.css.height}}px;font-size:{{item.css.fontSize*item.scale}};writing-mode:{{textWriteMode}};' bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'>{{item.text}}</text>
+          <text data-id='{{item.id}}' style='white-space:nowrap;width:{{item.css.width}}px;height:{{item.css.height}}px;font-size:{{item.css.fontSize*item.scale}};{{item.styles}}' bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'>{{item.text}}</text>
         </block>
 
         <image class="x" src="./icon/x.png" style="transform:scale({{item.oScale}});transform-origin:center;" data-id="{{item.id}}" catchtap="deleteItem"></image>

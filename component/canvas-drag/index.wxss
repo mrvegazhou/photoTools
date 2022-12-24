@@ -35,7 +35,7 @@
 /* 触摸选中 */
 .touchActive {
   box-shadow: 0 0 2rpx #333;
-  border-radius: 10rpx;
+  border-radius: 5rpx;
   border: none;
   /* border: 2rpx #999 dashed !important; */
   z-index: 400;
