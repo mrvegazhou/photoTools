@@ -1,6 +1,7 @@
 /* 涂鸦窗口  */
 .toolbar-bottom{
   display: flex;
+  flex-direction: row;
   align-items: center; 
   justify-content:space-around;
   width:100%;
@@ -10,24 +11,19 @@
   border-top: 1rpx solid var(--primary-dark-gray-color);
   z-index: 99991;
   background-color: #ffffff;
-}
-.toolbar-bottom view{
-  width: 90rpx;
-  margin: 0 50rpx;
-  height: 90rpx;
-  text-align: center;
-  position: relative;
-  border-radius: 10rpx;
-}
-.toolbar-bottom view:active{
-  background-color: rgba(255,255,255,0.5);
-}
-.toolbar-bottom view text{
-  display: block;
-  margin: 0 auto;
   color: var(--primary-dark-gray-color);
 }
-.toolbar-bottom view .text{
+.toolbar-bottom .item-btn{
+  height: 90rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.toolbar-bottom .item-btn:active{
+  background-color: rgba(255,255,255,0.5);
+}
+.toolbar-bottom .text{
   font-size: var(--primary-font-size);
 }
 .toolbar-bottom .menu-select {
@@ -39,16 +35,52 @@
   height: 50rpx;
   padding-bottom: 35rpx;
 }
+.edit-pop .tab-wapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20rpx;
+  margin-bottom: 20rpx;
+}
+.edit-pop .tab-wapper .item{
+  margin: auto;
+  width: 350rpx;
+  text-align: center;
+}
+.edit-pop .item-menu{
+  height: 80rpx;
+  line-height: 80rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: left; 
+}
+.edit-pop .item-menu text{
+  margin: 0 30rpx 0 30rpx;
+}
+.edit-pop .select{
+  padding: 10px;
+  font-size: var(--primary-font-size);
+  color: var(--primary-color);
+}
+.edit-pop .tab-item{
+  padding: 10px;
+  font-size: var(--primary-font-size);
+  color: var(--primary-text-color);
+}
 .layer-float {
   min-height: 400rpx;
   max-height: 700rpx;
   width: 270rpx;
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.2);
   z-index: 99992;
   bottom: 121rpx;
   right: 10rpx;
-  border-radius: 10rpx;
+  border:1px solid var(--primary-light-gray-color);
+  font-size: var(--primary-font-size);
+  display:block;
+  background-color: #ffffff;
+  transition: all 0.6s ease;
+  border-radius: 5px;
 }
 .layer-float .item {
   display: flex;
@@ -59,38 +91,39 @@
   margin: 10rpx;
   vertical-align: middle;
 }
+.layer-float .item .item-icon {
+  font-size: 35rpx;
+}
 .layer-float .item image {
   width: 50rpx;
   height: 50rpx;
   border: 1rpx solid red;
   margin: 10rpx;
 }
-
 /* 子工具 */
 .tool-children{
   z-index: 99992;
   position:absolute;
   border:1px solid var(--primary-light-gray-color);
   font-size: var(--primary-font-size);
+  display:block;
+  background-color: #ffffff;
+  transition: all 0.6s ease;
   border-radius: 5px;
   padding:20rpx 30rpx;
   bottom: 121rpx;
-  left: 5rpx;
-  transition: all 0.6s ease;
-  display:block;
-  background-color: #ffffff;
-  min-width: 210rpx;
+  width: 210rpx;
 }
 .tool-children .second-menu{
   display: flex;
   flex-direction: column;
   justify-content:space-around;
-  align-items: center;
+  justify-items: left;
 }
 .tool-children .second-menu view{
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
   height: 70rpx;
   margin: 10rpx;
@@ -138,6 +171,7 @@
 .text-edit-menu .select{
   color: var(--primary-color);
 }
+
 .popbg {
   position: fixed;
   top: 0;
@@ -313,7 +347,8 @@
 .text-edit-pop .text-input{
   border: 1rpx solid var(--primary-dark-gray-color);
   border-radius: 10rpx;
-  width: 250rpx;
+  width: 110rpx;
+  text-align: center;
 }
 /* 文字编辑层 end */
 

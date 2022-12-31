@@ -27,10 +27,12 @@ Component({
     bgImg: {
       type: String,
       value: '',
+      observer: 'onBgImgChange',
     },
     bgColor: {
       type: String,
       value: '',
+      observer: 'onBgColorChange',
     },
     height: {
       type: Number,
@@ -100,10 +102,11 @@ Component({
         wx.getImageInfo({
           src: bgImg,
           success: res => {
+            console.log(bgImg, '---bgData--')
             // 初始化数据
             item.width = res.width; //宽度
             item.height = res.height; //高度
-            item.bgImg = imgSrc;
+            item.bgImg = bgImg;
             item.top = 0; //top定位
             item.left = 0; //left定位
             // 图片中心坐标
@@ -158,7 +161,6 @@ Component({
     },
     // 初始化图片数据
     initItems(items) {
-      console.log(items, '---items--')
       for (let i = 0; i < items.length; i++) {
         let item = items[i]
         // 初始化标志，判断是否读取已有item
@@ -228,7 +230,8 @@ Component({
           data.styles = ''
           if(item.css.textVertical){
             data.styles += "writing-mode:vertical-lr;";
-            data.css.width = textHeight;
+            let contentArr = item.text.split(/[(\r\n)\r\n]+/);
+            data.css.width = textHeight * contentArr.length;
             data.css.height = this.measureTextHeight(item.text);
           }
           if(item.css.fontSize) {
@@ -258,7 +261,6 @@ Component({
           if(item.css.textStyle=="stroke"){
             data.styles += `color: white;-webkit-text-stroke:1rpx ${item.css.color};`
           }
-          console.log(data.styles, '---data.styles--')
           item.scale = 1;
           data.scale = flag ? item.scale * this.data.syncScale : this.data.syncScale;
           data.angle = 0;
@@ -296,6 +298,14 @@ Component({
       this.initItems(newItems);
       // 参数有变化时记录历史
       this.recordHistory();
+    },
+    // 触发背景图片
+    onBgImgChange(newItem, oldItem){
+      this.initBg(newItem, '');
+    },
+    // 触发背景色
+    onBgColorChange(newItem, oldItem){
+      this.initBg('', newItem);
     },
 
     changeTextColor(color) {

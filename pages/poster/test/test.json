@@ -1,5 +1,6 @@
 {
-  "usingComponents": {
-    "image-cropper": "/component/image-cropper/image-cropper"
-  }
+	"usingComponents": {
+		"drag": "../../../component/dragSortList/index",
+		"drag-item": "./drag-item/index"
+	}
 }

@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3687307 */
-  src: url('//at.alicdn.com/t/c/font_3687307_gxvb7kngait.woff2?t=1671726349173') format('woff2'),
-       url('//at.alicdn.com/t/c/font_3687307_gxvb7kngait.woff?t=1671726349173') format('woff'),
-       url('//at.alicdn.com/t/c/font_3687307_gxvb7kngait.ttf?t=1671726349173') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_3687307_xjvti8x4ukg.woff2?t=1672071500865') format('woff2'),
+       url('//at.alicdn.com/t/c/font_3687307_xjvti8x4ukg.woff?t=1672071500865') format('woff'),
+       url('//at.alicdn.com/t/c/font_3687307_xjvti8x4ukg.ttf?t=1672071500865') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-tuodong:before {
+  content: "\e622";
+}
+
+.icon-yanjing_xianshi_o:before {
+  content: "\ebcc";
+}
+
+.icon-yanjing_yincang_o:before {
+  content: "\ebcd";
+}
+
+.icon-xitong-:before {
+  content: "\e60e";
+}
+
+.icon-beijingyanse:before {
+  content: "\e6f8";
+}
+
+.icon-yinying:before {
+  content: "\ec5c";
 }
 
 .icon-left-text:before {

@@ -1,445 +1,174 @@
-let 
-index = 0,    // 记录当前选中的图片数组下标
-cars = [],    // 全局图片数组
-carId = 0;    // 图片id
-const 
-carImgSrc = '../../../images/bgcolor.png',        // 车辆图片路径
-SCALE_MAX = 1, SCALE_MIN = 0.5,       // 缩放比例范围
-MARGIN_X = 0, MARGIN_Y = 110,           // 可移动边界偏移量
-CAR_SPEED = 1.0,                      // 车辆控制速度指数（rpx）
-CAR_SPL = 30,                         // 车辆控制灵敏度（ms）
-CAR_MAX_COUNT = 3,                    // 最大车辆个数
-canvasPre = 1                        // 展示的canvas占mask的百分比（用于设置图片质量）
+const app = getApp()
 
-const carRawData = {
-  top: 0,
-  left: 0,
-  angle: 0,
-}
+let listData = [
+	{
+		dragId: "item0",
+		title: "这个绝望的世界没有存在的价值，所剩的只有痛楚",
+		description: "思念、愿望什么的都是一场空，被这种虚幻的东西绊住脚，什么都做不到",
+		images: "/assets/image/swipe/1.png",
+		fixed: false
+	},
+	{
+		dragId: "item1",
+		title: "我早已闭上了双眼，我的目的，只有在黑暗中才能实现",
+		description: "有太多的羁绊只会让自己迷惘，强烈的想法和珍惜的思念，只会让自己变弱",
+		images: "/assets/image/swipe/2.png",
+		fixed: false
+	},
+	{
+		dragId: "item2",
+		title: "感受痛苦吧，体验痛苦吧，接受痛苦吧，了解痛苦吧。不知道痛苦的人是不会知道什么是和平",
+		description: "但我已经在无限存在的痛苦之中，有了超越凡人的成长。从凡人化为神",
+		images: "/assets/image/swipe/3.png",
+		fixed: true
+	},
+	{
+		dragId: "item3",
+		title: "我决定了 从今天起 我要选择一条不会让自己后悔的路 我要创造出属于自己的忍道 ",
+		description: "我才不要在这种时候放弃,即使当不成中忍,我也会通过其他的途径成为火影的,这就是我的忍道",
+		images: "/assets/image/swipe/4.png",
+		fixed: true
+	},
+	{
+		dragId: "item4",
+		title: "为什么你会这么弱？就是因为你对我的仇恨...还不够深...",
+		description: "你没有杀的价值...愚蠢的弟弟啊...想要杀死我的话...仇恨吧！憎恨吧！然后丑陋地活下去吧！逃吧 逃吧...然后苟且偷生下去吧！",
+		images: "/assets/image/swipe/5.png",
+		fixed: false
+	},
+	{
+		dragId: "item5",
+		title: "对于忍者而言怎样活着无所谓，怎样死去才是最重要的...",
+		description: "所谓的忍者就是忍人所不能忍，忍受不了饿肚子，而沦落为盗贼的人，根本不能称之为忍者",
+		images: "/assets/image/swipe/6.png",
+		fixed: false
+	},
+	{
+		dragId: "item6",
+		title: "在这世上，有光的地方就必定有黑暗，所谓的胜者，也就是相对败者而言",
+		description: "若以一己之思念要维持和平，必会招致战争，为了守护爱，变回孕育出恨。此间因果，是无法斩断的。现实就是如此",
+		images: "/assets/image/swipe/7.png",
+		fixed: false
+	},
+	{
+		dragId: "item7",
+		title: "世界上...只有没有实力的人,才整天希望别人赞赏...",
+		description: "很不巧的是我只有一个人，你说的那些家伙们已经一个都没有了，已经??全部被杀死了",
+		images: "/assets/image/swipe/8.png",
+		fixed: false
+	},
+	{
+		dragId: "item8",
+		title: "千代婆婆，父亲大人和母亲大人回来了吗？？？",
+		description: "明明剩下的只有痛苦了，既然你这么想活命，我就方你一条生路好了。不过，你中的毒不出三日就会要了你的命",
+		images: "/assets/image/swipe/9.png",
+		fixed: false
+	},
+	{
+		dragId: "item9",
+		title: "艺术就是爆炸！！~~ 嗯 ~~ 芸术は爆発します！",
+		description: "我的艺术就是爆炸那一瞬，和蝎那种让人吃惊的人偶喜剧从根本上就是不同的！",
+		images: "/assets/image/swipe/10.png",
+		fixed: false
+	}
+];
+
 Page({
-  data: {
-    siteCenter: false,
-    siteImgSrcObj: {
-      "stop": "../../../images/loading.png",
-      "storage": "../../../images/loading.png",
-    },
-    siteImg: {},    // 场地图片数据
-    carList: [],    // 汽车图片数组，用于渲染页面
-    syncScale: 1,   // 同步缩放比例（同步场地与车辆图片的缩放）
-    isScale: true,  // 是否支持缩放
-    sceneData: {},  // 场景数据
+	data: {
+		isIphoneX: app.globalData.isIphoneX,
+		size: 4,
+		listData: [],
+		extraNodes: [
+			{
+				type: "destBefore",
+				dragId: "destBefore0",
+				destKey: 0,
+				slot: "before",
+				fixed: true
+			},
+			{
+				type: "destAfter",
+				dragId: "destAfter0",
+				destKey: 0,
+				slot: "after",
+				fixed: true
+			},
+			{
+				type: "after",
+				dragId: "plus",
+				slot: "plus",
+				fixed: true
+			}
+		],
+		pageMetaScrollTop: 0,
+		scrollTop: 0
+	},
+	sortEnd(e) {
+		console.log("sortEnd", e.detail.listData)
+		this.setData({
+			listData: e.detail.listData
+		});
+	},
+	change(e) {
+		console.log("change", e.detail.listData)
+	},
+	sizeChange(e) {
+		wx.pageScrollTo({scrollTop: 0})
+		this.setData({
+			size: e.detail.value
+		});
+		this.drag.columnChange();
+	},
+	itemClick(e) {
+		console.log(e);
+	},
+	toggleFixed(e) {
+		let key = e.currentTarget.dataset.key;
 
-    styles: {
-      line: '#dbdbdb',
-      bginner: '#fbfbfb',
-      bgoutside: '',
-      font: '#404040',
-      fontColor: '#404040',
-      fontSize: 8
-    },
+		let {listData} = this.data;
 
+		listData[key].fixed = !listData[key].fixed
 
-    // 裁剪
-    clipper: {
-      src: '',
-      width: 250, //宽度
-      height: 250, //高度
-      max_width: 300,
-      max_height: 300,
-      disable_rotate: true, //是否禁用旋转
-      disable_ratio: false, //锁定比例
-      limit_move: true, //是否限制移动
-    },
-  },
-  // 页面初始化
-  onLoad2: function(options) {
-    index = 0, cars = [], carId = 0;
+		this.setData({
+			listData: listData
+		});
+	},
+	add(e) {
+		let listData = this.data.listData;
+		listData.push({
+			dragId: `item${listData.length}`,
+			title: "这个绝望的世界没有存在的价值，所剩的只有痛楚",
+			description: "思念、愿望什么的都是一场空，被这种虚幻的东西绊住脚，什么都做不到",
+			images: "/assets/image/swipe/1.png",
+			fixed: false
+		});
+		setTimeout(() => {
+			this.setData({
+				listData
+			});
+			this.drag.init();
+		}, 300)
 
-
-    // 初始化默认场地数据
-    let site = 'storage'
-    // this.data.sceneData.site = site
-
-    // 读取场景json数据还原场地
-    let sceneData = '{"site":"storage","carData":[{"relative_x":83.07547044984386,"relative_y":-104.37072569621358,"angle":-128.91910820448214,"scale":0.5084541062801933},{"relative_x":-49.80685009301512,"relative_y":-210.24224292144842,"angle":-309.69883819822115,"scale":0.8103973684838132},{"relative_x":-79.88977775287618,"relative_y":7.56608816954158,"angle":-269.26458419124504,"scale":0.7198254404087311}]}'
-    this.data.sceneData = JSON.parse(sceneData)
-    
-    // 获取系统信息计算画布宽高
-    wx.getSystemInfo({
-      success: sysData => {
-        this.sysData = sysData
-        this.setData({
-          canvasWidth: this.sysData.windowWidth * canvasPre,
-          canvasHeight: this.sysData.windowHeight * canvasPre,
-        })
-      }
-    });
-    console.log(this.data.siteImgSrcObj[this.data.sceneData.site], '------')
-    this.initSite(this.data.siteImgSrcObj[this.data.sceneData.site])
-    setTimeout(() => {
-      if(!this.data.sceneData.carData || this.data.sceneData.carData.length == 0){
-        this.initCarImg()
-      }else{
-        for(let i = 0; i < this.data.sceneData.carData.length; i++){
-          this.initCarImg(this.data.sceneData.carData[i]);
-        }
-      }
-      wx.hideLoading()
-    }, 1000)
-  },
-  // 初始化场地数据
-  initSite(imgSrc) {
-    let data = {}
-    wx.getImageInfo({
-      src: imgSrc,
-      success: res => {
-        // 初始化数据
-        data.width = res.width; //宽度
-        data.height = res.height; //高度
-        data.src = imgSrc; //地址
-        data.top = 0; //top定位
-        data.left = 0; //left定位
-        // 图片中心坐标
-        data.x = data.left + data.width / 2;
-        data.y = data.top + data.height / 2;
-        data.scale = 1; //scale缩放
-        // 计算最佳缩放
-        let scale = 1;
-        if(this.sysData.windowWidth <= data.width){
-          scale = this.sysData.windowWidth / data.width;
-          data.height = data.height * scale
-          data.width = this.sysData.windowWidth
-        }
-        if(this.sysData.windowHeight <= data.height){
-          scale = this.sysData.windowHeight / data.height
-          data.width = data.width * scale
-          data.height = this.sysData.windowHeight
-        }
-        data.scale = scale
-        // console.log(data)
-        this.setData({
-          siteImg: data,
-          syncScale: scale
-        })
-        // 计算场地图片的最终位置
-        wx.createSelectorQuery().select('#siteImg').boundingClientRect((rect) => {
-          this.setData({
-            'siteImg.left': rect.left,
-            'siteImg.top': rect.top,
-            'siteImg.x': rect.left + data.width / 2,
-            'siteImg.y': rect.top + data.height / 2
-          })
-        }).exec()
-      }
-    })
-  },
-  // 初始化图片数据
-  initCarImg(carData) {
-    // 初始化标志，判断是否读取已有车辆数据
-    let flag = Boolean(carData)
-    let siteImg = this.data.siteImg
-    let data = {}
-    wx.getImageInfo({
-      src: carImgSrc,
-      success: res => {
-        // 初始化数据
-        data.width = 100//res.width; //宽度
-        data.height = 100//res.height; //高度
-        data.src = carImgSrc; //地址
-        data.id = carId++; //id
-        // 图片中心坐标
-        data.x =  flag ? (siteImg.x + carData.relative_x * siteImg.scale) : (data.width / 2)
-        data.y =  flag ? (siteImg.y + carData.relative_y * siteImg.scale) : (data.height / 2)
-        // 定位坐标
-        data.left = flag ? (data.x - data.width / 2) : 0; //left定位
-        data.top = flag ? (data.y - data.height / 2) : 0; //top定位
-        // data.scale = 1; //scale缩放
-        data.scale = flag ? carData.scale * this.data.syncScale : this.data.syncScale
-        // data.oScale = 1; //控件缩放
-        data.oScale = 1 / data.scale
-        data.angle = flag ? carData.angle : 0; //旋转角度
-        data.active = false; //选中状态
-        // console.log(data)
-        cars[cars.length] = data;
-        this.setData({
-          carList: cars
-        })
-      }
-    })
-  },
-  // 手指触摸开始（图片）
-  WraptouchStart: function(e) {
-    // 找到点击的那个图片对象，并记录
-    for (let i = 0; i < cars.length; i++) {
-      cars[i].active = false;
-      if (e.currentTarget.dataset.id == cars[i].id) {
-        index = i;
-        cars[index].active = true;
-      }
-    }
-    this.setData({
-      carList: cars
-    })
-    // console.log(e)
-    // 记录触摸开始坐标
-    cars[index].lx = e.touches[0].clientX;
-    cars[index].ly = e.touches[0].clientY;
-    // console.log(cars[index])
-  },
-  // 手指触摸移动（图片）
-  WraptouchMove(e) {
-    // console.log('WraptouchMove', e)
-    // 记录移动时触摸的坐标
-    cars[index]._lx = e.touches[0].clientX;
-    cars[index]._ly = e.touches[0].clientY;
-    // 计算图片位置及圆心坐标
-    cars[index].left += cars[index]._lx - cars[index].lx;
-    cars[index].top += cars[index]._ly - cars[index].ly;
-    cars[index].x += cars[index]._lx - cars[index].lx;
-    cars[index].y += cars[index]._ly - cars[index].ly;
-    // 边界移动阻止
-    this.boundaryStop(cars[index]._lx - cars[index].lx, cars[index]._ly - cars[index].ly)
-    // 替换当前触摸坐标为触摸开始坐标
-    cars[index].lx = e.touches[0].clientX;
-    cars[index].ly = e.touches[0].clientY;
-    // console.log(cars)
-    this.setData({
-      carList: cars
-    })
-  },
-  // 移动到边界阻止(参数1：x轴移动的距离；参数2：y轴移动的距离)，如果图片到达边界则回退移动状态（即阻止移动）
-  boundaryStop(range_x, range_y) {
-    // 计算宽高受缩放所致的差值
-    let diff_width =  cars[index].width * (1 - cars[index].scale) / 2
-    let diff_height =  cars[index].height * (1 - cars[index].scale) / 2
-    // 记录可移动边界
-    let margin_left = 0 - MARGIN_X * cars[index].scale
-    let margin_right = this.sysData.windowWidth + MARGIN_X * cars[index].scale
-    let margin_up = 0 - MARGIN_Y * cars[index].scale
-    let margin_down = this.sysData.windowHeight + MARGIN_Y * cars[index].scale
-    if(cars[index].left + diff_width < margin_left || cars[index].left + cars[index].width - diff_width > margin_right){
-      cars[index].left -= range_x;
-      cars[index].x -= range_x;
-      // 横轴超出，强制移动到边缘
-      if(cars[index].left + diff_width < margin_left){
-        cars[index].left = -diff_width
-        cars[index].x = cars[index].width / 2 - diff_width 
-      }else if(cars[index].left + cars[index].width - diff_width > margin_right){
-        cars[index].left = this.sysData.windowWidth - (cars[index].width - diff_width)
-        cars[index].x = this.sysData.windowWidth - (cars[index].width / 2 - diff_width) 
-      }
-    }
-    if(cars[index].top + diff_height < margin_up || cars[index].top + cars[index].height - diff_height > margin_down){
-      cars[index].top -= range_y;
-      cars[index].y -= range_y;
-      // 纵轴超出，强制移动到边缘
-      if(cars[index].top + diff_height < margin_up){
-        cars[index].top = -diff_height
-        cars[index].y = cars[index].height / 2 - diff_height 
-      }else if(cars[index].top + cars[index].height - diff_height > margin_down){
-        cars[index].top = this.sysData.windowHeight - (cars[index].height - diff_height)
-        cars[index].y = this.sysData.windowHeight - (cars[index].height / 2 - diff_height) 
-      }
-    }
-  },
-  // 手指触摸结束
-  WraptouchEnd() {
-    // this.synthesis()
-  },
-  // 手指触摸开始（控件）
-  oTouchStart(e) {
-    // 找到点击的那个图片对象，并记录
-    for (let i = 0; i < cars.length; i++) {
-      cars[i].active = false;
-      if (e.currentTarget.dataset.id == cars[i].id) {
-        index = i;
-        cars[index].active = true;
-      }
-    }
-    // 记录触摸开始坐标
-    cars[index].tx = e.touches[0].clientX;
-    cars[index].ty = e.touches[0].clientY;
-    // 记录移动开始时的角度
-    cars[index].anglePre = this.countDeg(cars[index].x, cars[index].y, cars[index].tx, cars[index].ty)
-    // 获取初始图片半径
-    cars[index].r = this.getDistance(cars[index].x, cars[index].y, cars[index].left, cars[index].top);
-    // console.log(cars[index])
-  },
-  // 手指触摸移动（控件）
-  oTouchMove: function(e) {
-    // 记录移动后的位置
-    cars[index]._tx = e.touches[0].clientX;
-    cars[index]._ty = e.touches[0].clientY;
-    // 计算移动后的点到圆心的距离
-    cars[index].disPtoO = this.getDistance(cars[index].x, cars[index].y, cars[index]._tx-10, cars[index]._ty - 10)
-    if(this.data.isScale){
-      let scale = 1
-      if(cars[index].disPtoO / cars[index].r < SCALE_MIN){
-        scale = SCALE_MIN
-      }else if(cars[index].disPtoO / cars[index].r > SCALE_MAX){
-        scale = SCALE_MAX
-      }else{
-        scale = cars[index].disPtoO / cars[index].r
-      }
-      // 通过上面的值除以图片原始半径获得缩放比例
-      cars[index].scale = scale;
-      // 控件反向缩放，即相对视口保持原来的大小不变
-      cars[index].oScale = 1 / cars[index].scale;
-    }
-    // 计算移动后位置的角度
-    cars[index].angleNext = this.countDeg(cars[index].x, cars[index].y, cars[index]._tx, cars[index]._ty)
-    // 计算角度差
-    cars[index].new_rotate = cars[index].angleNext - cars[index].anglePre;
-    // 计算叠加的角度差
-    cars[index].angle += cars[index].new_rotate;
-    // 替换当前触摸坐标为触摸开始坐标
-    cars[index].tx = e.touches[0].clientX;
-    cars[index].ty = e.touches[0].clientY;
-    // 更新移动角度
-    cars[index].anglePre = this.countDeg(cars[index].x, cars[index].y, cars[index].tx, cars[index].ty)
-    // 渲染图片
-    this.setData({
-      carList: cars
-    })
-  },
-  // 计算两点之间距离
-  getDistance(cx, cy, pointer_x, pointer_y) {
-    var ox = pointer_x - cx;
-    var oy = pointer_y - cy;
-    return Math.sqrt(
-      ox * ox + oy * oy
-    );
-  },
-  // 计算手指触摸点到圆心的角度
-  countDeg: function(cx, cy, pointer_x, pointer_y) {
-    var ox = pointer_x - cx;
-    var oy = pointer_y - cy;
-    var to = Math.abs(ox / oy);
-    // console.log(to)
-    var angle = Math.atan(to) / (2 * Math.PI) * 360;
-    if (ox < 0 && oy < 0){ //相对在左上角，第4象限，按照正常坐标系来
-      angle = -angle;
-    } else if (ox <= 0 && oy >= 0){ //左下角，第3象限
-      angle = -(180 - angle)
-    } else if (ox > 0 && oy < 0){ //右上角，第1象限
-      angle = angle;
-    } else if (ox > 0 && oy > 0){ //右下角，第2象限
-      angle = 180 - angle;
-    }
-    // console.log(angle)
-    return angle;
-  },
-  /* 全局控件部分 */
-  // 汽车移动
-  carMove(attr, speed) {
-    cars[index][attr] += speed
-    cars[index][attr == 'left' ? 'x' : 'y'] += speed
-    // 边界移动阻止
-    this.boundaryStop((attr == 'left' ? speed : 0), (attr == 'top' ? speed : 0))
-    this.setData({
-      carList: cars
-    })
-  },
-  // 汽车旋转
-  carRotate(attr, speed) {
-    cars[index][attr] += speed
-    this.setData({
-      carList: cars
-    })
-  },
-  
-  // 点击图片以外隐藏控件
-  hideControls(e) {
-    // 记录移动后的位置
-    let x = e.touches[0].clientX;
-    let y = e.touches[0].clientY;
-    // 判断是否有图片被选中
-    let isActive = false
-    for (let i = 0; i < cars.length; i++) {
-      if(cars[i].active){
-        index = i
-        isActive = true
-        break
-      }
-    }
-    // 若有图片被选中则当点击图片以外的区域取消选中状态（安全区域扩大10个像素）
-    if(isActive && (x < cars[index].left - 10 || x > cars[index].left + cars[index].width + 10||
-    y < cars[index].top - 10 || y > cars[index].top + cars[index].height + 10)){
-      cars[index].active = false
-      this.setData({
-        carList: cars
-      })
-    }
-  },
-  // 是否禁用缩放
-  isBanScale() {
-    this.setData({
-      isScale: !this.data.isScale
-    })
-  },
-  // 删除图片
-  deleteCar: function(e) {
-    let newList = [];
-    for (let i = 0; i < cars.length; i++) {
-      if (e.currentTarget.dataset.id != cars[i].id) {
-        newList.push(cars[i])
-      }
-    }
-    // 删除图片后选中剩存的图片并保存下标
-    if (newList.length > 0) {
-      newList[newList.length - 1].active = true;
-      index = newList.length - 1
-    }
-    cars = newList;
-    this.setData({
-      carList: cars
-    })
-  },
-
-  onLoad: function (options) {
-    this.cropper = this.selectComponent("#image-cropper");
-    this.setData({
-        src: options.imgSrc
-    });
-    if(!options.imgSrc){
-        this.cropper.upload(); //上传图片
-    }
-  },
-
-  chooseImage() {
-    let _self = this;
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['original', 'compressed'],
-      sourceType: ['album', 'camera'],
-      success (res) {
-        // tempFilePath可以作为img标签的src属性显示图片
-        const tempFilePaths = res.tempFilePaths[0];
-        // let clipperTmp = _self.data.clipper;
-        // clipperTmp.src = tempFilePaths;
-        // _self.setData({
-        //   clipper: clipperTmp
-        // })
-
-        const cropper = _self.selectComponent("#image-cropper-node");
-        cropper.init({
-            imgPath: tempFilePaths,  //imgPath是需要裁剪图片的图片路径，只支持本地或临时路径
-            success(res){
-                console.log(res) //res即裁剪成功后的图片临时路径
-            },
-            fail(error){
-                console.log(error) //有两种:cancel代表点击了叉，fail代表wx.canvasToTempFilePath生成图片失败
-            }        
-        });
-      }
-    })
-  },
-
-  setRotate() {
-    let { clipper } = this.data;
-    clipper.rotate = clipper.rotate === 270 ? 0 : clipper.rotate + 90
-    this.setData({
-      clipper: clipper
-    })
-  },
+	},
+	scroll(e) {
+		this.setData({
+			pageMetaScrollTop: e.detail.scrollTop
+		})
+	},
+	// 页面滚动
+	onPageScroll(e) {
+		this.setData({
+			scrollTop: e.scrollTop
+		});
+	},
+	onLoad() {
+		this.drag = this.selectComponent('#drag');
+		// 模仿异步加载数据
+		setTimeout(() => {
+			this.setData({
+				listData: listData
+			});
+			this.drag.init();
+		}, 100)
+	}
 })

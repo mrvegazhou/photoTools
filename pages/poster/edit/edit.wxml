@@ -5,10 +5,10 @@
   <scale min="0" max="200" int="{{false}}" single="10" h="8" styles="{{styles}}" id="weight"></scale>
   
   <!-- 主页面 画布 -->
-  <canvas-drag bind:hideMenu="hideMenu" items="{{items}}"></canvas-drag>
+  <canvas-drag bind:hideMenu="hideMenu" items="{{items}}" bgImg="{{bg.img}}" bgColor="{{bg.color}}"></canvas-drag>
 
   <!-- 主页面-底部 -->
-  <template is="posterBottomTool" data="{{menu, itemText, itemImg}}" />
+  <template is="posterBottomTool" data="{{menu, itemText, itemImg, bg}}" />
 
   <!-- 图片生成弹出页面-->
   <template is="posterImgCard" data="{{imgCardShow, imageUrl}}" />

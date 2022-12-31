@@ -2,22 +2,72 @@
 <import src="../camera/camera.wxml" />
 <template name="posterBottomTool">
   <view class="toolbar-bottom" wx:if="{{menu.mainPageShow==='mainPage'}}">
-    <view bindtap='showSecondMenu' data-type="img">
+    <view bindtap='showSecondMenu' data-type="bg" class="item-btn">
+      <text class="icon-item iconfont icon-beijingyanse {{menu.menuShow=='bg'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='bg'?'menu-select':''}}">背景</text>
+    </view>
+    <view bindtap='showSecondMenu' data-type="img" class="item-btn">
       <text class="icon-item iconfont icon-tianjiatupian_huaban {{menu.menuShow=='img'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='img'?'menu-select':''}}">加图</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="txt">
+    <view bindtap='showSecondMenu' data-type="txt" class="item-btn">
       <text class="icon-item iconfont icon-wenzi {{menu.menuShow=='txt'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='txt'?'menu-select':''}}">加字</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="cropper">
+    <view bindtap='showSecondMenu' data-type="cropper" class="item-btn">
       <text class="icon-item iconfont icon-caijian {{menu.menuShow=='cropper'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='clip'?'menu-select':''}}">裁剪</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="doodle">
+    <view bindtap='showSecondMenu' data-type="doodle" class="item-btn">
       <text class="icon-item iconfont icon-huabi {{menu.menuShow=='doodle'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='doodle'?'menu-select':''}}">涂鸦</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="layer">
+    <view bindtap='showSecondMenu' data-type="layer" class="item-btn">
       <text class="icon-item iconfont icon-tuceng {{menu.menuShow=='layer'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='layer'?'menu-select':''}}">图层</text>
     </view>
+    <view bindtap='showSecondMenu' data-type="sys" class="item-btn">
+      <text class="icon-item iconfont icon-xitong- {{menu.menuShow=='system'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='system'?'menu-select':''}}">画板</text>
+    </view>
   </view>
+
+  <!--背景设置二级菜单-->
+  <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='bg'}}">
+    <view class="popbg" bindtap="closeTxtEdit" data-type="txt"></view>
+    <view class="popup" style="height:60vh;">
+      <view class="tab-wapper">
+        <view class="{{menu.isBg=='img'?'select':'tab-item'}}" bindtap="changeBg" data-type="img">背景图片</view>
+        <view class="{{menu.isBg=='color'?'select':'tab-item'}}" bindtap="changeBg" data-type="color">背景颜色</view>
+      </view>
+      <view class="text-background" wx:if="{{menu.isBg=='color'}}">
+        <color-picker2  colorData="{{bg.color}}" bindchangecolor="onChangeBgColor"></color-picker2>
+        <view class="btn">
+          <text class="icon-item iconfont icon-queren1" bindtap="editBgOk"></text>
+          <text class="icon-item iconfont icon-quxiao1" bindtap="editBgCancel"></text>
+        </view>
+      </view>
+      <view class='text-background' style="width:300rpx;" wx:else>
+        <view class='item-menu' bindtap="getBgPhoto" data-type="album"><text class="iconfont icon-xiangcetupian"></text>相册</view>
+        <view class='item-menu' bindtap="getBgPhoto" data-type="camera"><text class="tool_child_icon iconfont icon-zhaoxiangji"></text>拍照</view>
+        <view class='item-menu' bindtap="getBgPhoto" data-type="talk"><text class="tool_child_icon iconfont icon-web-icon-"></text>聊天记录</view>
+        <view class='item-menu' bindtap="getBgPhoto" data-type="gallery"><text class="tool_child_icon iconfont icon-tuku"></text>图库</view>
+        <view class='item-menu' bindtap="getBgPhoto" data-type="cancel"><text class="tool_child_icon iconfont icon-quxiao1"></text>取消</view>
+      </view>
+    </view>
+  </view>
+
+  <!--画板操作-->
+  <view class="tool-children" style="right:10rpx !important;width:260rpx;" wx:if="{{menu.menuShow=='sys'}}">
+    <view class="second-menu">
+      <view bindtap="sysSetting" data-type="sys.save" class="{{menu.secondMenu=='sys.save' ? 'select' : ''}}">
+        <text class="tool_child_icon iconfont icon-yanjing_yincang_o"></text>
+        <text class="tool_text">隐藏标尺</text>
+      </view>
+      <view bindtap="sysSetting" data-type="sys.save" class="{{menu.secondMenu=='sys.save' ? 'select' : ''}}">
+        <text class="tool_child_icon iconfont icon-baocun"></text>
+        <text class="tool_text">保存</text>
+      </view>
+      <view bindtap="sysSetting" data-type="sys.clear" class="{{menu.secondMenu=='sys.clear' ? 'select' : ''}}">
+        <text class="tool_child_icon iconfont icon-delete"></text>
+        <text class="tool_text">清空</text>
+      </view>
+    </view>
+  </view>
+
   <!--加图二级菜单-->
   <view class="tool-children" style="display: {{menu.menuShow=='img' ? 'block' : 'none'}};left:{{menu.menuShowLeft}}rpx;">
     <view class="section-title">
@@ -47,7 +97,7 @@
   <view class="text-edit-pop" wx:if="{{menu.menuShow=='txt'}}">
     <view class="popbg" bindtap="closeTxtEdit" data-type="txt"></view>
     <view class="popup" style="height:{{menu.txtPopHeight}}">
-      <!--拾色器-->
+      <!--颜色-->
       <view class="color-picker-view" wx:if="{{menu.showColorPicker}}">
         <view class="color-picker-content">
           <color-picker2 colorData="{{menu.colorData.color}}" bindchangecolor="onChangeColor"></color-picker2>
@@ -105,11 +155,37 @@
         </view>
         <view style="display: flex;flex-direction: row; margin-bottom: 20rpx;">
           <text class="input-label">背景色边际与文字间距:</text>
-          <input value="{{itemText.css.padding}}"  class="text-input"/>
+          <input value="{{itemText.css.padding}}"  class="text-input" maxlength="3" type="number" bindinput='paddingInput'/>
+        </view>
+      </view>
+      <!-- 阴影 -->
+      <view class="text-edit-css" wx:if="{{menu.secondMenu=='txt.shadow'}}">
+        <view>
+          <view style="display: flex;flex-direction: row;">
+            <text class="input-label">阴影颜色:</text>
+            <view>{{itemText.css.shadow}}</view>
+          </view>
+          <view class="edit-css-content text-background">
+            <color-picker2 colorData="{{menu.shadowColor.color}}" bindchangecolor="onChangeShadowColor"></color-picker2>
+          </view>
+        </view>
+        <view style="display: flex;flex-direction: column;align-items: left; margin-bottom: 5rpx;">
+          <view style="display: flex;flex-direction:row;margin-bottom: 10rpx;">
+            <text class="input-label">阴影水平距离:</text>
+            <input value="{{menu.shadowColor.hShadow}}"  class="text-input"  maxlength="2" type="number" bindinput='textShadowInput' data-type="hShadow"/>
+          </view>
+          <view style="display: flex;flex-direction: row;margin-bottom: 7rpx;">
+            <text class="input-label">阴影垂直距离:</text>
+            <input value="{{menu.shadowColor.vShadow}}"  class="text-input"  maxlength="2" type="number" bindinput='textShadowInput' data-type="vShadow"/>
+          </view>
+          <view style="display: flex;flex-direction: row;">
+            <text class="input-label">模糊距离:</text>
+            <input value="{{menu.shadowColor.blur}}"  class="text-input"  maxlength="2" type="number" bindinput='textShadowInput' data-type="blur"/>
+          </view>
         </view>
       </view>
       <view class="edit-pannel" style="display:{{(menu.secondMenu=='txt.edit')?'block':'none'}};">
-        <textarea class="input" placeholder="请输入文字" placeholder-class="place-holder" maxlength='500' value="{{item.text}}" bindinput='textAreaBlur'/>
+        <textarea class="input" placeholder="请输入文字" placeholder-class="place-holder" maxlength='120' value="{{item.text}}" bindinput='textAreaInput'/>
       </view>
       <view class="text-edit-menu">
         <view class="item {{menu.secondMenu=='txt.edit'?'select':''}}" bindtap="editText" data-type="txt.edit">
@@ -123,6 +199,9 @@
         </view>
         <view class="item {{menu.secondMenu=='txt.background'?'select':''}}" bindtap="editText" data-type="txt.background">
           <text class="iconfont icon-beijingse">背景色</text>
+        </view>
+        <view class="item {{menu.secondMenu=='txt.shadow'?'select':''}}" bindtap="editText" data-type="txt.shadow">
+          <text class="iconfont icon-yinying">阴影</text>
         </view>
       </view>
       <view class="btn">
@@ -153,13 +232,9 @@
     </view>
   </view>
   <!--图层编辑层-->
-  <scroll-view scroll-y class="layer-float" style="display: {{menu.menuShow=='layer' ? 'block' : 'none'}};">
-    <view class="item">
-      <image src=""></image>
-      <image src=""></image>
-      <image src=""></image>
-    </view>
-  </scroll-view>
+  <view class="layer-float" wx:if="{{menu.menuShow=='layer'}}">
+    <dragSortList ></dragSortList>
+  </view>
   <!--涂鸦编辑层-->
   <view wx:if="{{menu.menuShow=='doodle'}}">
     <doodle id="myDoodleCpt"></doodle>

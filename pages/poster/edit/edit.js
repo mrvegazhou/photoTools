@@ -41,6 +41,13 @@ Page({
         transparency: 1,
         color: '',
       },
+      shadowColor:{
+        transparency: 1,
+        color: '',
+        hShadow: 0,
+        vShadow: 0,
+        blur: 0,
+      },
       // 裁剪
       cropper: {
         src: '',
@@ -66,10 +73,12 @@ Page({
         imgUrl: '',
         imgWidth: 0,
         imgHeight: 0,
+        use: 'img'
       },
 
       //文字编辑层高度
       txtPopHeight: '470rpx',
+      isBg: 'img',
     },
     //画布标尺
     styles: {
@@ -97,6 +106,7 @@ Page({
         textStyle: 'fill',
         textDecoration: '',
         textVertical: false,
+        shadow: ''
       }, 
       type:'text', 
       text:''
@@ -111,6 +121,10 @@ Page({
     },
     items: [
     ],
+    bg: {
+      img: '',
+      color: ''
+    },
   },
 
   /**
@@ -205,7 +219,6 @@ Page({
 
   //-----------------------------------菜单动作----------------------------------------------------//
   showSecondMenu(e) {
-    var left = e.target.offsetLeft
     const type = e.currentTarget.dataset['type'];
     var menuShow = type
     if (type==this.data.menu.menuShow) {
@@ -221,7 +234,10 @@ Page({
         this.chooseImage()
         break;
       case 'img':
-        menu.menuShowLeft = left+5
+        var left = e.target.offsetLeft
+        menu.menuShowLeft = left+5;
+      case 'sys':
+        break;
       case 'doodle':
         // MyDoodleCpt.initDoodle();
       default:
@@ -230,35 +246,31 @@ Page({
     menu.menuShow = menuShow
     this.setData({menu: menu})
   },
-
-  // 加图...
-  getPhotos(e) {
-    const type = e.currentTarget.dataset['type'];
-    const that = this
-    this.setData({'menu.secondMenu': type})
-    if(type==='img.camera') {
-      wx.getSetting({
-        success(res) {
-          if (res.authSetting['scope.camera']) {
-            that.setData({'menu.carema.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':''});
-          } else {
-            wx.authorize({
-							scope: 'scope.camera',
-							success () {
-                wx.showToast({ title: '获取拍照权限成功', icon: 'none', duration: 2000 });
-							},
-							fail(){
-                util.openConfirm();
-							}
-            })
+  //基础方法 不同方式获取图片
+  baseGetPhoto(type){
+    return new Promise((resolve, reject) => {
+      if(type=='camera'){
+        wx.getSetting({
+          success(res) {
+            if (res.authSetting['scope.camera']) {
+              resolve();
+            } else {
+              wx.authorize({
+                scope: 'scope.camera',
+                success () {
+                  wx.showToast({ title: '获取拍照权限成功', icon: 'none', duration: 2000 });
+                },
+                fail(){
+                  util.openConfirm();
+                }
+              })
+            }
+          },
+          fail () {
+            wx.showToast({ title: '获取拍照权限失败', icon: 'none', duration: 2000 });
           }
-        },
-				fail () {
-					wx.showToast({ title: '获取拍照权限失败', icon: 'none', duration: 2000 });
-				}
-      })
-    } else if(type==='img.album') {
-        //选择打开相册
+        })
+      } else if(type=='album'){
         wx.chooseMedia({
           count: 1,
           mediaType: 'image',
@@ -266,27 +278,49 @@ Page({
           sizeType: 'original',
           camera: 'back',
           success:(res)=> {
-            that.addItemImg(res.tempFiles[0].tempFilePath);
-            that.setData({'menu.menuShow': '', 'menu.secondMenu':''});
+            resolve(res.tempFiles[0].tempFilePath);
           },
           fail () {
             wx.showToast({ title: '取消选择', icon: 'none', duration: 2000 });
           }
         })
-    } else if(type==='img.talk') {
-      wx.chooseMessageFile({
-        count: 1,
-        type: 'image',
-        success (res) {
-          // tempFilePath可以作为 img 标签的 src 属性显示图片
-          const tempFilePaths = res.tempFiles
-          that.addItemImg(tempFilePaths[0].path);
+      } else if(type=='talk'){
+        wx.chooseMessageFile({
+          count: 1,
+          type: 'image',
+          success (res) {
+            // tempFilePath可以作为 img 标签的 src 属性显示图片
+            const tempFilePaths = res.tempFiles
+            resolve(tempFilePaths[0].path);
+          }
+        })
+      }
+    });
+  },
+  // 加图...
+  getPhotos(e) {
+    let type = e.currentTarget.dataset['type'];
+    this.setData({'menu.secondMenu': type})
+    if(type==='img.camera')
+      this.setData({'menu.camera.use': 'img'});
+    let typeArr = type.split(".");
+    type = typeArr[1];
+    const that = this
+    this.baseGetPhoto(type).then((url)=>{
+      switch(type){
+        case 'camera':
+          that.setData({'menu.carema.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':''});
+          break;
+        case 'album':
+          that.addItemImg(url);
           that.setData({'menu.menuShow': '', 'menu.secondMenu':''});
-        }
-      })
-    } else {
-      wx.showToast({ title: '敬请期待', icon: 'none', duration: 2000 })
-    }
+          break;
+        case 'talk':
+          that.addItemImg(url);
+          that.setData({'menu.menuShow': '', 'menu.secondMenu':''});
+          break;
+      }
+    });
   },
   // 在海报组件中调用隐藏主菜单
   hideMenu() {
@@ -294,6 +328,64 @@ Page({
       'menu.menuShow': ''
     });
   },
+
+  //-----------------------------------系统设置 begin----------------------------------------------------//
+  sysSetting(e){
+    let type = e.currentTarget.dataset['type'];
+    this.setData({'menu.secondMenu': type});
+    
+  },
+  //-----------------------------------系统设置 end----------------------------------------------------//
+
+  //-----------------------------------背景设置 begin----------------------------------------------------//
+  editBgOk(){
+
+  },
+  editBgCancel(){
+
+  },
+  //更改背景颜色
+  onChangeBgColor(e){
+    let rgba = e.detail.rgba;
+    this.setData({
+      'bg.color': rgba
+    })
+  },
+  changeBg(e){
+    let type = e.currentTarget.dataset['type'];
+    if(type=='img'){
+      this.setData({'menu.isBg': 'img'})
+    } else {
+      this.setData({'menu.isBg': 'color'})
+    }
+  },
+  //背景选照片
+  getBgPhoto(e){
+    let type = e.currentTarget.dataset['type'];
+    let that = this;
+    if(type=='camera')
+      that.setData({'menu.camera.use': 'bg'});
+    else if(type=='cancel'){
+      that.setData({'menu.menuShow': '', 'menu.secondMenu':''});
+      return;
+    }
+    this.baseGetPhoto(type).then((url)=>{
+      switch(type){
+        case 'camera':
+          that.setData({'menu.carema.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':''});
+          break;
+        case 'album':
+          that.setData({'bg.img': url});
+          that.setData({'menu.menuShow': '', 'menu.secondMenu':''});
+          break;
+        case 'talk':
+          that.setData({'bg.img': url});
+          that.setData({'menu.menuShow': '', 'menu.secondMenu':''});
+          break;
+      }
+    });
+  },
+  //-----------------------------------背景设置 end----------------------------------------------------//
 
   //-----------------------------------裁剪动作----------------------------------------------------//
   chooseImage() {
@@ -366,7 +458,8 @@ Page({
     })
   },
   // 照相
-  takeCameraImg() {
+  takeCameraImg(e) {
+    var use = e.currentTarget.dataset['use'];
     var context = wx.createCameraContext()
     // 照相功能
     context.takePhoto({
@@ -378,7 +471,11 @@ Page({
           'menu.camera.imgHeight': res.height,
           'menu.camera.cameraHasImg': true
         })
-        this.addItemImg(res.tempImagePath);
+        if(use=='img'){
+          this.addItemImg(res.tempImagePath);
+        } else if(use=='bg'){
+          this.setData({'bg.img': res.tempImagePath});
+        }
       },
       fail: () => {
         wx.showToast({
@@ -426,6 +523,10 @@ Page({
     item.css.fontFamily = this.data.menu.fontFamilyShowVal;
     item.css.color = this.data.menu.colorData.color;
     item.css.background = this.data.menu.backgroundColor.color;
+    //阴影设置
+    if(this.data.menu.shadowColor.color!='' && this.data.menu.shadowColor.blur!=0) {
+      item.css.shadow = `${this.data.menu.shadowColor.hShadow} ${this.data.menu.shadowColor.vShadow} ${this.data.menu.shadowColor.blur} ${this.data.menu.shadowColor.color}`;
+    }
     let items = this.data.items;
     items = [item]
     this.setData({
@@ -485,7 +586,7 @@ Page({
     this.closeTxtEdit()
     this.initTextData()
   },
-  textAreaBlur(e){
+  textAreaInput(e){
     this.setData({
       'itemText.text': e.detail.value
     })
@@ -516,6 +617,9 @@ Page({
         break;
       case 'txt.background':
         this.setData({'menu.txtPopHeight':'70vh'});
+        break;
+      case 'txt.shadow':
+        this.setData({'menu.txtPopHeight':'77vh'});
         break;
       default:
         this.setData({'menu.txtPopHeight':'470rpx'});
@@ -550,7 +654,6 @@ Page({
       'menu.fontFamilyShow': !this.data.menu.fontFamilyShow
     })
   },
-
   //更改背景色
   onChangeBackColor(e) {
     let rgba = e.detail.rgba;
@@ -558,6 +661,38 @@ Page({
       'menu.backgroundColor.color': rgba,
       'menu.backgroundColor.transparency': e.detail.alpha || 1,
       'itemText.css.background': rgba
+    })
+  },
+  paddingInput(e){
+    this.setData({'itemText.css.padding': e.detail.value});
+  },
+  //更改阴影色
+  onChangeShadowColor(e) {
+    let rgba = e.detail.rgba;
+    this.setData({
+      'menu.shadowColor.color': rgba,
+      'menu.shadowColor.transparency': e.detail.alpha || 1,
+      'itemText.css.shadow': rgba
+    })
+  },
+  textShadowInput(e){
+    let type = e.currentTarget.dataset['type'];
+    let val = e.detail.value;
+    switch(type){
+      case 'blur':
+        this.setData({'menu.shadowColor.blur': val})
+        break;
+      case 'hShadow':
+        this.setData({'menu.shadowColor.hShadow': val})
+        break;
+      case 'vShadow':
+        this.setData({'menu.shadowColor.vShadow': val})
+        break;
+    }
+    this.setData({
+      'menu.shadowColor.color': rgba,
+      'menu.shadowColor.transparency': e.detail.alpha || 1,
+      'itemText.css.shadow': rgba
     })
   },
   initTextData() {

@@ -4,7 +4,8 @@
     "scale": "/component/axis-ruler/index",
     "color-picker2": "/component/color-picker2/color-picker",
     "doodle":"/component/doodle/index",
-    "image-cropper": "/component/image-cropper/image-cropper"
+    "image-cropper": "/component/image-cropper/image-cropper",
+    "dragSortList": "/component/dragSortList/index"
   },
   "disableScroll":true
 }

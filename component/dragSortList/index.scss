@@ -1,0 +1,47 @@
+$theme-color: #3F82FD;
+$theme-color--active: rgba($theme-color, 0.7);
+
+$line-color: #ebedf0;
+
+$black1: #333333;
+$black2: #666666;
+$black3: #999999;
+
+$shadow: 0 0 20rpx -5rpx rgba(0, 0, 0, 0.1);
+
+%clear-float {
+	&:after {
+		display: block;
+		content: "clear";
+		height: 0;
+		clear: both;
+		overflow: hidden;
+		visibility: hidden;
+	}
+}
+
+@mixin line($line: 1) {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: $line;
+	overflow: hidden;
+	word-break: break-all;
+}
+.item-wrap {
+	position: relative;
+	.item {
+		position: absolute;
+		z-index: 1;
+		top: 0;
+		left: 0;
+		&.tran {
+			transition: transform 0.3s !important;
+		}
+		&.cur {
+			z-index: 2;
+		}
+		&.fixed {
+			z-index: 0 !important;
+		}
+	}
+}

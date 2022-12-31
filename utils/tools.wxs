@@ -3,5 +3,5 @@ function strInclude(str, str_) {
   return str.indexOf(str_);
 }
 module.exports = {
-  strInclude: strInclude,
+  strInclude: strInclude
 };
