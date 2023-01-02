@@ -1,13 +1,78 @@
-.item-wrap {
-  position: relative; }
-  .item-wrap .item {
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 0; }
-    .item-wrap .item.tran {
-      transition: transform 0.3s !important; }
-    .item-wrap .item.cur {
-      z-index: 2; }
-    .item-wrap .item.fixed {
-      z-index: 0 !important; }
+@font-face {
+  font-family: "iconfont"; /* Project id 3687307 */
+  src: url('//at.alicdn.com/t/c/font_3687307_xjvti8x4ukg.woff2?t=1672071500865') format('woff2'),
+       url('//at.alicdn.com/t/c/font_3687307_xjvti8x4ukg.woff?t=1672071500865') format('woff'),
+       url('//at.alicdn.com/t/c/font_3687307_xjvti8x4ukg.ttf?t=1672071500865') format('truetype');
+}
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 20px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-tuodong:before {
+  content: "\e622";
+}
+.icon-guanbixianshi:before {
+  content: "\e662";
+}
+
+.icon-xianshi:before {
+  content: "\e64e";
+}
+
+.dragSortList {
+  height: 100%;
+  position: relative;
+}
+.dragSortList .row {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.dragSortList .title-row {
+  border-bottom: 1px solid #8a988e;
+  color: #8a988e;
+}
+.dragSortList .list-row {
+  padding: 8px 0px;
+  border-bottom: 1px solid #8a988e;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dragSortList .movable-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+.dragSortList .movable-row {
+  box-shadow: #D9D9D9 0px 0px 20px;
+}
+.dragSortList .col1 { 
+  text-align: center;
+  flex: 1;
+  color: #8a988e;
+}
+.dragSortList .col2 { 
+  text-align: center;
+  flex: 2;
+}
+.dragSortList .col3 { 
+  text-align: center;
+  flex: 1;
+  color: #8a988e;
+}
+
+.dragSortList .ready-place {
+  background-color: #CCCCCC
+}
+
+.dragSortList .content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

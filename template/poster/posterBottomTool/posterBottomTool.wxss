@@ -39,12 +39,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 20rpx;
-  margin-bottom: 20rpx;
+  margin: 20rpx;
+  font-size: var(--primary-font-size);
 }
-.edit-pop .tab-wapper .item{
-  margin: auto;
-  width: 350rpx;
+.edit-pop .tab-item{
+  font-size: var(--primary-font-size);
+  color: var(--primary-text-color);
+  height: 70rpx;
+  line-height: 70rpx;
+  vertical-align: middle;
+  width: 200rpx;
   text-align: center;
 }
 .edit-pop .item-menu{
@@ -52,25 +56,20 @@
   line-height: 80rpx;
   display: flex;
   flex-direction: row;
-  justify-content: left; 
+  justify-content: left;
 }
 .edit-pop .item-menu text{
-  margin: 0 30rpx 0 30rpx;
+  margin: 0 10rpx 0 30rpx;
+  font-size: var(--primary-icon-size-2);
 }
 .edit-pop .select{
-  padding: 10px;
-  font-size: var(--primary-font-size);
   color: var(--primary-color);
-}
-.edit-pop .tab-item{
-  padding: 10px;
-  font-size: var(--primary-font-size);
-  color: var(--primary-text-color);
 }
 .layer-float {
   min-height: 400rpx;
-  max-height: 700rpx;
-  width: 270rpx;
+  /* max-height: 700rpx; */
+  max-width: 500rpx;
+  min-width: 400rpx;
   position: fixed;
   z-index: 99992;
   bottom: 121rpx;
@@ -121,30 +120,26 @@
   justify-items: left;
 }
 .tool-children .second-menu view{
-  display: flex;
-  flex-direction: row;
-  justify-content: left;
-  align-items: center;
+  text-align: left;
   height: 70rpx;
   margin: 10rpx;
   padding: 8rpx;
+  display: flex;
+  align-items: center;
 }
 .tool-children .section-title{
-  margin: 0 0 5rpx 0;
+  margin-bottom: 10rpx;
 }
 .tool-children .second-menu .select{
   border-radius: 8rpx;
   color: var(--primary-color);
 }
-.tool_child_icon{
-  height: 50rpx;
-}
 .tool-children .iconfont{
-  font-size: var(--primary-icon-size);
+  font-size: var(--primary-icon-size-2);
 }
 .tool-children .tool_text{
   font-size: var(--primary-font-size);
-  margin: 6rpx 0 0 8rpx;
+  margin-left: 10rpx;
 
 }
 .tool-children view.select .tool_text{color:var(--white);}
@@ -214,7 +209,6 @@
 .text-edit-pop .btn text{
   width: 200rpx;
   text-align: center;
-  margin-top: 10rpx;
 }
 
 /* color picker */
@@ -336,7 +330,7 @@
   margin: auto;
   width: 350rpx;
   text-align: center;
-  color: var(--primary-dark-gray-color) !important;
+  font-size: var(--primary-font-size);
 }
 .text-edit-pop .input-label{
   text-align: left;

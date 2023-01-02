@@ -1,174 +1,160 @@
-const app = getApp()
-
-let listData = [
-	{
-		dragId: "item0",
-		title: "这个绝望的世界没有存在的价值，所剩的只有痛楚",
-		description: "思念、愿望什么的都是一场空，被这种虚幻的东西绊住脚，什么都做不到",
-		images: "/assets/image/swipe/1.png",
-		fixed: false
-	},
-	{
-		dragId: "item1",
-		title: "我早已闭上了双眼，我的目的，只有在黑暗中才能实现",
-		description: "有太多的羁绊只会让自己迷惘，强烈的想法和珍惜的思念，只会让自己变弱",
-		images: "/assets/image/swipe/2.png",
-		fixed: false
-	},
-	{
-		dragId: "item2",
-		title: "感受痛苦吧，体验痛苦吧，接受痛苦吧，了解痛苦吧。不知道痛苦的人是不会知道什么是和平",
-		description: "但我已经在无限存在的痛苦之中，有了超越凡人的成长。从凡人化为神",
-		images: "/assets/image/swipe/3.png",
-		fixed: true
-	},
-	{
-		dragId: "item3",
-		title: "我决定了 从今天起 我要选择一条不会让自己后悔的路 我要创造出属于自己的忍道 ",
-		description: "我才不要在这种时候放弃,即使当不成中忍,我也会通过其他的途径成为火影的,这就是我的忍道",
-		images: "/assets/image/swipe/4.png",
-		fixed: true
-	},
-	{
-		dragId: "item4",
-		title: "为什么你会这么弱？就是因为你对我的仇恨...还不够深...",
-		description: "你没有杀的价值...愚蠢的弟弟啊...想要杀死我的话...仇恨吧！憎恨吧！然后丑陋地活下去吧！逃吧 逃吧...然后苟且偷生下去吧！",
-		images: "/assets/image/swipe/5.png",
-		fixed: false
-	},
-	{
-		dragId: "item5",
-		title: "对于忍者而言怎样活着无所谓，怎样死去才是最重要的...",
-		description: "所谓的忍者就是忍人所不能忍，忍受不了饿肚子，而沦落为盗贼的人，根本不能称之为忍者",
-		images: "/assets/image/swipe/6.png",
-		fixed: false
-	},
-	{
-		dragId: "item6",
-		title: "在这世上，有光的地方就必定有黑暗，所谓的胜者，也就是相对败者而言",
-		description: "若以一己之思念要维持和平，必会招致战争，为了守护爱，变回孕育出恨。此间因果，是无法斩断的。现实就是如此",
-		images: "/assets/image/swipe/7.png",
-		fixed: false
-	},
-	{
-		dragId: "item7",
-		title: "世界上...只有没有实力的人,才整天希望别人赞赏...",
-		description: "很不巧的是我只有一个人，你说的那些家伙们已经一个都没有了，已经??全部被杀死了",
-		images: "/assets/image/swipe/8.png",
-		fixed: false
-	},
-	{
-		dragId: "item8",
-		title: "千代婆婆，父亲大人和母亲大人回来了吗？？？",
-		description: "明明剩下的只有痛苦了，既然你这么想活命，我就方你一条生路好了。不过，你中的毒不出三日就会要了你的命",
-		images: "/assets/image/swipe/9.png",
-		fixed: false
-	},
-	{
-		dragId: "item9",
-		title: "艺术就是爆炸！！~~ 嗯 ~~ 芸术は爆発します！",
-		description: "我的艺术就是爆炸那一瞬，和蝎那种让人吃惊的人偶喜剧从根本上就是不同的！",
-		images: "/assets/image/swipe/10.png",
-		fixed: false
-	}
-];
-
 Page({
-	data: {
-		isIphoneX: app.globalData.isIphoneX,
-		size: 4,
-		listData: [],
-		extraNodes: [
-			{
-				type: "destBefore",
-				dragId: "destBefore0",
-				destKey: 0,
-				slot: "before",
-				fixed: true
-			},
-			{
-				type: "destAfter",
-				dragId: "destAfter0",
-				destKey: 0,
-				slot: "after",
-				fixed: true
-			},
-			{
-				type: "after",
-				dragId: "plus",
-				slot: "plus",
-				fixed: true
-			}
-		],
-		pageMetaScrollTop: 0,
-		scrollTop: 0
-	},
-	sortEnd(e) {
-		console.log("sortEnd", e.detail.listData)
-		this.setData({
-			listData: e.detail.listData
-		});
-	},
-	change(e) {
-		console.log("change", e.detail.listData)
-	},
-	sizeChange(e) {
-		wx.pageScrollTo({scrollTop: 0})
-		this.setData({
-			size: e.detail.value
-		});
-		this.drag.columnChange();
-	},
-	itemClick(e) {
-		console.log(e);
-	},
-	toggleFixed(e) {
-		let key = e.currentTarget.dataset.key;
 
-		let {listData} = this.data;
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    optionList: [],
 
-		listData[key].fixed = !listData[key].fixed
+    movableViewInfo: {
+      y: 0,
+      showClass: 'none',
+      data: {}
+    },
+    scrollT:0,
+    scrollH: 0,
+    scrollTop: 0,
+    canScroll: true,
+    height: 400,
+    pageInfo: {
+      rowHeight: 47,
+      scrollHeight: 85,
 
-		this.setData({
-			listData: listData
-		});
-	},
-	add(e) {
-		let listData = this.data.listData;
-		listData.push({
-			dragId: `item${listData.length}`,
-			title: "这个绝望的世界没有存在的价值，所剩的只有痛楚",
-			description: "思念、愿望什么的都是一场空，被这种虚幻的东西绊住脚，什么都做不到",
-			images: "/assets/image/swipe/1.png",
-			fixed: false
-		});
-		setTimeout(() => {
-			this.setData({
-				listData
-			});
-			this.drag.init();
-		}, 300)
+      startIndex: null,
+      scrollY: true,
+      readyPlaceIndex: null,
+      startY: 0,
+      selectedIndex: null,
+    }
+  },
 
-	},
-	scroll(e) {
-		this.setData({
-			pageMetaScrollTop: e.detail.scrollTop
-		})
-	},
-	// 页面滚动
-	onPageScroll(e) {
-		this.setData({
-			scrollTop: e.scrollTop
-		});
-	},
-	onLoad() {
-		this.drag = this.selectComponent('#drag');
-		// 模仿异步加载数据
-		setTimeout(() => {
-			this.setData({
-				listData: listData
-			});
-			this.drag.init();
-		}, 100)
-	}
+  dragStart: function (event) {
+    var startIndex = event.target.dataset.index
+    console.log('获取到的元素为', this.data.optionList[startIndex])
+    // 初始化页面数据
+    var pageInfo = this.data.pageInfo
+    pageInfo.startY = event.touches[0].clientY
+    pageInfo.readyPlaceIndex = startIndex
+    pageInfo.selectedIndex = startIndex
+    pageInfo.scrollY = false
+    pageInfo.startIndex = startIndex
+    
+    this.setData({
+      'movableViewInfo.y': pageInfo.startY - (pageInfo.rowHeight / 2)
+    })
+    // 初始化拖动控件数据
+    var movableViewInfo = this.data.movableViewInfo
+    movableViewInfo.data = this.data.optionList[startIndex]
+    movableViewInfo.showClass = "inline"
+
+    this.setData({
+      movableViewInfo: movableViewInfo,
+      pageInfo: pageInfo,
+      canScroll: false, 
+        
+    })
+  },
+
+  dragMove: function (event) {
+    var optionList = this.data.optionList
+    var pageInfo = this.data.pageInfo
+    // 计算拖拽距离
+    var movableViewInfo = this.data.movableViewInfo
+    var movedDistance = event.touches[0].clientY - pageInfo.startY
+    movableViewInfo.y = pageInfo.startY - (pageInfo.rowHeight / 2) + movedDistance
+    // console.log(movedDistance+event.touches[0].clientY-this.data.scrollT)
+    let sss = event.touches[0].clientY-this.data.scrollT + movedDistance;
+    // 修改预计放置位置
+    var movedIndex = parseInt(movedDistance / pageInfo.rowHeight)
+
+    if(sss>(this.data.scrollH-64)) {
+      wx.nextTick(() => {
+        let hhh = Math.ceil( (sss-(this.data.scrollH-64)) /64)*64
+        this.setData({scrollTop:hhh/2+47, height:400})
+       console.log(this.data.scrollTop, '-=-=-=-=')
+      });
+      
+    }
+
+
+    var readyPlaceIndex = pageInfo.startIndex + movedIndex
+    if (readyPlaceIndex < 0 ) {
+      readyPlaceIndex = 0
+    }
+    else if (readyPlaceIndex >= optionList.length){
+      readyPlaceIndex = optionList.length - 1
+    }
+    
+    if (readyPlaceIndex != pageInfo.selectedIndex ) {
+      var selectedData = optionList[pageInfo.selectedIndex]
+
+      optionList.splice(pageInfo.selectedIndex, 1)
+      optionList.splice(readyPlaceIndex, 0, selectedData)
+      pageInfo.selectedIndex = readyPlaceIndex
+    }
+    // 移动movableView
+    pageInfo.readyPlaceIndex = readyPlaceIndex
+    // console.log('移动到了索引', readyPlaceIndex, '选项为', optionList[readyPlaceIndex])
+    
+    this.setData({
+      movableViewInfo: movableViewInfo,
+      optionList: optionList,
+      pageInfo: pageInfo
+    })
+  },
+
+  dragEnd: function (event) {
+    // 重置页面数据
+    var pageInfo = this.data.pageInfo
+    pageInfo.readyPlaceIndex = null
+    pageInfo.startY = null
+    pageInfo.selectedIndex = null
+    pageInfo.startIndex = null
+    pageInfo.scrollY = true
+    // 隐藏movableView
+    var movableViewInfo = this.data.movableViewInfo
+    movableViewInfo.showClass = 'none'
+
+    this.setData({
+      pageInfo: pageInfo,
+      movableViewInfo: movableViewInfo,
+
+      canScroll: true
+    })
+  },
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    var optionList = [
+      "段落1 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+      "段落2 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+      "段落3 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+      "段落4 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+      "段落5 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+      "段落6 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+      "段落7 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+      "段落8 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+      "段落9 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+      "段落10 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+      "段落11 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+      "段落12 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+      "段落13 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
+    ]
+    let that = this;
+    const query = wx.createSelectorQuery();
+        query.select('#test').boundingClientRect(function (res) {
+
+            that.setData({scrollH: res.height, scrollT: res.top});
+
+            console.log(res.top, res.height, res.height/64)
+        }).exec()
+
+    that.setData({
+      optionList: optionList,
+    })
+  },
+
+  
 })

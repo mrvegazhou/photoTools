@@ -50,6 +50,7 @@ Component({
   data: {
     history: [],
     itemList: [],
+    template: [],
     canvasTemImg: null,
     canvasHeight: null,
     canvasWidth: null,
@@ -102,7 +103,7 @@ Component({
         wx.getImageInfo({
           src: bgImg,
           success: res => {
-            console.log(bgImg, '---bgData--')
+
             // 初始化数据
             item.width = res.width; //宽度
             item.height = res.height; //高度
@@ -136,6 +137,10 @@ Component({
         item.bgColor = bgColor;
         this.setData({
           bgData: item
+        });
+      } else {
+        this.setData({
+          bgData: {}
         });
       }
       
@@ -334,7 +339,6 @@ Component({
       wx.saveImageToPhotosAlbum({
           filePath: imgurl,         
           success: (res) => {
-              console.log(res);
               wx.showToast({
                   title: '保存成功',
                   icon: 'success',
@@ -573,7 +577,37 @@ Component({
           itemList: list
         })
       }
-    }
+    },
+
+    //隐藏item
+    hideItem(index) {
+      for (let i = 0; i < list.length; i++) {
+        if(i==index){
+          list[index].css.display = 'none';
+          break
+        }
+      }
+      this.setData({
+        itemList: list
+      })
+    },
+
+    //清空画布
+    clearCanvas() {
+      this.codeCtx.clearCanvas(0, 0, this.data.canvasWidth, this.data.canvasHeight);
+    },
+
+    //获取画板模板
+    setPaintPallette(){
+      let bg = this.data.bgImg!='' ? this.data.bgImg : (this.data.bgColor!='' ? this.data.bgColor : '');
+      let template = {
+        width: this.data.canvasWidth,
+        height: this.data.canvasHeight,
+        background: bg,
+        views: this.data.itemList,
+      };
+      this.setData({template: template});
+    },
   },
 
 });

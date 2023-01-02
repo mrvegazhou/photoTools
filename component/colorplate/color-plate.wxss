@@ -1,4 +1,3 @@
-/* pages/drawing/component/colorpicker1/colorPicker.wxss */
 .clearfix{
   zoom:1;
 }

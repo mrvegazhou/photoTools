@@ -81,13 +81,14 @@ Page({
       isBg: 'img',
     },
     //画布标尺
-    styles: {
+    scaleStyles: {
       line: '#dbdbdb',
       bginner: '#fbfbfb',
       bgoutside: '',
       font: '#404040',
       fontColor: '#404040',
-      fontSize: 8
+      fontSize: 8,
+      display: 'block'
     },
 
     imgCardShow: false,
@@ -106,7 +107,8 @@ Page({
         textStyle: 'fill',
         textDecoration: '',
         textVertical: false,
-        shadow: ''
+        shadow: '',
+        display: 'block'
       }, 
       type:'text', 
       text:''
@@ -117,13 +119,15 @@ Page({
       css: {
         top: 50,
         left: 50,
+        display: 'block'
       }
     },
     items: [
     ],
     bg: {
       img: '',
-      color: ''
+      color: '',
+      tmpColor: ''
     },
   },
 
@@ -222,7 +226,8 @@ Page({
     const type = e.currentTarget.dataset['type'];
     var menuShow = type
     if (type==this.data.menu.menuShow) {
-      menuShow = ''
+      this.setData({'menu.menuShow': ''})
+      return
     }
     var menu = this.data.menu
     switch(type) {
@@ -325,7 +330,8 @@ Page({
   // 在海报组件中调用隐藏主菜单
   hideMenu() {
     this.setData({
-      'menu.menuShow': ''
+      'menu.menuShow': '',
+      'menu.secondMenu':''
     });
   },
 
@@ -333,22 +339,47 @@ Page({
   sysSetting(e){
     let type = e.currentTarget.dataset['type'];
     this.setData({'menu.secondMenu': type});
-    
+    switch(type) {
+      case 'sys.scale':
+        this.setData({'scaleStyles.display': this.data.scaleStyles.display=='block'?'none':'block'});
+        break;
+      case 'sys.clear':
+        wx.showModal({
+          content: '是否确定清空画布内容？',
+          confirmText: "确认",
+          cancelText: "取消",
+          success: function (res) {
+            CanvasDrag.clearCanvas();
+          }
+        });
+        this.hideMenu();
+        break;
+    }
   },
   //-----------------------------------系统设置 end----------------------------------------------------//
 
   //-----------------------------------背景设置 begin----------------------------------------------------//
   editBgOk(){
-
+    if( this.data.bg.tmpColor=='') {
+      this.hideMenu()
+      return
+    }
+    this.setData({
+      'bg.color': this.data.bg.tmpColor,
+    })
+    this.hideMenu()
   },
   editBgCancel(){
-
+    this.setData({
+      'bg.color': '',
+    })
+    this.hideMenu()
   },
   //更改背景颜色
   onChangeBgColor(e){
     let rgba = e.detail.rgba;
     this.setData({
-      'bg.color': rgba
+      'bg.tmpColor': rgba
     })
   },
   changeBg(e){
@@ -711,6 +742,13 @@ Page({
       'itemText.css.textVertical': false,
     })
   },
-
   //-----------------------------------文字编辑 end---------------------------------------------------//
+
+  //-----------------------------------图层管理 start---------------------------------------------------//
+  dragSortListHideItem(event) {
+    if(!event.detail.index) return;
+    // 调用画板组件的隐藏item方法
+    CanvasDrag.hideItem(event.detail.index);
+  },
+  //-----------------------------------图层管理 end---------------------------------------------------//
 })

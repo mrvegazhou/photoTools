@@ -1,6 +1,5 @@
 {
-	"usingComponents": {
-		"drag": "../../../component/dragSortList/index",
-		"drag-item": "./drag-item/index"
-	}
+  "usingComponents": {
+
+  }
 }

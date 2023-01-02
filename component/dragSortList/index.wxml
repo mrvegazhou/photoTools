@@ -1,28 +1,49 @@
-<wxs module="handler" src="./index.wxs"></wxs>
+<view class='dragSortList'>
+  <view class='row title-row' style='height: {{titleHight}}px;'>
+    <view class="col1">显示</view>
+    <view class="col2">内容</view>
+    <view class="col3">层序</view>
+  </view>
 
-<view class="item-wrap item-wrap-class"
-			list="{{list}}"
-			style="{{wrapStyle}}"
-			baseData="{{baseData}}"
-			change:list="{{handler.listObserver}}"
-			change:baseData="{{handler.baseDataObserver}}">
+  <movable-area class='movable-area' 
+                style='display:{{movableViewInfo.showClass}}; height:{{pageInfo.scrollHeight}}%;'>
+    <movable-view class='row list-row movable-row'
+                  out-of-bounds='true'
+                  damping='999'
+                  style='height:{{pageInfo.rowHeight}}px;'
+                  direction="vertical"
+                  y="{{movableViewInfo.y}}">
+      <view class='col1' >
+        <text class="icon-item iconfont icon-yanjing_xianshi_o"></text>
+      </view>
+      <view class="col2 content" >
+        {{movableViewInfo.data}}
+      </view>
+      <view class="col3" >
+        <text class="icon-item iconfont icon-tuodong"></text>
+      </view>
+    </movable-view>
+  </movable-area>
 
-	<view
-		class="item"
-		wx:for="{{list}}"
-		wx:key="id"
-		data-index="{{index}}"
-		style="width: {{100/columns}}%"
-		bind:longpress="{{handler.longPress}}"
-		catch:touchmove="{{dragging ? handler.touchMove : ''}}"
-		catch:touchend="{{dragging ? handler.touchEnd : ''}}">
-
-		<block wx:if="{{item.extraNode}}">
-			<slot name="{{item.slot}}"></slot>
-		</block>
-		<block wx:else>
-			<item data-index="{{index}}" columns="{{columns}}" item-data="{{item.data}}" bind:click="itemClick"/>
-		</block>
-
-	</view>
+  <scroll-view scroll-y='{{pageInfo.scrollY}}' style='height: {{pageInfo.scrollHeight}}px;'>
+    <block wx:for='{{optionList}}' wx:key="index">
+      <view class='row list-row {{pageInfo.readyPlaceIndex == index ? "ready-place" : ""}}' style='height: {{pageInfo.rowHeight}}px;'>
+        <view class="col1" bindtap="hideItem" data-index='{{index}}'>
+          <text wx:if="{{item.css.display=='block'}}" class="icon-item iconfont icon-xianshi"></text>
+          <text wx:else class="icon-item iconfont icon-guanbixianshi"></text>
+        </view>
+        <view class="col2 content">
+          <block wx:if="{{item.type==='text'}}">
+            {{item.text}}
+          </block>
+          <block wx:if="{{item.type==='image'}}">
+            <image src="{{item.url}}" style="width:20rpx;" mode="aspectFit"></image>
+          </block>
+        </view>
+        <view class="col3" data-index='{{index}}' bindtouchstart='dragStart' bindtouchmove='dragMove' bindtouchend='dragEnd'>
+          <text class="icon-item iconfont icon-tuodong"></text>
+        </view>
+      </view>
+    </block>
+  </scroll-view>
 </view>

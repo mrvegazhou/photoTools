@@ -70,15 +70,6 @@ CanvasDrag.changeBgImage = (bgImage) => {
     }
 };
 
-CanvasDrag.clearCanvas = () => {
-  const canvasDrag = CanvasDrag();
-  if (!canvasDrag) {
-    console.error('请设置组件的id="canvas-drag"!!!');
-  } else {
-    return CanvasDrag().clearCanvas();
-  }
-};
-
 CanvasDrag.undo = () => {
     const canvasDrag = CanvasDrag();
     if (!canvasDrag) {
@@ -133,5 +124,32 @@ CanvasDrag.addItems = (items) => {
   }
 };
 
+CanvasDrag.hideItem = (index) => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+      console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().hideItem(index);
+  }
+};
+
+CanvasDrag.clearCanvas = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+      console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().clearCanvas();
+  }
+};
+
+//保存画板
+CanvasDrag.saveCanvas = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+      console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().saveCanvas();
+  }
+};
 
 export default CanvasDrag;

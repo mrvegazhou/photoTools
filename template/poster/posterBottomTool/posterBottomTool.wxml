@@ -21,17 +21,17 @@
       <text class="icon-item iconfont icon-tuceng {{menu.menuShow=='layer'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='layer'?'menu-select':''}}">图层</text>
     </view>
     <view bindtap='showSecondMenu' data-type="sys" class="item-btn">
-      <text class="icon-item iconfont icon-xitong- {{menu.menuShow=='system'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='system'?'menu-select':''}}">画板</text>
+      <text class="icon-item iconfont icon-xitong- {{menu.menuShow=='sys'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='sys'?'menu-select':''}}">画板</text>
     </view>
   </view>
 
   <!--背景设置二级菜单-->
   <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='bg'}}">
     <view class="popbg" bindtap="closeTxtEdit" data-type="txt"></view>
-    <view class="popup" style="height:60vh;">
+    <view class="popup" style="height:57vh;">
       <view class="tab-wapper">
-        <view class="{{menu.isBg=='img'?'select':'tab-item'}}" bindtap="changeBg" data-type="img">背景图片</view>
-        <view class="{{menu.isBg=='color'?'select':'tab-item'}}" bindtap="changeBg" data-type="color">背景颜色</view>
+        <view class="tab-item {{menu.isBg=='img'?'select':''}}" bindtap="changeBg" data-type="img">背景图片</view>
+        <view class="tab-item {{menu.isBg=='color'?'select':''}}" bindtap="changeBg" data-type="color">背景颜色</view>
       </view>
       <view class="text-background" wx:if="{{menu.isBg=='color'}}">
         <color-picker2  colorData="{{bg.color}}" bindchangecolor="onChangeBgColor"></color-picker2>
@@ -42,10 +42,10 @@
       </view>
       <view class='text-background' style="width:300rpx;" wx:else>
         <view class='item-menu' bindtap="getBgPhoto" data-type="album"><text class="iconfont icon-xiangcetupian"></text>相册</view>
-        <view class='item-menu' bindtap="getBgPhoto" data-type="camera"><text class="tool_child_icon iconfont icon-zhaoxiangji"></text>拍照</view>
-        <view class='item-menu' bindtap="getBgPhoto" data-type="talk"><text class="tool_child_icon iconfont icon-web-icon-"></text>聊天记录</view>
-        <view class='item-menu' bindtap="getBgPhoto" data-type="gallery"><text class="tool_child_icon iconfont icon-tuku"></text>图库</view>
-        <view class='item-menu' bindtap="getBgPhoto" data-type="cancel"><text class="tool_child_icon iconfont icon-quxiao1"></text>取消</view>
+        <view class='item-menu' bindtap="getBgPhoto" data-type="camera"><text class="iconfont icon-zhaoxiangji"></text>拍照</view>
+        <view class='item-menu' bindtap="getBgPhoto" data-type="talk"><text class="iconfont icon-web-icon-"></text>聊天记录</view>
+        <view class='item-menu' bindtap="getBgPhoto" data-type="gallery"><text class="iconfont icon-tuku"></text>图库</view>
+        <view class='item-menu' bindtap="getBgPhoto" data-type="cancel"><text class="iconfont icon-quxiao1"></text>取消</view>
       </view>
     </view>
   </view>
@@ -53,16 +53,18 @@
   <!--画板操作-->
   <view class="tool-children" style="right:10rpx !important;width:260rpx;" wx:if="{{menu.menuShow=='sys'}}">
     <view class="second-menu">
-      <view bindtap="sysSetting" data-type="sys.save" class="{{menu.secondMenu=='sys.save' ? 'select' : ''}}">
-        <text class="tool_child_icon iconfont icon-yanjing_yincang_o"></text>
-        <text class="tool_text">隐藏标尺</text>
+      <view bindtap="sysSetting" data-type="sys.scale" class="{{menu.secondMenu=='sys.scale' ? 'select' : ''}}">
+        <text wx:if="{{scaleStyles.display=='block'}}" class="iconfont icon-guanbixianshi"></text>
+        <text wx:else="{{scaleStyles.display=='none'}}" class="iconfont icon-xianshi"></text>
+        <text wx:if="{{scaleStyles.display=='block'}}" class="tool_text">隐藏标尺</text>
+        <text wx:else="{{scaleStyles.display=='none'}}" class="tool_text">显示标尺</text>
       </view>
       <view bindtap="sysSetting" data-type="sys.save" class="{{menu.secondMenu=='sys.save' ? 'select' : ''}}">
-        <text class="tool_child_icon iconfont icon-baocun"></text>
+        <text class="iconfont icon-baocun"></text>
         <text class="tool_text">保存</text>
       </view>
       <view bindtap="sysSetting" data-type="sys.clear" class="{{menu.secondMenu=='sys.clear' ? 'select' : ''}}">
-        <text class="tool_child_icon iconfont icon-delete"></text>
+        <text class="iconfont icon-delete"></text>
         <text class="tool_text">清空</text>
       </view>
     </view>
@@ -76,19 +78,19 @@
     <!--菜单-->
     <view class="second-menu">
       <view bindtap="getPhotos" data-type="img.album" class="{{menu.secondMenu=='img.album' ? 'select' : ''}}">
-        <text class="tool_child_icon iconfont icon-xiangcetupian"></text>
+        <text class="iconfont icon-xiangcetupian"></text>
         <text class="tool_text">相册</text>
       </view>
       <view bindtap="getPhotos" data-type="img.camera" class="{{menu.secondMenu=='img.camera' ? 'select' : ''}}">
-        <text class="tool_child_icon iconfont icon-zhaoxiangji"></text>
+        <text class="iconfont icon-zhaoxiangji"></text>
         <text class="tool_text">拍照</text>
       </view>
       <view bindtap="getPhotos" data-type="img.talk" class="{{menu.secondMenu=='img.talk' ? 'select' : ''}}">
-        <text class="tool_child_icon iconfont icon-web-icon-"></text>
+        <text class="iconfont icon-web-icon-"></text>
         <text class="tool_text">聊天</text>
       </view>
       <view bindtap="getPhotos" data-type="img.gallery" class="{{menu.secondMenu=='img.gallery' ? 'select' : ''}}">
-        <text class="tool_child_icon iconfont icon-tuku"></text>
+        <text class="iconfont icon-tuku"></text>
         <text class="tool_text">图库</text>
       </view>
     </view>
@@ -233,7 +235,9 @@
   </view>
   <!--图层编辑层-->
   <view class="layer-float" wx:if="{{menu.menuShow=='layer'}}">
-    <dragSortList ></dragSortList>
+    <dragSortList scrollHeight="700" bind:hideItem="dragSortListHideItem">
+      
+    </dragSortList>
   </view>
   <!--涂鸦编辑层-->
   <view wx:if="{{menu.menuShow=='doodle'}}">
