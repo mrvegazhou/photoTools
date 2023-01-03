@@ -25,7 +25,7 @@
 </view>
 
 <view style='position:fixed;top:9999px;'>
+  <canvas type="2d" id="myCanvas" style="position: absolute; left: -9999rpx;"></canvas>
   <!-- 画布 -->
-  <canvas type='2d' id="myCanvas" style='width:{{canvasWidth}}px; height:{{canvasHeight}}px;'></canvas>
-  <painter use2D="true" customStyle='position: absolute; left: -9999rpx;' palette="{{template}}" bind:imgOK="onImgSave" widthPixels="1000"/>
+  <painter use2D="{{true}}" customStyle='position: absolute; left: -9999rpx;' palette="{{template}}"  widthPixels="1000" bind:imgOK="onImgSave" bind:imgErr="onImgErr"/>
 </view>

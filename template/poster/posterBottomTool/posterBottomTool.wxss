@@ -122,6 +122,7 @@
 .tool-children .second-menu view{
   text-align: left;
   height: 70rpx;
+  line-height: 70rpx;
   margin: 10rpx;
   padding: 8rpx;
   display: flex;

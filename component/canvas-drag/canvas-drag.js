@@ -142,13 +142,13 @@ CanvasDrag.clearCanvas = () => {
   }
 };
 
-//保存画板
-CanvasDrag.saveCanvas = () => {
+//下载画板图片
+CanvasDrag.downloadImg = () => {
   const canvasDrag = CanvasDrag();
   if (!canvasDrag) {
       console.error('请设置组件的id="canvas-drag"!!!');
   } else {
-      return CanvasDrag().saveCanvas();
+      return CanvasDrag().downloadImg();
   }
 };
 

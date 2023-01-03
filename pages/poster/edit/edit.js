@@ -352,9 +352,12 @@ Page({
             CanvasDrag.clearCanvas();
           }
         });
-        this.hideMenu();
+        break;
+      case 'sys.save':
+        CanvasDrag.downloadImg();
         break;
     }
+    this.hideMenu();
   },
   //-----------------------------------系统设置 end----------------------------------------------------//
 

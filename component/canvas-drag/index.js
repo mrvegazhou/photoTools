@@ -335,52 +335,6 @@ Component({
       }
     },
 
-    downloadFile(imgurl) {
-      wx.saveImageToPhotosAlbum({
-          filePath: imgurl,         
-          success: (res) => {
-              wx.showToast({
-                  title: '保存成功',
-                  icon: 'success',
-                  duration: 2000
-              })
-          }
-      })
-    },
-  
-    downloadImg: function () {
-      var that = this;
-      wx.getSetting({
-          success(res) {
-              if (!res.authSetting['scope.writePhotosAlbum']) {
-                  wx.authorize({
-                      scope: 'scope.writePhotosAlbum',
-                      success() { //这里是用户同意授权后的回调
-                          that.downloadFile(that.data.canvasTemImg)
-                      },
-                      fail() { //这里是用户拒绝授权后的回调
-                          wx.showModal({
-                              title: '警告',
-                              content: '授权失败，请打开相册的授权',
-                              success: (res) => {
-                                  if (res.confirm) { //去授权相册
-                                      that.toOpenSetting();
-                                  } else if (res.cancel) {
-                                      console.log('用户点击取消')
-                                  }
-                              }
-                          })
-                      }
-                  })
-              } else { //用户已经授权过了
-                  console.log("已经授权啦");
-                  // that.genCanvas();
-                  that.downloadFile(that.data.canvasTemImg)
-              }
-          }
-      })
-    },
-
     //------------------------------------------分割线----------------------------------------------//
 
     // 手指触摸开始（图片）
@@ -599,15 +553,99 @@ Component({
 
     //获取画板模板
     setPaintPallette(){
+      let items = this.filterItemsAttr();
       let bg = this.data.bgImg!='' ? this.data.bgImg : (this.data.bgColor!='' ? this.data.bgColor : '');
       let template = {
-        width: this.data.canvasWidth,
-        height: this.data.canvasHeight,
-        background: bg,
-        views: this.data.itemList,
+        width: this.data.canvasWidth+"px",
+        height: this.data.canvasHeight+"px",
+        background: bg+"",
+        views: items,
       };
       this.setData({template: template});
     },
-  },
 
+    // painter保存图片
+    onImgSave(e){
+      let path = e.detail.path;
+      for (let i = 0; i < list.length; i++) {
+        if(list[i].active){
+          list[i].active = false
+          break
+        }
+      }
+      this.saveCanvasImg(path)
+    },
+    onImgErr(err) {
+      console.log('onImgErr', err);
+      wx.hideLoading();
+    },
+
+    // 清理元素无用属性
+    filterItemsAttr(){
+      let items = this.data.itemList;
+      for (let i = 0; i < items.length; i++) {
+        delete items[index].active;
+        delete items[index].oScale;
+
+        let scale = items[index].scale;
+        items[index].css.width = items[index].css.width*scale + "px";
+        items[index].css.height = items[index].css.height*scale + "px";
+
+        let top = items[index].css.top;
+        let left = items[index].css.left;
+        items[index].css.top = top==0 ? "0" : top.toFixed(2)+"px";
+        items[index].css.left = left==0 ? "0" : left.toFixed(2)+"px";
+
+        delete items[index].scale;
+        delete items[index].x;
+        delete items[index].y;
+        items[index].css.rotate = items[index].angle;
+        delete items[index].angle;
+        delete items[index].angleNext;
+        delete items[index].anglePre;
+        delete items[index].disPtoO;
+        delete items[index].lx;
+        delete items[index].ly;
+        delete items[index].new_rotate;
+        delete items[index].r;
+        delete items[index].tx;
+        delete items[index].ty;
+        delete items[index]._lx;
+        delete items[index]._ly;
+      }
+      return items;
+    },
+
+    // 下载画板图片
+    saveCanvasImg(imgurl) {
+      this.setData({
+        canvasTemImg: imgurl
+      });
+      console.log(imgurl, 'fuck1')
+      wx.getSetting({
+        success: (set) => {
+            wx.saveImageToPhotosAlbum({
+                filePath: imgurl,
+                success: (res) => {
+                    if(res.errMsg == "saveImageToPhotosAlbum:ok") {
+                      wx.showToast({
+                        title: '保存成功',
+                        icon: 'success',
+                        duration: 2000
+                      });
+                    }
+                }
+            })
+            if(set.authSetting['scope.writePhotosAlbum'] == false) {
+                wx.openSetting()
+            }
+        }
+      })
+    },
+  
+    downloadImg: function () {
+      this.setPaintPallette()
+    },
+
+  },
 });
