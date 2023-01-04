@@ -7,6 +7,10 @@ Component({
     titleHight: {
       type: Number,
       value: 36
+    },
+    optionList: {
+      type: Object,
+      value: []
     }
   },
 
@@ -17,7 +21,6 @@ Component({
    * 页面的初始数据
    */
   data: {
-    optionList: [],
 
     movableViewInfo: {
       y: 0,
@@ -28,8 +31,6 @@ Component({
     height: 400,
     pageInfo: {
       rowHeight: 48,
-      scrollHeight: 260,
-
       startIndex: null,
       scrollY: true,
       readyPlaceIndex: null,
@@ -44,19 +45,11 @@ Component({
       
     },
     ready: function(options) {
-      var optionList = [
-        {text:"段落2 内容内", type:'text', css:{display:'none'}},
-        {text:"段落3 内容内", type:'text', css:{display:'block'}},
-        {text:"段落4 内容内", type:'text', css:{display:'block'}},
-      ]
-  
-      this.setData({
-        optionList: optionList,
-      })
     }
   },
 
   methods: {
+
     dragStart: function (event) {
       var startIndex = event.currentTarget.dataset.index;
 
@@ -143,8 +136,12 @@ Component({
 
     hideItem: function(e) {
       let index = e.currentTarget.dataset.index;
-      console.log(index, '--index--')
       this.triggerEvent('hideItem', {index});
+    },
+
+    //向page返回optionList
+    getOptionList(){
+      return this.data.optionList;
     },
   }
 })

@@ -6,7 +6,7 @@
   </view>
 
   <movable-area class='movable-area' 
-                style='display:{{movableViewInfo.showClass}}; height:{{pageInfo.scrollHeight}}%;'>
+                style='display:{{movableViewInfo.showClass}}; height:{{scrollHeight}}px;'>
     <movable-view class='row list-row movable-row'
                   out-of-bounds='true'
                   damping='999'
@@ -25,14 +25,14 @@
     </movable-view>
   </movable-area>
 
-  <scroll-view scroll-y='{{pageInfo.scrollY}}' style='height: {{pageInfo.scrollHeight}}px;'>
+  <scroll-view scroll-y='{{pageInfo.scrollY}}' style='height: {{scrollHeight}}px;'>
     <block wx:for='{{optionList}}' wx:key="index">
       <view class='row list-row {{pageInfo.readyPlaceIndex == index ? "ready-place" : ""}}' style='height: {{pageInfo.rowHeight}}px;'>
         <view class="col1" bindtap="hideItem" data-index='{{index}}'>
           <text wx:if="{{item.css.display=='block'}}" class="icon-item iconfont icon-xianshi"></text>
           <text wx:else class="icon-item iconfont icon-guanbixianshi"></text>
         </view>
-        <view class="col2 content">
+        <view class="col2 content" style="text-align: left;">
           <block wx:if="{{item.type==='text'}}">
             {{item.text}}
           </block>

@@ -66,7 +66,7 @@
   color: var(--primary-color);
 }
 .layer-float {
-  min-height: 400rpx;
+  min-height: 200rpx;
   /* max-height: 700rpx; */
   max-width: 500rpx;
   min-width: 400rpx;

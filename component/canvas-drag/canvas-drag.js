@@ -16,60 +16,6 @@ function CanvasDrag(options = {}) {
   return canvasDrag;
 }
 
-CanvasDrag.export = () => {
-  const canvasDrag = CanvasDrag();
-  if (!canvasDrag) {
-        console.error('请设置组件的id="canvas-drag"!!!');
-    } else {
-    return CanvasDrag().export();
-    }
-};
-
-CanvasDrag.initByArr = (arr) => {
-    const canvasDrag = CanvasDrag();
-    if (!canvasDrag) {
-        console.error('请设置组件的id="canvas-drag"!!!');
-    } else {
-        return CanvasDrag().initByArr(arr);
-    }
-};
-
-CanvasDrag.exportJson = () => {
-    const canvasDrag = CanvasDrag();
-    if (!canvasDrag) {
-        console.error('请设置组件的id="canvas-drag"!!!');
-    } else {
-        return CanvasDrag().exportJson();
-    }
-};
-
-CanvasDrag.changFontColor = (color) => {
-    const canvasDrag = CanvasDrag();
-    if (!canvasDrag) {
-        console.error('请设置组件的id="canvas-drag"!!!');
-    } else {
-        return CanvasDrag().changColor(color);
-    }
-};
-
-CanvasDrag.changeBgColor = (color) => {
-    const canvasDrag = CanvasDrag();
-    if (!canvasDrag) {
-        console.error('请设置组件的id="canvas-drag"!!!');
-    } else {
-        return CanvasDrag().changeBgColor(color);
-    }
-};
-
-CanvasDrag.changeBgImage = (bgImage) => {
-    const canvasDrag = CanvasDrag();
-    if (!canvasDrag) {
-        console.error('请设置组件的id="canvas-drag"!!!');
-    } else {
-        return CanvasDrag().changeBgImage(bgImage);
-    }
-};
-
 CanvasDrag.undo = () => {
     const canvasDrag = CanvasDrag();
     if (!canvasDrag) {
@@ -77,51 +23,6 @@ CanvasDrag.undo = () => {
     } else {
         return CanvasDrag().undo();
     }
-};
-
-CanvasDrag.setVerticalText = () => {
-  const canvasDrag = CanvasDrag();
-  if (!canvasDrag) {
-      console.error('请设置组件的id="canvas-drag"!!!');
-  } else {
-      return CanvasDrag().setVerticalText();
-  }
-};
-
-CanvasDrag.openMask = () => {
-  const canvasDrag = CanvasDrag();
-  if (!canvasDrag) {
-      console.error('请设置组件的id="canvas-drag"!!!');
-  } else {
-      return CanvasDrag().openMask();
-  }
-};
-
-CanvasDrag.download = () => {
-  const canvasDrag = CanvasDrag();
-  if (!canvasDrag) {
-      console.error('请设置组件的id="canvas-drag"!!!');
-  } else {
-      return CanvasDrag().download();
-  }
-};
-
-CanvasDrag.changeTextColor = (color) => {
-  const canvasDrag = CanvasDrag();
-  if (!canvasDrag) {
-      console.error('请设置组件的id="canvas-drag"!!!');
-  } else {
-      return CanvasDrag().changeTextColor(color);
-  }
-};
-
-CanvasDrag.addItems = (items) => {
-  const canvasDrag = CanvasDrag();
-  if (!canvasDrag) {
-      console.error('请设置组件的id="canvas-drag"!!!');
-  } else {
-      return CanvasDrag().addItems(items);
-  }
 };
 
 CanvasDrag.hideItem = (index) => {
@@ -149,6 +50,16 @@ CanvasDrag.downloadImg = () => {
       console.error('请设置组件的id="canvas-drag"!!!');
   } else {
       return CanvasDrag().downloadImg();
+  }
+};
+
+//返回items
+CanvasDrag.getitemList = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+      console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().getitemList();
   }
 };
 

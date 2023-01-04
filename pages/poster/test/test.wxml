@@ -1,49 +1,145 @@
-<view style="">
-<view class='zhuti'>
-  <view class='row title-row' style='height: {{pageInfo.rowHeight}}px;'>
-    <view class="col1">信息</view>
-        <view class="col2">详情</view>
-        <view class="col3">排序</view>
-  </view>
-
-  <movable-area class='movable-area' 
-                style='display:{{movableViewInfo.showClass}}; height:{{pageInfo.scrollHeight}}%;'>
-    <movable-view class='row list-row movable-row'
-                  out-of-bounds='true'
-                  damping='999'
-                  style='height:{{pageInfo.rowHeight}}px;'
-                  direction="vertical"
-                  y="{{movableViewInfo.y}}">
-      <view class='col1 content' >{{movableViewInfo.data}}</view>
-      <view class="col2" >
-        <icon type='info' color='Gray' size='22' />
-      </view>
-      <view class="col3" >
-        <icon type='download' color='Gray' size='25' />
-      </view>
-    </movable-view>
-  </movable-area>
-
-  <scroll-view id="test" scroll-y="{{canScroll}}" scroll-top="{{scrollTop}}" style='height: 400px;overflow-y: hidden;'>
-    <block wx:for='{{optionList}}'>
-      <view class='row list-row {{pageInfo.readyPlaceIndex == index ? "ready-place" : ""}}' style='height: {{pageInfo.rowHeight}}px;' id="{{index}}">
-                <view class='col1 content' >{{item}}</view>
-                <view class="col2" >
-          <icon type='info' color='Gray' size='22'
-                data-index='{{index}}' 
-                bindtap='showDetail' 
-          />
-        </view>
-        <view class="col3" >
-          <icon type='download' color='Gray' size='25' 
-                data-index='{{index}}'
-                bindtouchstart='dragStart' 
-                bindtouchmove='dragMove'
-                bindtouchend='dragEnd'
-          />
-        </view>
-      </view>
-    </block>
-  </scroll-view>
+<view style="font-family: Courier New;">
+ABC 我是股神 1213
 </view>
+<view style="font-family: Courier;">
+ABC 我是股神 1213
+</view>
+<view style="font-family: monospace;">
+ABC 我是股神 1213
+</view>
+<view style="font-family: Franklin Gothic Medium;">
+ABC 我是股神 1213
+</view>
+
+<view style="font-family: Arial Narrow;">
+ABC 我是股神 1213
+</view>
+
+<view style="font-family: Arial;">
+ABC 我是股神 1213
+</view>
+
+<view style="font-family: Gill Sans;">
+ABC 我是股神 1213 Gill Sans
+</view>
+
+<view style="font-family: Gill Sans MT;">
+ABC 我是股神 1213 Gill Sans MT
+</view>
+
+<view style="font-family: Calibri;">
+ABC 我是股神 1213 Calibri
+</view>
+
+<view style="font-family: Trebuchet MS;">
+ABC 我是股神 1213 Trebuchet MS
+</view>
+
+<view style="font-family: Lucida Sans;">
+ABC 我是股神 1213 Lucida Sans
+</view>
+
+<view style="font-family: Lucida Sans Regular;">
+ABC 我是股神 1213 Lucida Sans Regular
+</view>
+
+<view style="font-family: Lucida Sans Unicode;">
+ABC 我是股神 1213 Lucida Sans Unicode
+</view>
+
+<view style="font-family: Lucida Grande;">
+ABC 我是股神 1213 Lucida Grande
+</view>
+
+<view style="font-family: Geneva;">
+ABC 我是股神 1213 Geneva
+</view>
+
+<view style="font-family: Verdana;">
+ABC 我是股神 1213 Verdana
+</view>
+
+<view style="font-family: sans-serif;">
+ABC 我是股神 1213 sans-serif
+</view>
+
+<view style="font-family: Segoe UI;">
+ABC 我是股神 1213 Segoe UI
+</view>
+
+<view style="font-family: Tahoma;">
+ABC 我是股神 1213 Tahoma
+</view>
+
+<view style="font-family: Times New Roman;">
+ABC 我是股神 1213 Times New Roman
+</view>
+
+<view style="font-family: Times;">
+ABC 我是股神 1213 Times
+</view>
+
+<view style="font-family: serif;">
+ABC 我是股神 1213 serif
+</view>
+
+<view style="font-family: -apple-system;">
+ABC 我是股神 1213 -apple-system
+</view>
+
+<view style="font-family: BlinkMacSystemFont;">
+ABC 我是股神 1213 BlinkMacSystemFont
+</view>
+
+<view style="font-family: Roboto;">
+ABC 我是股神 1213 Roboto
+</view>
+
+<view style="font-family: Oxygen;">
+ABC 我是股神 1213 Oxygen
+</view>
+
+<view style="font-family: Ubuntu;">
+ABC 我是股神 1213 Ubuntu
+</view>
+
+<view style="font-family: Cantarell;">
+ABC 我是股神 1213 Cantarell
+</view>
+
+<view style="font-family: Open Sans;">
+ABC 我是股神 1213 Open Sans
+</view>
+
+<view style="font-family: Helvetica;">
+ABC 我是股神 1213 Helvetica
+</view>
+
+<view style="font-family: Helvetica Neue;">
+ABC 我是股神 1213 Helvetica Neue
+</view>
+
+<view style="font-family: Cambria;">
+ABC 我是股神 1213 Cambria
+</view>
+<view style="font-family: Cochin;">
+ABC 我是股神 1213 Cochin
+</view>
+<view style="font-family: Georgia;">
+ABC 我是股神 1213 Georgia
+</view>
+<view style="font-family: cursive;">
+ABC 我是股神 1213 cursive
+</view>
+
+<view style="font-family: fantasy;">
+ABC 我是股神 1213 fantasy
+</view>
+
+<view style="font-family: Impact;">
+ABC 我是股神 1213 Impact
+</view>
+
+<view style="font-family: Haettenschweiler;">
+ABC 我是股神 1213 Haettenschweiler
 </view>

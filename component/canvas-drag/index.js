@@ -1,5 +1,3 @@
-const util = require("../../utils/util");
-
 var list = new Array();
 var index = 0, itemId = 0;
 var MIN_WIDTH = 20;
@@ -135,6 +133,9 @@ Component({
         })
       } else if (bgColor!='') {
         item.bgColor = bgColor;
+        item.x = 0;
+        item.y = 0;
+        item.scale = 1;
         this.setData({
           bgData: item
         });
@@ -145,6 +146,7 @@ Component({
       }
       
     },
+
     //当垂直的时候测量文字高度
     measureTextHeight(text) {
       text = String(text);
@@ -164,6 +166,7 @@ Component({
       });
       return height;
     },
+
     // 初始化图片数据
     initItems(items) {
       for (let i = 0; i < items.length; i++) {
@@ -195,8 +198,8 @@ Component({
               data.css.width = newWidth
               data.css.height = newHeight
               // 图片中心坐标
-              data.x =  (flag && JSON.stringify(bgData)!="{}") ? (bgData.x + item.relative_x * bgData.scale) : (data.css.width / 2)
-              data.y =  (flag && JSON.stringify(bgData)!="{}") ? (bgData.y + item.relative_y * bgData.scale) : (data.css.height / 2)
+              data.x =  data.css.width / 2;
+              data.y =  data.css.height / 2;
               // 定位坐标
               data.css.left = flag ? (data.x - data.css.width / 2) : 0; //left定位
               data.css.top = flag ? (data.y - data.css.height / 2) : 0; //top定位
@@ -208,6 +211,7 @@ Component({
               data.angle = 0;
               data.active = false; //选中状态
               data.type = 'image';
+              data.css.display = 'block';
               list[list.length] = data;
               that.setData({
                 itemList: list
@@ -272,7 +276,7 @@ Component({
           data.active = false;
           data.css.left = flag ? (x - textWidth / 2) : 0;
           data.css.top = flag ? (y - textHeight / 2) : 0;
-          
+          data.css.display = 'block';
           list[list.length] = data;
           that.setData({
             itemList: list
@@ -339,6 +343,7 @@ Component({
 
     // 手指触摸开始（图片）
     WraptouchStart: function(e) {
+      console.log(list, '---list---')
       // 找到点击的那个图片对象，并记录
       for (let i = 0; i < list.length; i++) {
         list[i].active = false;
@@ -357,7 +362,6 @@ Component({
     },
     // 手指触摸移动（图片）
     WraptouchMove(e) {
-      // console.log('WraptouchMove', e)
       // 记录移动时触摸的坐标
       list[index]._lx = e.touches[0].clientX;
       list[index]._ly = e.touches[0].clientY;
@@ -548,18 +552,18 @@ Component({
 
     //清空画布
     clearCanvas() {
-      this.codeCtx.clearCanvas(0, 0, this.data.canvasWidth, this.data.canvasHeight);
+      this.setData({itemList: []});
     },
 
     //获取画板模板
     setPaintPallette(){
-      let items = this.filterItemsAttr();
+      let tempItems = this.filterItemsAttr();
       let bg = this.data.bgImg!='' ? this.data.bgImg : (this.data.bgColor!='' ? this.data.bgColor : '');
       let template = {
         width: this.data.canvasWidth+"px",
         height: this.data.canvasHeight+"px",
         background: bg+"",
-        views: items,
+        views: tempItems,
       };
       this.setData({template: template});
     },
@@ -567,53 +571,71 @@ Component({
     // painter保存图片
     onImgSave(e){
       let path = e.detail.path;
-      for (let i = 0; i < list.length; i++) {
-        if(list[i].active){
-          list[i].active = false
+      let tempItemList = this.data.itemList;
+      for (let i = 0; i < tempItemList.length; i++) {
+        if(tempItemList[i].active){
+          tempItemList[i].active = false
           break
         }
       }
+      this.setData({itemList: tempItemList})
       this.saveCanvasImg(path)
     },
     onImgErr(err) {
-      console.log('onImgErr', err);
       wx.hideLoading();
     },
 
     // 清理元素无用属性
     filterItemsAttr(){
-      let items = this.data.itemList;
-      for (let i = 0; i < items.length; i++) {
-        delete items[index].active;
-        delete items[index].oScale;
+      let temp = JSON.parse(JSON.stringify(this.data.itemList));
+      for (let i = 0; i < temp.length; i++) {
 
-        let scale = items[index].scale;
-        items[index].css.width = items[index].css.width*scale + "px";
-        items[index].css.height = items[index].css.height*scale + "px";
+        delete temp[i].active;
+        delete temp[i].oScale;
 
-        let top = items[index].css.top;
-        let left = items[index].css.left;
-        items[index].css.top = top==0 ? "0" : top.toFixed(2)+"px";
-        items[index].css.left = left==0 ? "0" : left.toFixed(2)+"px";
+        let scale = temp[i].scale;
+        let width = temp[i].css.width*scale;
+        let height = temp[i].css.height*scale;
+        temp[i].css.width = Number(width.toFixed(2)) + "px";
+        temp[i].css.height = Number(height.toFixed(2)) + "px";
 
-        delete items[index].scale;
-        delete items[index].x;
-        delete items[index].y;
-        items[index].css.rotate = items[index].angle;
-        delete items[index].angle;
-        delete items[index].angleNext;
-        delete items[index].anglePre;
-        delete items[index].disPtoO;
-        delete items[index].lx;
-        delete items[index].ly;
-        delete items[index].new_rotate;
-        delete items[index].r;
-        delete items[index].tx;
-        delete items[index].ty;
-        delete items[index]._lx;
-        delete items[index]._ly;
+        let top = temp[i].css.top;
+        let left = temp[i].css.left;
+        console.log(top, '--top--')
+        temp[i].css.top = top==0 ? "0" : Number(top.toFixed(2))+"px";
+        temp[i].css.left = left==0 ? "0" : Number(left.toFixed(2))+"px";
+
+        delete temp[i].scale;
+        delete temp[i].x;
+        delete temp[i].y;
+
+        temp[i].css.rotate = temp[i].angle;
+
+        delete temp[i].angle;
+        delete temp[i].angleNext;
+        delete temp[i].anglePre;
+        delete temp[i].disPtoO;
+        delete temp[i].lx;
+        delete temp[i].ly;
+        delete temp[i].new_rotate;
+        delete temp[i].r;
+        delete temp[i].tx;
+        delete temp[i].ty;
+        delete temp[i]._lx;
+        delete temp[i]._ly;
+        
+        if(temp[i].type=='text') {
+          delete temp[i].styles;
+          delete temp[i].css.textVertical;
+          delete temp[i].css.width;
+          delete temp[i].css.height;
+          if(temp[i].css.fontFamily=='系统默认字体') delete temp[i].css.fontFamily;
+          temp[i].css.textDecoration = temp[i].css.textDecoration.trim();
+          temp[i].css.padding += "px";
+          temp[i].css.fontSize += "px";
+        }
       }
-      return items;
+      return temp;
     },
 
     // 下载画板图片
@@ -621,7 +643,6 @@ Component({
       this.setData({
         canvasTemImg: imgurl
       });
-      console.log(imgurl, 'fuck1')
       wx.getSetting({
         success: (set) => {
             wx.saveImageToPhotosAlbum({
@@ -645,6 +666,11 @@ Component({
   
     downloadImg: function () {
       this.setPaintPallette()
+    },
+
+    //返回items
+    getitemList() {
+      return this.data.itemList;
     },
 
   },

@@ -1,24 +1,16 @@
 import ImageCropper from '../../../component/image-cropper/cropper';
+import DragSortList from '../../../component/dragSortList/dragSortList';
 import MyDoodleCpt from '../../../component/doodle/doodle';
 import CanvasDrag from '../../../component/canvas-drag/canvas-drag';
 const util = require("../../../utils/util");
 const app = getApp()
 const families =
   [ "系统默认字体",
-    "'Courier New', Courier, monospace", 
-    "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif",
-    "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
-    "'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif",
-    "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    "'Times New Roman', Times, serif",
-    "'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif",
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
-    "Arial, Helvetica, sans-serif",
-    "Cambria, Cochin, Georgia, Times, 'Times New Roman', serif",
-    "cursive",
-    "fantasy",
-    "Georgia, 'Times New Roman', Times, serif",
-    "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+    "Courier New", "Courier", "monospace", "Franklin Gothic Medium", "Arial Narrow", "Arial", "Gill Sans", "Gill Sans MT",
+    "Calibri", "Trebuchet MS", "Lucida Sans", "Lucida Sans Regular", "Lucida Sans Unicode", "Lucida Grande", "Geneva",
+    "Verdana", "sans-serif", "Segoe UI", "Tahoma", "Times", "Times New Roman", "serif", "-apple-system", "BlinkMacSystemFont", 
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica", "Helvetica Neue", "Cambria", "Cochin", "Georgia", "cursive", 
+    "fantasy", "Impact", "Haettenschweiler"
   ]
 var openStatus = true;
 Page({
@@ -129,6 +121,8 @@ Page({
       color: '',
       tmpColor: ''
     },
+    //图层展示列表
+    optionList:[],
   },
 
   /**
@@ -245,6 +239,8 @@ Page({
         break;
       case 'doodle':
         // MyDoodleCpt.initDoodle();
+      case 'layer':
+        this.getSortList();
       default:
         menu.secondMenu = ''
     }
@@ -752,6 +748,11 @@ Page({
     if(!event.detail.index) return;
     // 调用画板组件的隐藏item方法
     CanvasDrag.hideItem(event.detail.index);
+  },
+  //item排序
+  getSortList(){
+    let itemList = CanvasDrag.getitemList();
+    this.setData({optionList: itemList});
   },
   //-----------------------------------图层管理 end---------------------------------------------------//
 })
