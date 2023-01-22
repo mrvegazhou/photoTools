@@ -8,7 +8,7 @@
   <canvas-drag id="canvas-drag" bind:hideMenu="hideMenu" items="{{items}}" bgImg="{{bg.img}}" bgColor="{{bg.color}}"></canvas-drag>
 
   <!-- 主页面-底部 -->
-  <template is="posterBottomTool" data="{{menu, itemText, itemImg, bg, scaleStyles}}" />
+  <template is="posterBottomTool" data="{{menu, itemText, itemImg, bg, scaleStyles, optSortList}}" />
 
   <!-- 图片生成弹出页面-->
   <template is="posterImgCard" data="{{imgCardShow, imageUrl}}" />

@@ -2,8 +2,9 @@ var list = new Array();
 var index = 0, itemId = 0;
 var MIN_WIDTH = 20;
 var MIN_FONTSIZE = 10;
+var platform = '';
 const SCALE_MAX = 2.5, SCALE_MIN = 0.5;      // 缩放比例范围
-const MARGIN_X = 0, MARGIN_Y = 110;         // 可移动边界偏移量
+const MARGIN_X = 0, MARGIN_Y = 50;         // 可移动边界偏移量
 const canvasPre = 1;                        // 展示的canvas占mask的百分比（用于设置图片质量）
 const maxWidth = 200, maxHeight = 200; // 设置最大宽高
 
@@ -84,6 +85,7 @@ Component({
             canvasWidth: this.sysData.windowWidth * canvasPre,
             canvasHeight: this.sysData.windowHeight * canvasPre,
           })
+          platform = sysData.platform;
         }
       });
       this.initBg(this.bgImg, this.bgColor);
@@ -173,7 +175,6 @@ Component({
         let item = items[i]
         // 初始化标志，判断是否读取已有item
         let flag = Boolean(item)
-        let bgData = this.data.bgData
         let data = {css:{}}
         let that = this;
         if(item.type=='image') {
@@ -226,8 +227,20 @@ Component({
           data.id = itemId++;
           data.text = item.text;
           this.codeCtx.font = `normal ${item.css.fontSize}px arial`;
-          const textWidth = this.codeCtx.measureText(item.text).width;
-          const textHeight = item.css.fontSize + 10;
+          //判断是否有换行符
+          let contentArr = data.text.split(/[(\r\n)\r\n]+/);
+
+          var textWidth = 0, textHeight = 0;
+          if(contentArr.length==1) {
+            textWidth = this.codeCtx.measureText(item.text).width;
+            textHeight = item.css.fontSize + 10;
+          } else if(contentArr.length>1) {
+            contentArr.forEach((elem) => {
+              textWidth = Math.max(textWidth, that.codeCtx.measureText(elem).width);
+            });
+            textHeight = (item.css.fontSize + 10)*contentArr.length;
+          }
+
           const x = item.css.left + textWidth / 2;
           const y = item.css.top + textHeight / 2;
           data.x = x;
@@ -235,14 +248,32 @@ Component({
           data.css = item.css;
           data.css.width = textWidth;
           data.css.height = textHeight;
+          
           data.scale = 1;
           data.styles = ''
           if(item.css.textVertical){
-            data.styles += "writing-mode:vertical-lr;";
-            let contentArr = item.text.split(/[(\r\n)\r\n]+/);
-            data.css.width = textHeight * contentArr.length;
+            data.styles += "writing-mode:vertical-lr;text-orientation: upright;";
+            data.css.width = (item.css.fontSize + 10) * contentArr.length;
             data.css.height = this.measureTextHeight(item.text);
           }
+
+          if((data.css.width-this.data.canvasWidth)>50) {
+            wx.showToast({
+              title: '文字长度过大于画布宽度,换行显示更佳',
+              icon: 'none',
+              duration: 2000
+            });
+            return;
+          }
+          if((data.css.height-this.data.canvasHeight)>50) {
+            wx.showToast({
+              title: '文字高度过大于画布高度',
+              icon: 'none',
+              duration: 2000
+            });
+            return;
+          }
+
           if(item.css.fontSize) {
             data.styles += `font-size:${item.css.fontSize}px !important;`
           }
@@ -260,6 +291,8 @@ Component({
           }
           if(item.css.padding){
             data.styles += `padding:${item.css.padding}rpx;`
+            data.css.width = data.css.width + item.css.padding*2;
+            data.css.height = data.css.height + item.css.padding;
           }
           if(item.css.textAlign){
             data.styles += `text-align:'${item.css.textAlign}';`
@@ -268,7 +301,7 @@ Component({
             data.styles += `text-decoration:${item.css.textDecoration};`
           }
           if(item.css.textStyle=="stroke"){
-            data.styles += `color: white;-webkit-text-stroke:1rpx ${item.css.color};`
+            data.styles += `color:white;-webkit-text-stroke:1rpx ${item.css.color};`
           }
           item.scale = 1;
           data.scale = flag ? item.scale * this.data.syncScale : this.data.syncScale;
@@ -343,7 +376,6 @@ Component({
 
     // 手指触摸开始（图片）
     WraptouchStart: function(e) {
-      console.log(list, '---list---')
       // 找到点击的那个图片对象，并记录
       for (let i = 0; i < list.length; i++) {
         list[i].active = false;
@@ -390,14 +422,16 @@ Component({
       let margin_right = this.sysData.windowWidth + MARGIN_X * list[index].scale
       let margin_up = 0 - MARGIN_Y * list[index].scale
       let margin_down = this.sysData.windowHeight + MARGIN_Y * list[index].scale
-      if(list[index].css.left + diff_width < margin_left || list[index].css.left + list[index].css.width - diff_width > margin_right){
+      let padding = list[index].css.padding ? list[index].css.padding*2 : 0;
+
+      if(list[index].css.left + padding + diff_width < margin_left || list[index].css.left - padding + list[index].css.width - diff_width > margin_right){
         list[index].css.left -= range_x;
         list[index].x -= range_x;
         // 横轴超出，强制移动到边缘
-        if(list[index].css.left + diff_width < margin_left){
+        if(list[index].css.left + padding + diff_width < margin_left){
           list[index].css.left = -diff_width
           list[index].x = list[index].css.width / 2 - diff_width 
-        }else if(list[index].css.left + list[index].css.width - diff_width > margin_right){
+        }else if(list[index].css.left - padding + list[index].css.width - diff_width > margin_right){
           list[index].css.left = this.sysData.windowWidth - (list[index].css.width - diff_width)
           list[index].x = this.sysData.windowWidth - (list[index].css.width / 2 - diff_width) 
         }
@@ -541,7 +575,7 @@ Component({
     hideItem(index) {
       for (let i = 0; i < list.length; i++) {
         if(i==index){
-          list[index].css.display = 'none';
+          list[index].css.display = list[index].css.display=='block' ? 'none' : 'block';
           break
         }
       }
@@ -588,6 +622,7 @@ Component({
     // 清理元素无用属性
     filterItemsAttr(){
       let temp = JSON.parse(JSON.stringify(this.data.itemList));
+      let newTemp = []
       for (let i = 0; i < temp.length; i++) {
 
         delete temp[i].active;
@@ -601,7 +636,7 @@ Component({
 
         let top = temp[i].css.top;
         let left = temp[i].css.left;
-        console.log(top, '--top--')
+        
         temp[i].css.top = top==0 ? "0" : Number(top.toFixed(2))+"px";
         temp[i].css.left = left==0 ? "0" : Number(left.toFixed(2))+"px";
 
@@ -623,19 +658,62 @@ Component({
         delete temp[i].ty;
         delete temp[i]._lx;
         delete temp[i]._ly;
-        
+        delete temp[i].display;
+
+        if(temp[i].background=='rgba(NaN,NaN,NaN,1)') {
+          temp[i].background = '';
+        }
+
         if(temp[i].type=='text') {
           delete temp[i].styles;
-          delete temp[i].css.textVertical;
           delete temp[i].css.width;
           delete temp[i].css.height;
           if(temp[i].css.fontFamily=='系统默认字体') delete temp[i].css.fontFamily;
           temp[i].css.textDecoration = temp[i].css.textDecoration.trim();
           temp[i].css.padding += "px";
           temp[i].css.fontSize += "px";
+          if(temp[i].css.shadow==''){
+            delete temp[i].css.shadow;
+          }
+          if(temp[i].css.textAlign==''){
+            delete temp[i].css.textAlign;
+          }
+          if(platform=='devtools') {
+            delete temp[i].css.textStyle;
+          }
+          if(temp[i].css.textVertical) {
+            let contentArr = temp[i].text.split(/[(\r\n)\r\n]+/);
+            let tmpText = "";
+            let idx = 0;
+            for (let j = 0; j < contentArr.length; j++) {
+              if(contentArr[j]=='') continue
+              let fStrWidth = this.codeCtx.measureText(contentArr[j][0]).width+5;
+              let strLen = contentArr[j].length;
+              for (let a = 0; a < contentArr[j].length; a++) {
+                tmpText = `${tmpText}${contentArr[j][a]}\n`;
+                if(a==strLen-1) {
+                  let css = Object.assign({}, temp[i].css);
+                  let item = {
+                    type: "text", 
+                    text: tmpText,
+                    css: css
+                  };
+                  tmpText = "";
+                  item.css.left = `${left + idx}px`;
+                  idx += fStrWidth;
+                  item.css.textAlign = 'center';
+                  newTemp.push(item);
+                }
+              }
+            }
+          } else {
+            newTemp.push(temp[i]);
+          }
+        } else {
+          newTemp.push(temp[i]);
         }
       }
-      return temp;
+      return newTemp;
     },
 
     // 下载画板图片
@@ -671,6 +749,14 @@ Component({
     //返回items
     getitemList() {
       return this.data.itemList;
+    },
+
+    //更新items
+    flushItemSort(tempList) {
+      list = tempList;
+      this.setData({
+        itemList: tempList
+      })
     },
 
   },

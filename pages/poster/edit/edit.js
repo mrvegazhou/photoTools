@@ -1,5 +1,4 @@
 import ImageCropper from '../../../component/image-cropper/cropper';
-import DragSortList from '../../../component/dragSortList/dragSortList';
 import MyDoodleCpt from '../../../component/doodle/doodle';
 import CanvasDrag from '../../../component/canvas-drag/canvas-drag';
 const util = require("../../../utils/util");
@@ -96,7 +95,7 @@ Page({
         background: '',
         padding: 10,
         textAlign: '',
-        textStyle: 'fill',
+        textStyle: '',
         textDecoration: '',
         textVertical: false,
         shadow: '',
@@ -122,7 +121,7 @@ Page({
       tmpColor: ''
     },
     //图层展示列表
-    optionList:[],
+    optSortList:[],
   },
 
   /**
@@ -563,6 +562,8 @@ Page({
       items: items
     });
     this.closeTxtEdit()
+    //清除样式
+    this.initTextData();
   },
   //设置字号
   changeFontSize(e) {
@@ -736,23 +737,30 @@ Page({
       'itemText.css.background': '',
       'itemText.css.padding': 10,
       'itemText.css.textAlign': '',
-      'itemText.css.textStyle': 'fill',
+      // 'itemText.css.textStyle': 'fill',
       'itemText.css.textDecoration': '',
       'itemText.css.textVertical': false,
+      'menu.colorData.transparency': 1,
+      'menu.colorData.color': '#333333'
     })
   },
   //-----------------------------------文字编辑 end---------------------------------------------------//
 
   //-----------------------------------图层管理 start---------------------------------------------------//
   dragSortListHideItem(event) {
-    if(!event.detail.index) return;
+    if(typeof(event.detail.index) == "undefined") return;
     // 调用画板组件的隐藏item方法
     CanvasDrag.hideItem(event.detail.index);
   },
   //item排序
   getSortList(){
     let itemList = CanvasDrag.getitemList();
-    this.setData({optionList: itemList});
+    this.setData({optSortList: itemList});
+  },
+  //更新items
+  flushItemSort(event){
+    if(typeof(event.detail.optionList)=="undefined") return;
+    CanvasDrag.flushItemSort(event.detail.optionList);
   },
   //-----------------------------------图层管理 end---------------------------------------------------//
 })

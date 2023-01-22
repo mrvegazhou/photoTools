@@ -7,18 +7,18 @@
 <!-- 操作区域 -->
 <view class="contentWarp" catchtap="hideControls">
   <block wx:for="{{itemList}}" wx:key="id">
-    <view class="touchWrap" style="transform:scale({{item.scale}});top:{{item.css.top}}px;left:{{item.css.left}}px;z-index:{{item.active?100:1}};">
+    <view class="touchWrap" style="transform:scale({{item.scale}});top:{{item.css.top}}px;left:{{item.css.left}}px;z-index:{{item.id}};">
       <view class="imgWrap {{item.active? 'touchActive':''}}" style="transform:rotate({{item.angle}}deg);">
 
         <block wx:if="{{item.type==='image'}}">
           <image src='{{item.url}}' data-id='{{item.id}}' style='display:{{item.css.display}};width:{{item.css.width}}px;height:{{item.css.height}}px;' bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'></image>
         </block>
         <block wx:if="{{item.type==='text'}}">
-          <text data-id='{{item.id}}' style='display:{{item.css.display}};white-space:nowrap;width:{{item.css.width}}px;height:{{item.css.height}}px;font-size:{{item.css.fontSize*item.scale}};{{item.styles}}' bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'>{{item.text}}</text>
+          <text data-id='{{item.id}}' style='display:{{item.css.display}};white-space:nowrap;font-size:{{item.css.fontSize*item.scale}};{{item.styles}}' bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'>{{item.text}}</text>
         </block>
 
-        <image class="x" src="./icon/x.png" style="transform:scale({{item.oScale}});transform-origin:center;" data-id="{{item.id}}" catchtap="deleteItem"></image>
-        <image class="o" src="./icon/o.png" style="transform:scale({{item.oScale}});transform-origin:center;" data-id="{{item.id}}" bindtouchstart="oTouchStart" bindtouchmove="oTouchMove" bindtouchend="WraptouchEnd"></image>
+        <image class="x" src="./icon/x.png" style="{{item.active ? 'display:'+item.css.display : ''}};transform:scale({{item.oScale}});transform-origin:center;" data-id="{{item.id}}" catchtap="deleteItem"></image>
+        <image class="o" src="./icon/o.png" style="{{item.active ? 'display:'+item.css.display : ''}};transform:scale({{item.oScale}});transform-origin:center;" data-id="{{item.id}}" bindtouchstart="oTouchStart" bindtouchmove="oTouchMove" bindtouchend="WraptouchEnd"></image>
       </view>
     </view>
   </block>
@@ -27,5 +27,5 @@
 <view style='position:fixed;top:9999px;'>
   <canvas type="2d" id="myCanvas" style="position: absolute; left: -9999rpx;"></canvas>
   <!-- 画布 -->
-  <painter use2D="{{true}}" customStyle='position: absolute; left: -9999rpx;' palette="{{template}}"  bind:imgOK="onImgSave" bind:imgErr="onImgErr"/>
+  <painter customStyle='position: absolute; left: -9999rpx;' palette="{{template}}"  bind:imgOK="onImgSave" bind:imgErr="onImgErr"/>
 </view>

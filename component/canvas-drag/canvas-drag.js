@@ -30,7 +30,7 @@ CanvasDrag.hideItem = (index) => {
   if (!canvasDrag) {
       console.error('请设置组件的id="canvas-drag"!!!');
   } else {
-      return CanvasDrag().hideItem(index);
+    return CanvasDrag().hideItem(index);
   }
 };
 
@@ -60,6 +60,16 @@ CanvasDrag.getitemList = () => {
       console.error('请设置组件的id="canvas-drag"!!!');
   } else {
       return CanvasDrag().getitemList();
+  }
+};
+
+//
+CanvasDrag.flushItemSort = (list) => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+      console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().flushItemSort(list);
   }
 };
 

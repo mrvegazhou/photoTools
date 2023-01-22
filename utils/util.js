@@ -401,6 +401,14 @@ function openConfirm() {
   });
 }
 
+function sortBy(property){
+  return function(value1,value2){
+      let a=value1[property]
+      let b=value2[property]
+      return a < b ? 1 : a > b ? -1 : 0
+  }
+}
+
 
 module.exports = {
   formatTime: formatTime,
@@ -422,5 +430,6 @@ module.exports = {
   findBreakPoint4Canvas: findBreakPoint4Canvas,
   breakLines4Canvas: breakLines4Canvas,
   drawVerticalText4Canvas: drawVerticalText4Canvas,
-  openConfirm: openConfirm
+  openConfirm: openConfirm,
+  sortBy: sortBy
 }

@@ -38,7 +38,7 @@
   border-radius: 5rpx;
   border: none;
   /* border: 2rpx #999 dashed !important; */
-  z-index: 400;
+  /* z-index: 400; */
 }
 .touchActive .x {
   display: block;

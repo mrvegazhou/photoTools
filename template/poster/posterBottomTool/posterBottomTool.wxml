@@ -234,9 +234,8 @@
     </view>
   </view>
   <!--图层编辑层-->
-  <view class="layer-float" wx:if="{{menu.menuShow=='layer'}}">
-    <dragSortList id="drag-sort-list" scrollHeight="200" bind:hideItem="dragSortListHideItem" optionList="{{}}">
-      
+  <view class="layer-float" wx:if="{{menu.menuShow=='layer'}}" style="{{optSortList.length>4 ? 'height:500rpx;' : '400rpx;'}}">
+    <dragSortList id="drag-sort-list" scrollHeight="{{optSortList.length>4 ? '250' : '200'}}" bind:hideItem="dragSortListHideItem" optionList="{{optSortList}}" bind:flushItemSort="flushItemSort">
     </dragSortList>
   </view>
   <!--涂鸦编辑层-->
