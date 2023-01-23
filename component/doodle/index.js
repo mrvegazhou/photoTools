@@ -1,6 +1,10 @@
 const brushStroke = require('../../vendor/brush.js')
 Component({
   properties: {
+    navHeight: {
+      type: Number,
+      value: 60
+    },
   },
 
   data: {
@@ -49,9 +53,12 @@ Component({
 
     //圆半径
     radius: 50,
-
+    
+    isEraser: false, //是否是橡皮擦
     isSave: false,
     isClear: false,
+    isAlpha: false,
+    canvasAlpha: 1
   },
 
   lifetimes: {
@@ -69,11 +76,12 @@ Component({
       //保存绘图数组
       // this.drawArr = [];
       //获取宽高
+      let that = this;
       wx.getSystemInfo({
         success: (res) => {
           this.setData({
-            windowWidth:res.windowWidth,
-            windowHeight:res.windowHeight*0.8
+            windowWidth: res.windowWidth,
+            windowHeight: res.windowHeight - that.data.navHeight*2
           });
         }
       })
@@ -98,7 +106,7 @@ Component({
           break;
         case "eraser":
           this.changeDataStatus()
-          this.setData({ isClear: true });//开启橡皮擦
+          this.setData({ isEraser: true });//开启橡皮擦
           break;
         case "color":
           break;
@@ -187,20 +195,21 @@ Component({
     //初始化状态值
     changeDataStatus(obj={}){
       let data = Object.assign({
-        isClear: false,
+        isEraser: false,
         isColorPicker: false,
         isRect: false,
         isCircle: false,
         isPen: false,
         brushType: '',
         isSave: false,
-        isClear: false
+        isClear: false,
+        isAlpha: false, //画布是否透明
       }, obj)
       this.setData(data)
     },
     //修改橡皮透明度
     changeEraserOpacity(e){
-      this.setData({ eraserOpacity: e.detail.value, isClear: true })
+      this.setData({ eraserOpacity: e.detail.value, isEraser: true })
     },
     //设置笔刷
     setBrushType(e){
@@ -271,7 +280,7 @@ Component({
           this.drawCircleHandler(startX1, startY1)
           this.context.save();
         }
-      } else if (this.data.isClear) { //橡皮擦
+      } else if (this.data.isEraser) { //橡皮擦
         let color = 'rgba(255,255,255,' + this.data.eraserOpacity + ')'
         this.setLineStyle(color, this.data.eraserSize)
         this.context.save();  //保存当前坐标轴的缩放、旋转、平移信息
@@ -299,7 +308,7 @@ Component({
         this.drawRectHandler(startX1, startY1)
       } else if (this.data.isCircle) {//圆形
         
-      } else if (this.data.isClear) { //橡皮擦
+      } else if (this.data.isEraser) { //橡皮擦
         this.context.save();  //保存当前坐标轴的缩放、旋转、平移信息
         this.context.moveTo(this.startX, this.startY);  //把路径移动到画布中的指定点，但不创建线条
         this.context.lineTo(startX1, startY1);  //添加一个新点，然后在画布中创建从该点到最后指定点的线条
@@ -388,7 +397,7 @@ Component({
         //改变橡皮大小
         this.setData({
           eraserSize: e.detail.value,
-          isClear: true
+          isEraser: true
         })
       } else if (this.data.name == 'pen') {
         //改变画笔大小
@@ -428,10 +437,16 @@ Component({
     moreOpt(e) {
       let type = e.currentTarget.dataset.param;
       if(type=='save') {
-        this.setData({isSave: true, isClear: false})
-      } else if(type=='clear')  {
-        this.setData({isClear: true, isSave: false})
+        this.setData({isSave: true, isClear: false, isAlpha: false})
+      } else if(type=='clear') {
+        this.setData({isClear: true, isSave: false, isAlpha: false})
+      } else if(type=='alpha') {
+        this.setData({isAlpha: true, isSave: false, isClear: false})
       }
+    },
+    //改变画板透明度
+    changeCanvasAlpha(e){
+      this.setData({ canvasAlpha: e.detail.value })
     },
     //保存提示
     confirmSave(){

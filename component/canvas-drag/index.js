@@ -77,14 +77,17 @@ Component({
       })
     },
     ready: function(options) {
+      let that =  this;
+      wx.createSelectorQuery().in(this).select('.contentWarp').boundingClientRect(function (res) {
+        that.setData({
+          canvasHeight: res.height * canvasPre,
+          canvasWidth: res.width * canvasPre
+        });
+      }).exec()
       // 获取系统信息计算画布宽高
       wx.getSystemInfo({
         success: sysData => {
           this.sysData = sysData
-          this.setData({
-            canvasWidth: this.sysData.windowWidth * canvasPre,
-            canvasHeight: this.sysData.windowHeight * canvasPre,
-          })
           platform = sysData.platform;
         }
       });
@@ -161,7 +164,8 @@ Component({
           } else if (/[0-9]/.test(item)) {
             height += that.codeCtx.measureText(item).width;
           } else if (/[\u4e00-\u9fa5]/.test(item)) {  //中文匹配
-            height += that.codeCtx.measureText(item).height;
+            let metrics = that.codeCtx.measureText(item);
+            height += metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent; //metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent; 
           } else {
             height += that.codeCtx.measureText(item).width;
           }
@@ -252,9 +256,13 @@ Component({
           data.scale = 1;
           data.styles = ''
           if(item.css.textVertical){
+            let maxHeightStr = 0;
             data.styles += "writing-mode:vertical-lr;text-orientation: upright;";
             data.css.width = (item.css.fontSize + 10) * contentArr.length;
-            data.css.height = this.measureTextHeight(item.text);
+            contentArr.forEach((elem) => {
+              maxHeightStr = Math.max(maxHeightStr, that.measureTextHeight(elem));
+            });
+            data.css.height = maxHeightStr;
           }
 
           if((data.css.width-this.data.canvasWidth)>50) {
@@ -419,23 +427,24 @@ Component({
       let diff_height =  list[index].css.height * (1 - list[index].scale) / 2
       // 记录可移动边界
       let margin_left = 0 - MARGIN_X * list[index].scale
-      let margin_right = this.sysData.windowWidth + MARGIN_X * list[index].scale
+      let margin_right = this.data.canvasWidth + MARGIN_X * list[index].scale
       let margin_up = 0 - MARGIN_Y * list[index].scale
-      let margin_down = this.sysData.windowHeight + MARGIN_Y * list[index].scale
-      let padding = list[index].css.padding ? list[index].css.padding*2 : 0;
+      let margin_down = this.data.canvasHeight + MARGIN_Y * list[index].scale
+      let padding = list[index].css.padding ? list[index].css.padding : 0;
 
-      if(list[index].css.left + padding + diff_width < margin_left || list[index].css.left - padding + list[index].css.width - diff_width > margin_right){
+      if(list[index].css.left + padding + diff_width < margin_left || list[index].css.left - padding*2 + list[index].css.width - diff_width > margin_right){
         list[index].css.left -= range_x;
         list[index].x -= range_x;
         // 横轴超出，强制移动到边缘
         if(list[index].css.left + padding + diff_width < margin_left){
           list[index].css.left = -diff_width
           list[index].x = list[index].css.width / 2 - diff_width 
-        }else if(list[index].css.left - padding + list[index].css.width - diff_width > margin_right){
-          list[index].css.left = this.sysData.windowWidth - (list[index].css.width - diff_width)
-          list[index].x = this.sysData.windowWidth - (list[index].css.width / 2 - diff_width) 
+        }else if(list[index].css.left - padding*2 + list[index].css.width - diff_width > margin_right){
+          list[index].css.left = this.data.canvasWidth - (list[index].css.width - diff_width)
+          list[index].x = this.data.canvasWidth - (list[index].css.width / 2 - diff_width) 
         }
       }
+
       if(list[index].css.top + diff_height < margin_up || list[index].css.top + list[index].css.height - diff_height > margin_down){
         list[index].top -= range_y;
         list[index].y -= range_y;
@@ -445,8 +454,8 @@ Component({
           list[index].y = list[index].css.height / 2 - diff_height 
         }else if(list[index].css.top + list[index].css.height - diff_height > margin_down){
 
-          list[index].css.top = this.sysData.windowHeight - (list[index].css.height - diff_height)
-          list[index].y = this.sysData.windowHeight - (list[index].css.height / 2 - diff_height) 
+          list[index].css.top = this.data.canvasHeight - (list[index].css.height - diff_height)
+          list[index].y = this.data.canvasHeight - (list[index].css.height / 2 - diff_height) 
         }
       }
     },
