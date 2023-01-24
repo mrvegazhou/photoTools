@@ -16,39 +16,48 @@
       <image hidden="{{!canvasHidden}}" bindtap="clickImg" class="imgCanvas" src="{{imgCanvas}}"
             style="width:{{windowWidth}}px;height:{{windowHeight}}px;"></image>
     </view>
-    <view class="doodle-tools" style="height:{{navHeight}}px;">
-      <view class="doodle-icon {{name=='pen'?'menu-select':''}}">
-        <text data-type='pen' bindtap="doodleEidt" class="iconfont icon-bianjiqianbi"></text>
+    <scroll-view scroll-x="true" enable-flex="true" class="doodle-tools" style="height:{{navHeight}}px;">
+      <view class="doodle-icon {{name=='pen'?'menu-select':''}}" style="height:{{navHeight}}px;">
+        <text data-type='pen' bindtap="doodleEidt" class="icon-item iconfont icon-bianjiqianbi"></text>
         <text class="txt" data-type='pen' bindtap="doodleEidt">铅笔</text>
       </view>
-      <view class="doodle-icon {{name=='eraser'?'menu-select':''}}">
-        <text data-type='eraser' bindtap="doodleEidt" class="iconfont icon-xiangpica"></text>
+      <view class="doodle-icon {{name=='eraser'?'menu-select':''}}"  style="height:{{navHeight}}px;">
+        <text data-type='eraser' bindtap="doodleEidt" class="icon-item iconfont icon-xiangpica"></text>
         <text class="txt" data-type='eraser' bindtap="doodleEidt">橡皮</text>
       </view>
-      <view class="doodle-icon {{name=='color'?'menu-select':''}}">
-        <text data-type='color' bindtap="doodleEidt" class="iconfont icon-XX_051"></text>
+      <view class="doodle-icon {{name=='color'?'menu-select':''}}"  style="height:{{navHeight}}px;">
+        <text data-type='color' bindtap="doodleEidt" class="icon-item iconfont icon-XX_051"></text>
         <text class="txt" data-type='color' bindtap="doodleEidt">颜色</text>
       </view>
-      <view class="doodle-icon {{name=='rectangle'?'menu-select':''}}">
-        <text data-type='rectangle' bindtap="doodleEidt" class="iconfont icon-xingzhuang-juxing"></text>
+      <view class="doodle-icon {{name=='rectangle'?'menu-select':''}}"  style="height:{{navHeight}}px;">
+        <text data-type='rectangle' bindtap="doodleEidt" class="icon-item iconfont icon-xingzhuang-juxing"></text>
         <text class="txt" data-type='rectangle' bindtap="doodleEidt">矩形</text>
       </view>
-      <view class="doodle-icon {{name=='circle'?'menu-select':''}}">
-        <text data-type='circle' bindtap="doodleEidt" class="iconfont icon-xingzhuang-tuoyuanxing"></text>
+      <view class="doodle-icon {{name=='circle'?'menu-select':''}}"  style="height:{{navHeight}}px;">
+        <text data-type='circle' bindtap="doodleEidt" class="icon-item iconfont icon-xingzhuang-tuoyuanxing"></text>
         <text class="txt" data-type='circle' bindtap="doodleEidt">圆形</text>
       </view>
-      <view class="doodle-icon {{name=='brush'?'menu-select':''}}">
-        <text data-type='brush' bindtap="doodleEidt" class="iconfont icon-shuazi"></text>
+      <view class="doodle-icon {{name=='brush'?'menu-select':''}}"  style="height:{{navHeight}}px;">
+        <text data-type='brush' bindtap="doodleEidt" class="icon-item iconfont icon-shuazi"></text>
         <text class="txt" data-type='brush' bindtap="doodleEidt">笔刷</text>
       </view>
-      <view class="doodle-icon {{name=='colorPicker'?'menu-select':''}}">
-        <text data-type='colorPicker' bindtap="doodleEidt" class="iconfont icon-xiguan"></text>
+      <view class="doodle-icon {{name=='colorPicker'?'menu-select':''}}"  style="height:{{navHeight}}px;">
+        <text data-type='colorPicker' bindtap="doodleEidt" class="icon-item iconfont icon-xiguan"></text>
         <text class="txt" data-type='colorPicker' bindtap="doodleEidt">取色</text>
       </view>
-      <view class="doodle-icon {{name=='more'?'menu-select':''}}">
-        <text data-type='more' bindtap="doodleEidt" class="iconfont icon-gengduo" style="padding-right:30rpx;"></text>
+      <view class="doodle-icon {{name=='alpha'?'menu-select':''}}"  style="height:{{navHeight}}px;">
+        <text data-type='alpha' bindtap="doodleEidt" class="icon-item iconfont icon-touming"></text>
+        <text class="txt" data-type='colorPicker' bindtap="doodleEidt">画布透明</text>
       </view>
-    </view>
+      <view class="doodle-icon {{name=='clear'?'menu-select':''}}"  style="height:{{navHeight}}px;">
+        <text data-type='clear' bindtap="doodleEidt" class="icon-item iconfont icon-delete"></text>
+        <text class="txt" data-type='colorPicker' bindtap="doodleEidt">清空涂鸦</text>
+      </view>
+      <view class="doodle-icon {{name=='save'?'menu-select':''}}"  style="height:{{navHeight}}px;">
+        <text data-type='save' bindtap="doodleEidt" class="icon-item iconfont icon-baocun"></text>
+        <text class="txt" data-type='colorPicker' bindtap="doodleEidt">保存涂鸦</text>
+      </view>
+    </scroll-view>
     <view class="doodle-tool-children" hidden="{{!showTool}}" style="bottom:{{navHeight*2+1}}px;">
       <!--铅笔-->
       <view class="text-center" wx:if="{{name == 'pen'}}">
@@ -106,31 +115,15 @@
           <switch bindchange="changeFillColor" data-type="rectangle" color="#69a794" checked="{{isFillRectColor}}"/>
         </view>
       </view>
-      <view class="doodle-tool-more" wx:if="{{name == 'more'}}">
-        <view class="alpha-slider" wx:if="{{isAlpha == true}}">
-            <slider bindchange="changeCanvasAlpha" value="{{canvasAlpha}}" min="0" max="1" show-value activeColor="#69a794" block-size="15" step="0.1" />
-        </view>
-        <view class="item-list">
-          <view class="{{isSave?'select':'item-btn'}}" bindtap="moreOpt" data-param="save"> 
-            <text class="iconfont icon-baocun"></text>
-            保存画布
-          </view>
-          <view class="{{isClear?'select':'item-btn'}}" bindtap="moreOpt" data-param="clear"> 
-            <text class="iconfont icon-delete"></text>
-            清空画布
-          </view>
-          <view class="{{isAlpha?'select':'item-btn'}}" bindtap="moreOpt" data-param="alpha"> 
-            <text class="iconfont icon-touming"></text>
-            画布透明
-          </view>
-        </view>
+      <view class="text-center" wx:if="{{name == 'alpha'}}">
+        <slider bindchange="changeCanvasAlpha" value="{{canvasAlpha}}" min="0" max="1" show-value activeColor="#69a794" block-size="15" step="0.1" />
       </view>
     </view>
   </view>
 </view>
-<modal hidden="{{!isSave}}" title="提示" confirm-text="保存" cancel-text="取消" bindcancel="cancelSave" bindconfirm="confirmSave" no-cancel="{{nocancel}}">
+<modal hidden="{{name=='save' ? false : true}}" title="提示" confirm-text="保存" cancel-text="取消" bindcancel="cancelSave" bindconfirm="confirmSave" no-cancel="{{nocancel}}">
 是否保存当前图片？
 </modal>
-<modal hidden="{{!isClear}}" title="提示" confirm-text="清空" cancel-text="取消" bindcancel="cancelClear" bindconfirm="confirmClear" no-cancel="{{nocancel}}">
-是否清空当前画布？
+<modal hidden="{{name=='clear' ? false : true}}" title="提示" confirm-text="清空" cancel-text="取消" bindcancel="cancelClear" bindconfirm="confirmClear" no-cancel="{{nocancel}}">
+是否清空当前画布？{{name}}
 </modal>

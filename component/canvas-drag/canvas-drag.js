@@ -63,13 +63,23 @@ CanvasDrag.getitemList = () => {
   }
 };
 
-//
+//刷新画板元素
 CanvasDrag.flushItemSort = (list) => {
   const canvasDrag = CanvasDrag();
   if (!canvasDrag) {
       console.error('请设置组件的id="canvas-drag"!!!');
   } else {
       return CanvasDrag().flushItemSort(list);
+  }
+};
+
+//点击画板单个元素操作
+CanvasDrag.editItem = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+      console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().editItem();
   }
 };
 

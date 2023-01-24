@@ -53,12 +53,9 @@ Component({
 
     //圆半径
     radius: 50,
-    
+
     isEraser: false, //是否是橡皮擦
-    isSave: false,
-    isClear: false,
-    isAlpha: false,
-    canvasAlpha: 1
+    canvasAlpha: 1 //画布透明度
   },
 
   lifetimes: {
@@ -125,8 +122,6 @@ Component({
         case "colorPicker":
           this.changeDataStatus({ isColorPicker: !this.data.isColorPicker })
           break;
-        case "":
-          this.setData({name: "more"})
         default:
           break;
 
@@ -200,10 +195,7 @@ Component({
         isRect: false,
         isCircle: false,
         isPen: false,
-        brushType: '',
-        isSave: false,
-        isClear: false,
-        isAlpha: false, //画布是否透明
+        brushType: ''
       }, obj)
       this.setData(data)
     },
@@ -434,16 +426,7 @@ Component({
     changeCircleRadius(e) {
       this.setData({ radius: e.detail.value, isCircle: true, isRect: false })
     },
-    moreOpt(e) {
-      let type = e.currentTarget.dataset.param;
-      if(type=='save') {
-        this.setData({isSave: true, isClear: false, isAlpha: false})
-      } else if(type=='clear') {
-        this.setData({isClear: true, isSave: false, isAlpha: false})
-      } else if(type=='alpha') {
-        this.setData({isAlpha: true, isSave: false, isClear: false})
-      }
-    },
+
     //改变画板透明度
     changeCanvasAlpha(e){
       this.setData({ canvasAlpha: e.detail.value })
@@ -451,11 +434,11 @@ Component({
     //保存提示
     confirmSave(){
       this.saveAsImg();
-      this.setData({showTool: false, name:'', isSave: false, canvasHidden: false})
+      this.setData({showTool: false, name:'', canvasHidden: false})
     },
     cancelSave(){
       this.changeDataStatus()
-      this.setData({showTool: false, name:'', isSave: false, canvasHidden: false})
+      this.setData({showTool: false, name:'', canvasHidden: false})
     },
     //保存图片
     saveAsImg() {
@@ -488,11 +471,11 @@ Component({
     confirmClear() {
       this.changeDataStatus()
       this.context.clearRect(0, 0, this.data.windowWidth, this.data.windowHeight);
-      this.setData({showTool: false, name:'', isClear: false, canvasHidden: false})
+      this.setData({showTool: false, name:'', canvasHidden: false})
     },
     cancelClear(){
       this.changeDataStatus()
-      this.setData({showTool: false, name:'', isClear: false, canvasHidden: false})
+      this.setData({showTool: false, name:'', canvasHidden: false})
     },
   },
 });

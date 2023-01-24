@@ -240,7 +240,6 @@ page{
 }
 /* 涂鸦样式 begin */
 .doodle-edit-pop{
-  background-color: rgba(0, 0, 0, 0.8);
   width: 100%;
   height: 100%;
   position: fixed;
@@ -264,20 +263,25 @@ page{
   color: #f4f4f4;
 }
 .doodle-tools{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0 0 0 30rpx;
+  background-color: rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+  width: 100%;
+  text-align: center;
 }
-.doodle-icon {
-  display: flex;
+.doodle-tools .doodle-icon {
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content:center;
+  width: 100rpx;
+  padding-bottom: 3rpx;
+}
+.doodle-tools .icon-item{
+  width: 50rpx;
+  height: 50rpx;
 }
 .doodle-icon .txt{
-  font-size: 24rpx;
+  font-size: 22rpx;
 }
 .doodle-tool-children{
   position:absolute;
@@ -365,14 +369,5 @@ page{
   display: inline-flex;
   justify-items: center;
   align-items: center;
-}
-.doodle-tool-more{
-  display: flex;
-  flex-direction: column;
-  justify-items: center;
-  align-items: center;
-}
-.doodle-tool-more .alpha-slider{
-
 }
 /* 涂鸦样式 end */

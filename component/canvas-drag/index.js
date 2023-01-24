@@ -768,5 +768,9 @@ Component({
       })
     },
 
+    //单击单个元素动作
+    editItem() {
+      return list[index];
+    },
   },
 });

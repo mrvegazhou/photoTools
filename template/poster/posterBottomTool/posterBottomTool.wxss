@@ -1,9 +1,7 @@
 /* 涂鸦窗口  */
-.toolbar-bottom{
-  display: flex;
-  flex-direction: row;
-  align-items: center; 
-  justify-content:space-around;
+.toolbar-bottom {
+  white-space: nowrap;
+  box-sizing: border-box;
   width:100%;
   position: fixed;
   bottom: 0;
@@ -12,16 +10,17 @@
   z-index: 99991;
   background-color: #ffffff;
   color: var(--primary-dark-gray-color);
-}
-.toolbar-bottom .item-btn{
-  height: 90rpx;
-  display: flex;
+  text-align: center;
+ }
+ .toolbar-bottom .item-btn{
+  display: inline-flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content:space-around;
   align-items: center;
-}
-.toolbar-bottom .item-btn:active{
-  background-color: rgba(255,255,255,0.5);
+  margin-right: 12rpx;
+  width: 100rpx;
+  height: 120rpx;
+  line-height: 120rpx;
 }
 .toolbar-bottom .text{
   font-size: var(--primary-font-size);
