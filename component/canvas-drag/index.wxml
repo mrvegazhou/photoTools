@@ -11,10 +11,10 @@
       <view class="imgWrap {{item.active? 'touchActive':''}}" style="transform:rotate({{item.angle}}deg);">
 
         <block wx:if="{{item.type==='image'}}">
-          <image src='{{item.url}}' data-id='{{item.id}}' style='display:{{item.css.display}};width:{{item.css.width}}px;height:{{item.css.height}}px;' bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'></image>
+          <image src='{{item.url}}' data-id='{{item.id}}' style='display:{{item.css.display}};width:{{item.css.width}}px;height:{{item.css.height}}px;' bindtap="clickItem" bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'></image>
         </block>
         <block wx:if="{{item.type==='text'}}">
-          <text data-id='{{item.id}}' style='display:{{item.css.display}};white-space:nowrap;font-size:{{item.css.fontSize*item.scale}};{{item.styles}}' bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'>{{item.text}}</text>
+          <text data-id='{{item.id}}' style='display:{{item.css.display}};white-space:nowrap;font-size:{{item.css.fontSize*item.scale}};{{item.styles}}' bindtap="clickItem" bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'>{{item.text}}</text>
         </block>
 
         <image class="x" src="./icon/x.png" style="{{item.active ? 'display:'+item.css.display : ''}};transform:scale({{item.oScale}});transform-origin:center;" data-id="{{item.id}}" catchtap="deleteItem"></image>

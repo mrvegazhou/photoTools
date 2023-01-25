@@ -11,8 +11,8 @@
     </view>
     <view wx:else>
       <text class="icon_cameraC iconfont icon-paizhao" bindtap="takeCameraImg" data-use="{{menu.camera.use}}"></text>
-      <text class="icon_cameraT iconfont icon-fanzhuanjingtou" bindtap="changeCameraPos">
-      </text>
+      <text class="icon_cameraT iconfont icon-fanzhuanjingtou" bindtap="changeCameraPos"></text>
+      <text class="icon_cameraR iconfont icon-fanhui" bindtap="closeCamera"></text>
     </view>
   </view>
 </template>

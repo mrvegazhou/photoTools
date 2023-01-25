@@ -42,9 +42,13 @@
 }
 .touchActive .x {
   display: block;
+  width: 45rpx;
+  height: 45rpx;
 }
 .touchActive .o {
   display: block;
+  width: 45rpx;
+  height: 45rpx;
 }
 /* 图片控件 */
 .x {

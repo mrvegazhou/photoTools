@@ -1,5 +1,5 @@
 <view class="doodle-edit-pop">
-  <view class="doodle-board">
+  <view class="doodle-board" style="background:rgba(255,255,255,{{canvasAlpha}});">
     <!--画板-->
     <view class="doodle-paint" style="height:{{windowHeight}}px;">
       <view class="{{canvasHidden?'canvas-left':''}}">
@@ -16,7 +16,7 @@
       <image hidden="{{!canvasHidden}}" bindtap="clickImg" class="imgCanvas" src="{{imgCanvas}}"
             style="width:{{windowWidth}}px;height:{{windowHeight}}px;"></image>
     </view>
-    <scroll-view scroll-x="true" enable-flex="true" class="doodle-tools" style="height:{{navHeight}}px;">
+    <scroll-view scroll-x="true" enable-flex="true" class="doodle-tools" style="height:{{navHeight+3}}px;">
       <view class="doodle-icon {{name=='pen'?'menu-select':''}}" style="height:{{navHeight}}px;">
         <text data-type='pen' bindtap="doodleEidt" class="icon-item iconfont icon-bianjiqianbi"></text>
         <text class="txt" data-type='pen' bindtap="doodleEidt">铅笔</text>

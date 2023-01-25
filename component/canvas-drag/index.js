@@ -206,8 +206,8 @@ Component({
               data.x =  data.css.width / 2;
               data.y =  data.css.height / 2;
               // 定位坐标
-              data.css.left = flag ? (data.x - data.css.width / 2) : 0; //left定位
-              data.css.top = flag ? (data.y - data.css.height / 2) : 0; //top定位
+              data.css.left = flag ? item.css.left : 0; //left定位
+              data.css.top = flag ? item.css.top : 0; //top定位
               // data.scale = 1; //scale缩放
               item.scale = 1;
               data.scale = flag ? item.scale * that.data.syncScale : that.data.syncScale;
@@ -557,7 +557,6 @@ Component({
     
     // 点击图片以外隐藏控件
     hideControls(e) {
-      this.triggerEvent('hideMenu', {});
       // 记录移动后的位置
       let x = e.touches[0].clientX;
       let y = e.touches[0].clientY;
@@ -573,7 +572,8 @@ Component({
       // 若有图片被选中则当点击图片以外的区域取消选中状态（安全区域扩大10个像素）
       if(isActive && (x < list[index].css.left - 10 || x > list[index].css.left + list[index].css.width + 10||
       y < list[index].css.top - 10 || y > list[index].css.top + list[index].css.height + 10)){
-        list[index].active = false
+        list[index].active = false;
+        this.triggerEvent('hideMenu', {});
         this.setData({
           itemList: list
         })
@@ -768,9 +768,15 @@ Component({
       })
     },
 
+    //------------------------------------单击item编辑 begin------------------------------------//
     //单击单个元素动作
-    editItem() {
+    clickItem() {
+      this.triggerEvent('clickItem', {item: list[index]});
+    },
+    getItem() {
       return list[index];
     },
+    
+    //------------------------------------单击item编辑 end------------------------------------//
   },
 });

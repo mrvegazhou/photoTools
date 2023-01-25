@@ -38,11 +38,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 20rpx;
-  font-size: var(--primary-font-size);
+  margin: 15rpx;
 }
 .edit-pop .tab-item{
-  font-size: var(--primary-font-size);
+  font-size: var(--primary-font-size-2);
   color: var(--primary-text-color);
   height: 70rpx;
   line-height: 70rpx;
@@ -51,18 +50,19 @@
   text-align: center;
 }
 .edit-pop .item-menu{
-  height: 80rpx;
-  line-height: 80rpx;
+  height: 90rpx;
+  line-height: 90rpx;
   display: flex;
   flex-direction: row;
-  justify-content: left;
+  justify-content: flex-start;
 }
-.edit-pop .item-menu text{
-  margin: 0 10rpx 0 30rpx;
+.edit-pop .item-menu .txt{
+  margin-left: 15rpx;
+  font-size: var(--primary-font-size-2);
+}
+
+.edit-pop .iconfont{
   font-size: var(--primary-icon-size-2);
-}
-.edit-pop .select{
-  color: var(--primary-color);
 }
 .layer-float {
   min-height: 200rpx;
@@ -142,7 +142,7 @@
   margin-left: 10rpx;
 
 }
-.tool-children view.select .tool_text{color:var(--white);}
+
 /* 文字编辑层 begin */
 .text-edit-pop{
   position:absolute;
@@ -163,7 +163,7 @@
   margin: 0 5rpx;
   color: var(--primary-dark-gray-color);
 }
-.text-edit-menu .select{
+.edit-pop .select{
   color: var(--primary-color);
 }
 
@@ -327,10 +327,9 @@
   margin: 80rpx;
 }
 .text-edit-pop .text-background{
-  margin: auto;
-  width: 350rpx;
+  width: 100%;
   text-align: center;
-  font-size: var(--primary-font-size);
+  font-size: var(--primary-font-size-2);
 }
 .text-edit-pop .input-label{
   text-align: left;

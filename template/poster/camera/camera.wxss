@@ -31,6 +31,15 @@ image{
   top: 50rpx;
   color: #fff;
 }
+.icon_cameraR{
+  width: 100rpx;
+  height: 100rpx;
+  position: absolute;
+  font-size: 100rpx;
+  left: 30rpx;
+  top: 50rpx;
+  color: #fff;
+}
 .icon_back{
   position: absolute;
   font-size: 100rpx;

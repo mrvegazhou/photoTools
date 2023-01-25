@@ -274,7 +274,6 @@ page{
   align-items: center;
   justify-content:center;
   width: 100rpx;
-  padding-bottom: 3rpx;
 }
 .doodle-tools .icon-item{
   width: 50rpx;

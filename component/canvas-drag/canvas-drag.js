@@ -74,12 +74,22 @@ CanvasDrag.flushItemSort = (list) => {
 };
 
 //点击画板单个元素操作
-CanvasDrag.editItem = () => {
+CanvasDrag.clickItem = () => {
   const canvasDrag = CanvasDrag();
   if (!canvasDrag) {
       console.error('请设置组件的id="canvas-drag"!!!');
   } else {
-      return CanvasDrag().editItem();
+      return CanvasDrag().clickItem();
+  }
+};
+
+//获取选中的item
+CanvasDrag.getItem = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+      console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().getItem();
   }
 };
 

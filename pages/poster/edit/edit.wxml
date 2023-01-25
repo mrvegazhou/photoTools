@@ -5,7 +5,7 @@
   <scale wx:if="{{scaleStyles.display=='block'}}" min="0" max="200" int="{{false}}" single="10" h="8" styles="{{scaleStyles}}" id="weight"></scale>
   
   <!-- 主页面 画布 -->
-  <canvas-drag id="canvas-drag" bind:hideMenu="hideMenu" items="{{items}}" bgImg="{{bg.img}}" bgColor="{{bg.color}}"></canvas-drag>
+  <canvas-drag id="canvas-drag" bind:clickItem="clickItem" bind:hideMenu="hideMenu" items="{{items}}" bgImg="{{bg.img}}" bgColor="{{bg.color}}"></canvas-drag>
 
   <!-- 主页面-底部 -->
   <template is="posterBottomTool" data="{{menu, itemText, itemImg, bg, scaleStyles, optSortList}}" />

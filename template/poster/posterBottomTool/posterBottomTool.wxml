@@ -5,76 +5,91 @@
     <view bindtap='showSecondMenu' data-type="bg" class="item-btn">
       <text class="icon-item iconfont icon-beijingyanse {{menu.menuShow=='bg'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='bg'?'menu-select':''}}">背景</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="img" class="item-btn">
-      <text class="icon-item iconfont icon-tianjiatupian_huaban {{menu.menuShow=='img'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='img'?'menu-select':''}}">加图</text>
+    <view bindtap='showSecondMenu' data-type="img" class="item-btn {{menu.menuShow=='img'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-tianjiatupian_huaban"></text>
+      <text class="text">加图</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="txt" class="item-btn">
-      <text class="icon-item iconfont icon-wenzi {{menu.menuShow=='txt'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='txt'?'menu-select':''}}">加字</text>
+    <view bindtap='showSecondMenu' data-type="txt" class="item-btn {{menu.menuShow=='txt'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-wenzi "></text>
+      <text class="text">加字</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="cropper" class="item-btn">
-      <text class="icon-item iconfont icon-caijian {{menu.menuShow=='cropper'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='clip'?'menu-select':''}}">裁剪</text>
+    <view bindtap='showSecondMenu' data-type="cropper" class="item-btn {{menu.menuShow=='cropper'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-caijian"></text>
+      <text class="text">裁剪</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="doodle" class="item-btn">
-      <text class="icon-item iconfont icon-huabi {{menu.menuShow=='doodle'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='doodle'?'menu-select':''}}">涂鸦</text>
+    <view bindtap='showSecondMenu' data-type="doodle" class="item-btn {{menu.menuShow=='doodle'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-huabi"></text>
+      <text class="text">涂鸦</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="layer" class="item-btn">
-      <text class="icon-item iconfont icon-tuceng {{menu.menuShow=='layer'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='layer'?'menu-select':''}}">图层</text>
+    <view bindtap='showSecondMenu' data-type="layer" class="item-btn {{menu.menuShow=='layer'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-tuceng"></text>
+      <text class="text">图层</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="sys" class="item-btn">
-      <text class="icon-item iconfont icon-xitong- {{menu.menuShow=='sys'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='sys'?'menu-select':''}}">画板</text>
+    <view bindtap='showSecondMenu' data-type="sysSave" class="item-btn {{menu.menuShow=='sysSave'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-baocun"></text>
+      <text class="text">保存</text>
+    </view>
+    <view bindtap='showSecondMenu' data-type="sysClear" class="item-btn {{menu.menuShow=='sysClear'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-delete"></text>
+      <text class="text">清空画板</text>
+    </view>
+    <view bindtap='showSecondMenu' data-type="sysScale" class="item-btn {{menu.menuShow=='sysScale'?'menu-select':''}}">
+      <text wx:if="{{scaleStyles.display=='block'}}" class="icon-item iconfont icon-guanbixianshi"></text>
+      <text wx:else="{{scaleStyles.display=='none'}}" class="icon-item iconfont icon-xianshi"></text>
+      <text wx:if="{{scaleStyles.display=='block'}}" class="text">隐藏标尺</text>
+      <text wx:else="{{scaleStyles.display=='none'}}" class="text">显示标尺</text>
     </view>
   </scroll-view>
 
-  <!--单个元素的二级编辑菜单-->
-  <scroll-view scroll-x="true" class="toolbar-bottom" wx:if="{{menu.mainPageShow==='editPage'}}">
-    <view bindtap='showSecondMenu' data-type="bg" class="item-btn">
+  <!--单击元素的二级编辑菜单-->
+  <scroll-view scroll-x="true" class="toolbar-bottom" wx:if="{{menu.mainPageShow==='editImgPage'}}">
+    <view bindtap='showEditMenu' data-type="toMainPage" class="item-btn {{menu.menuShow=='toMainPage'?'menu-select':''}}">
       <text class="icon-item iconfont icon-fanhui"></text>
       <text class="text">返回</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="bg" class="item-btn">
+    <view bindtap='showEditMenu' data-type="copeImg" class="item-btn {{menu.menuShow=='copeImg'?'menu-select':''}}">
       <text class="icon-item iconfont icon-fuzhi"></text>
       <text class="text">复制</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="bg" class="item-btn">
+    <view bindtap='showEditMenu' data-type="replaceImg" class="item-btn {{menu.menuShow=='replaceImg'?'menu-select':''}}">
       <text class="icon-item iconfont icon-tihuan3"></text>
       <text class="text">替换</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="bg" class="item-btn">
+    <view bindtap='showEditMenu' data-type="filterImg" class="item-btn {{menu.menuShow=='filterImg'?'menu-select':''}}">
       <text class="icon-item iconfont icon-lvjing1"></text>
       <text class="text">滤镜</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="bg" class="item-btn">
+    <view bindtap='showEditMenu' data-type="bg" class="item-btn {{menu.menuShow=='copeImg'?'menu-select':''}}">
       <text class="icon-item iconfont icon-xiutu"></text>
       <text class="text">抠图</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="bg" class="item-btn">
+    <view bindtap='showEditMenu' data-type="bg" class="item-btn {{menu.menuShow=='copeImg'?'menu-select':''}}">
       <text class="icon-item iconfont icon-14xingzhuangjiehe"></text>
       <text class="text">形状</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="bg" class="item-btn">
+    <view bindtap='showEditMenu' data-type="bg" class="item-btn {{menu.menuShow=='copeImg'?'menu-select':''}}">
       <text class="icon-item iconfont icon-fanzhuan"></text>
       <text class="text">翻转</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="bg" class="item">
+    <view bindtap='showEditMenu' data-type="bg" class="item-btn {{menu.menuShow=='copeImg'?'menu-select':''}}">
       <text class="icon-item iconfont icon-touming"></text>
       <text class="text">透明度</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="bg" class="item">
+    <view bindtap='showEditMenu' data-type="bg" class="item-btn {{menu.menuShow=='copeImg'?'menu-select':''}}">
       <text class="icon-item iconfont icon-fangxiang"></text>
       <text class="text">微调</text>
     </view>
   </scroll-view>
 
-
-  <!--背景设置二级菜单-->
-  <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='bg'}}">
+  <!--替换图片二级菜单-->
+  <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='replaceImg'}}">
     <view class="popbg" bindtap="closeTxtEdit" data-type="txt"></view>
     <view class="popup" style="height:57vh;">
       <view class="tab-wapper">
-        <view class="tab-item {{menu.isBg=='img'?'select':''}}" bindtap="changeBg" data-type="img">背景图片</view>
-        <view class="tab-item {{menu.isBg=='color'?'select':''}}" bindtap="changeBg" data-type="color">背景颜色</view>
+        <view class="tab-item {{menu.isReplaceImg=='localImgs'?'select':''}}" bindtap="changeBg" data-type="localImgs">本地图片</view>
+        <view class="tab-item {{menu.isReplaceImg=='netImgs'?'select':''}}" bindtap="changeBg" data-type="netImgs">图库</view>
       </view>
-      <view class="text-background" wx:if="{{menu.isBg=='color'}}">
+      <view class="text-background" wx:if="{{menu.isReplaceImg=='netImgs'}}">
         <color-picker2  colorData="{{bg.color}}" bindchangecolor="onChangeBgColor"></color-picker2>
         <view class="btn">
           <text class="icon-item iconfont icon-queren1" bindtap="editBgOk"></text>
@@ -85,28 +100,45 @@
         <view class='item-menu' bindtap="getBgPhoto" data-type="album"><text class="iconfont icon-xiangcetupian"></text>相册</view>
         <view class='item-menu' bindtap="getBgPhoto" data-type="camera"><text class="iconfont icon-zhaoxiangji"></text>拍照</view>
         <view class='item-menu' bindtap="getBgPhoto" data-type="talk"><text class="iconfont icon-web-icon-"></text>聊天记录</view>
-        <view class='item-menu' bindtap="getBgPhoto" data-type="gallery"><text class="iconfont icon-tuku"></text>图库</view>
         <view class='item-menu' bindtap="getBgPhoto" data-type="cancel"><text class="iconfont icon-quxiao1"></text>取消</view>
       </view>
     </view>
   </view>
 
-  <!--画板操作-->
-  <view class="tool-children" style="right:10rpx !important;width:260rpx;" wx:if="{{menu.menuShow=='sys'}}">
-    <view class="second-menu">
-      <view bindtap="sysSetting" data-type="sys.scale" class="{{menu.secondMenu=='sys.scale' ? 'select' : ''}}">
-        <text wx:if="{{scaleStyles.display=='block'}}" class="iconfont icon-guanbixianshi"></text>
-        <text wx:else="{{scaleStyles.display=='none'}}" class="iconfont icon-xianshi"></text>
-        <text wx:if="{{scaleStyles.display=='block'}}" class="tool_text">隐藏标尺</text>
-        <text wx:else="{{scaleStyles.display=='none'}}" class="tool_text">显示标尺</text>
+  <!--背景设置二级菜单-->
+  <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='bg'}}">
+    <view class="popbg" bindtap="closeTxtEdit" data-type="txt"></view>
+    <view class="popup" style="height:57vh;">
+      <view class="tab-wapper">
+        <view class="tab-item {{menu.isBg=='bg.img'?'select':''}}" bindtap="changeBg" data-type="bg.img">背景图片</view>
+        <view class="tab-item {{menu.isBg=='bg.color'?'select':''}}" bindtap="changeBg" data-type="bg.color">背景颜色</view>
+        <view class="tab-item {{menu.isBg=='bg.gallery'?'select':''}}" bindtap="changeBg" data-type="bg.gallery">图库</view>
       </view>
-      <view bindtap="sysSetting" data-type="sys.save" class="{{menu.secondMenu=='sys.save' ? 'select' : ''}}">
-        <text class="iconfont icon-baocun"></text>
-        <text class="tool_text">保存</text>
+      <view class="text-background" wx:if="{{menu.isBg=='bg.color'}}">
+        <color-picker2  colorData="{{bg.color}}" bindchangecolor="onChangeBgColor"></color-picker2>
+        <view class="btn">
+          <text class="icon-item iconfont icon-queren1" bindtap="editBgOk"></text>
+          <text class="icon-item iconfont icon-quxiao1" bindtap="editBgCancel"></text>
+        </view>
       </view>
-      <view bindtap="sysSetting" data-type="sys.clear" class="{{menu.secondMenu=='sys.clear' ? 'select' : ''}}">
-        <text class="iconfont icon-delete"></text>
-        <text class="tool_text">清空</text>
+      <view wx:elif="bg.gallery">尽情期待</view>
+      <view class='text-background' style="margin:20rpx 0 0 calc(100%/3);" wx:else>
+        <view class="item-menu {{menu.secondMenu=='bg.album' ? 'select' : ''}}" bindtap="getBgPhoto" data-type="bg.album">
+          <text class="iconfont icon-xiangcetupian"></text>
+          <text class="txt">相册</text>
+        </view>
+        <view class="item-menu {{menu.secondMenu=='bg.camera' ? 'select' : ''}}" bindtap="getBgPhoto" data-type="bg.camera">
+          <text class="iconfont icon-zhaoxiangji"></text>
+          <text class="txt">拍照</text>
+        </view>
+        <view class="item-menu {{menu.secondMenu=='bg.talk' ? 'select' : ''}}" bindtap="getBgPhoto" data-type="bg.talk">
+          <text class="iconfont icon-web-icon-"></text>
+          <text class="txt">聊天记录</text>
+        </view>
+        <view class="item-menu {{menu.secondMenu=='bg.cancel' ? 'select' : ''}}" bindtap="getBgPhoto" data-type="bg.cancel">
+          <text class="iconfont icon-quxiao1"></text>
+          <text class="txt">取消</text>
+        </view>
       </view>
     </view>
   </view>

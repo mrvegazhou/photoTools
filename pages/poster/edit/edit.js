@@ -12,8 +12,9 @@ const families =
     "fantasy", "Impact", "Haettenschweiler"
   ]
 var openStatus = true;
-Page({
+const OFFSET = 10;
 
+Page({
   /**
    * 页面的初始数据
    */
@@ -67,9 +68,9 @@ Page({
         use: 'img'
       },
 
-      //文字编辑层高度
-      txtPopHeight: '470rpx',
-      isBg: 'img',
+      txtPopHeight: '470rpx', //文字编辑层高度
+      isBg: 'bg.img',
+      isReplaceImg: '',
     },
     //画布标尺
     scaleStyles: {
@@ -108,8 +109,8 @@ Page({
       type: 'image',
       url:'',
       css: {
-        top: 50,
-        left: 50,
+        top: 10,
+        left: 10,
         display: 'block'
       }
     },
@@ -216,12 +217,16 @@ Page({
 
   //-----------------------------------菜单动作----------------------------------------------------//
   showSecondMenu(e) {
+    let that = this;
     const type = e.currentTarget.dataset['type'];
     var menuShow = type
-    if (type==this.data.menu.menuShow) {
-      this.setData({'menu.menuShow': ''})
-      return
+    if(type!='sysScale' && type!='sysSave' && type!='sysClear'){
+      if (type==this.data.menu.menuShow) {
+        this.setData({'menu.menuShow': ''})
+        return
+      }
     }
+    
     var menu = this.data.menu
     switch(type) {
       case 'txt':
@@ -240,11 +245,31 @@ Page({
         // MyDoodleCpt.initDoodle();
       case 'layer':
         this.getSortList();
+      case 'sysScale':
+        this.setData({'scaleStyles.display': this.data.scaleStyles.display=='block'?'none':'block'});
+        break;
+      case 'sysSave':
+        CanvasDrag.downloadImg();
+        break;
+      case 'sysClear':
+        wx.showModal({
+          content: '是否确定清空画布内容？',
+          confirmText: "确认",
+          cancelText: "取消",
+          success: function (res) {
+            CanvasDrag.clearCanvas();
+            that.hideMenu();
+          }
+        });
+        break;
       default:
         menu.secondMenu = ''
     }
     menu.menuShow = menuShow
     this.setData({menu: menu})
+    if(type=='sysScale' || type=='sysSave' || type=='sysClear'){
+      setTimeout(()=>{that.hideMenu();}, 1000);
+    }
   },
   //基础方法 不同方式获取图片
   baseGetPhoto(type){
@@ -326,35 +351,10 @@ Page({
   hideMenu() {
     this.setData({
       'menu.menuShow': '',
-      'menu.secondMenu':''
+      'menu.secondMenu':'',
+      'menu.mainPageShow': 'mainPage'
     });
   },
-
-  //-----------------------------------系统设置 begin----------------------------------------------------//
-  sysSetting(e){
-    let type = e.currentTarget.dataset['type'];
-    this.setData({'menu.secondMenu': type});
-    switch(type) {
-      case 'sys.scale':
-        this.setData({'scaleStyles.display': this.data.scaleStyles.display=='block'?'none':'block'});
-        break;
-      case 'sys.clear':
-        wx.showModal({
-          content: '是否确定清空画布内容？',
-          confirmText: "确认",
-          cancelText: "取消",
-          success: function (res) {
-            CanvasDrag.clearCanvas();
-          }
-        });
-        break;
-      case 'sys.save':
-        CanvasDrag.downloadImg();
-        break;
-    }
-    this.hideMenu();
-  },
-  //-----------------------------------系统设置 end----------------------------------------------------//
 
   //-----------------------------------背景设置 begin----------------------------------------------------//
   editBgOk(){
@@ -382,37 +382,35 @@ Page({
   },
   changeBg(e){
     let type = e.currentTarget.dataset['type'];
-    if(type=='img'){
-      this.setData({'menu.isBg': 'img'})
-    } else {
-      this.setData({'menu.isBg': 'color'})
-    }
+    this.setData({'menu.isBg': type})
   },
   //背景选照片
   getBgPhoto(e){
     let type = e.currentTarget.dataset['type'];
     let that = this;
-    if(type=='camera')
+    if(type=='bg.camera')
       that.setData({'menu.camera.use': 'bg'});
-    else if(type=='cancel'){
-      that.setData({'menu.menuShow': '', 'menu.secondMenu':''});
+    else if(type=='bg.cancel'){
+      that.setData({'menu.menuShow': '', 'menu.secondMenu':type});
+      setTimeout(()=>{that.setData({'menu.secondMenu':''});}, 1000);
       return;
     }
     this.baseGetPhoto(type).then((url)=>{
       switch(type){
         case 'camera':
-          that.setData({'menu.carema.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':''});
+          that.setData({'menu.carema.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':type});
           break;
         case 'album':
           that.setData({'bg.img': url});
-          that.setData({'menu.menuShow': '', 'menu.secondMenu':''});
+          that.setData({'menu.menuShow': '', 'menu.secondMenu':type});
           break;
         case 'talk':
           that.setData({'bg.img': url});
-          that.setData({'menu.menuShow': '', 'menu.secondMenu':''});
+          that.setData({'menu.menuShow': '', 'menu.secondMenu':type});
           break;
       }
     });
+
   },
   //-----------------------------------背景设置 end----------------------------------------------------//
 
@@ -765,8 +763,57 @@ Page({
   //-----------------------------------图层管理 end---------------------------------------------------//
 
   //-----------------------------------点击图片操作 start----------------------------------------------//
-  editItem(){
-
-  }
+  clickItem(item){
+    let page = 'editImgPage'
+    if(item.type=='text') {
+      page = 'editTxtPage';
+    }
+    this.setData({
+      'menu.mainPageShow': page,
+      'menu.menuShow': ''
+    });
+  },
+  //复制
+  copyItem() {
+    let item = CanvasDrag.getItem();
+    let newItem = {css:{}}
+    newItem.active = false;
+    newItem.css.top = OFFSET + item.css.top;
+    newItem.css.left = OFFSET + item.css.left;
+    newItem.type = 'image';
+    newItem.url = item.url;
+    this.setData({
+      items: [newItem]
+    });
+  },
+  //替换
+  replaceItem() {
+    let oldItem = CanvasDrag.getItem();
+    let newItem = {css:{}}
+    newItem.active = false;
+    newItem.css.top = OFFSET + item.css.top;
+    newItem.css.left = OFFSET + item.css.left;
+    newItem.type = 'image';
+    newItem.url = item.url;
+  },
+  //编辑菜单
+  showEditMenu(e){
+    let type = e.currentTarget.dataset['type'];
+    let mainPage = 'editImgPage';
+    switch(type){
+      case "toMainPage":
+        mainPage = 'mainPage';
+        break;
+      case "copeImg":
+        this.copyItem();
+        break;
+      default:
+        break;
+    }
+    this.setData({
+      'menu.mainPageShow': mainPage,
+      'menu.menuShow': type
+    });
+  },
   //-----------------------------------点击图片操作 end------------------------------------------------//
 })
