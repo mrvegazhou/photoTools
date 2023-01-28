@@ -1,6 +1,7 @@
 var list = new Array();
 var index = 0, itemId = 0;
 var MIN_WIDTH = 20;
+var MIN_HEIGHT = 20;
 var MIN_FONTSIZE = 10;
 var platform = '';
 const SCALE_MAX = 2.5, SCALE_MIN = 0.5;      // 缩放比例范围
@@ -173,155 +174,182 @@ Component({
       return height;
     },
 
+    //处理上传的图片
+    _setImgItem(item, op='add') {
+      let that = this;
+      let flag = Boolean(item)
+      let data = {css:{}};
+      wx.getImageInfo({
+        src: item.url,
+        success: resInfo => {
+          data.id = itemId++;
+          data.url = item.url;
+          data.css.width = resInfo.width; //宽度
+          data.css.height = resInfo.height; //高度
+          var newHeight = resInfo.height, newWidth = resInfo.width;
+          if (data.css.width > maxWidth || data.css.height > maxHeight) { // 原图宽或高大于最大值就执行
+            if (data.css.width / data.css.height > maxWidth / maxHeight) { // 判断比n大值的宽或高作为基数计算
+              newWidth = maxWidth;
+              newHeight = Math.round(maxWidth * (data.css.height / data.css.width));
+            } else {
+              newHeight = maxHeight;
+              newWidth = Math.round(maxHeight * (data.css.width / data.css.height));
+            }
+          }
+          data.css.width = newWidth
+          data.css.height = newHeight
+          // 图片中心坐标
+          data.x =  data.css.width / 2;
+          data.y =  data.css.height / 2;
+          // 定位坐标
+          data.css.left = flag ? item.css.left : 0; //left定位
+          data.css.top = flag ? item.css.top : 0; //top定位
+          // data.scale = 1; //scale缩放
+          item.scale = 1;
+          data.scale = flag ? item.scale * that.data.syncScale : that.data.syncScale;
+          // data.oScale = 1; //控件缩放
+          data.oScale = 1 / data.scale;
+          data.angle = 0;
+          if(typeof item.active==='undefined') {
+            data.active = false; //选中状态
+          } else {
+            data.active = item.active;
+          }
+          data.type = 'image';
+          data.css.display = 'block';
+          data.filterOp = item.filterOp;
+          if(op=='add') {
+            list[list.length] = data;
+          } else if(op=='update') {
+            list[index] = data;
+          }
+          that.setData({
+            itemList: list
+          });
+        }
+      })
+    },
+    
+    //处理上传的文字
+    _setTextItem(item, op='add') {
+      let that = this;
+      let data = {css:{}};
+      data.type = 'text';
+      data.id = itemId++;
+      data.text = item.text;
+      this.codeCtx.font = `normal ${item.css.fontSize}px arial`;
+      //判断是否有换行符
+      let contentArr = data.text.split(/[(\r\n)\r\n]+/);
+
+      var textWidth = 0, textHeight = 0;
+      if(contentArr.length==1) {
+        textWidth = this.codeCtx.measureText(item.text).width;
+        textHeight = item.css.fontSize + 10;
+      } else if(contentArr.length>1) {
+        contentArr.forEach((elem) => {
+          textWidth = Math.max(textWidth, that.codeCtx.measureText(elem).width);
+        });
+        textHeight = (item.css.fontSize + 10)*contentArr.length;
+      }
+
+      const x = item.css.left + textWidth / 2;
+      const y = item.css.top + textHeight / 2;
+      data.x = x;
+      data.y = y;
+      data.css = item.css;
+      data.css.width = textWidth;
+      data.css.height = textHeight;
+      
+      data.scale = 1;
+      data.styles = ''
+      if(item.css.textVertical){
+        let maxHeightStr = 0;
+        data.styles += "writing-mode:vertical-lr;text-orientation: upright;";
+        data.css.width = (item.css.fontSize + 10) * contentArr.length;
+        contentArr.forEach((elem) => {
+          maxHeightStr = Math.max(maxHeightStr, that.measureTextHeight(elem));
+        });
+        data.css.height = maxHeightStr;
+      }
+
+      if((data.css.width-this.data.canvasWidth)>50) {
+        wx.showToast({
+          title: '文字长度过大于画布宽度,换行显示更佳',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+      }
+      if((data.css.height-this.data.canvasHeight)>50) {
+        wx.showToast({
+          title: '文字高度过大于画布高度',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+      }
+
+      if(item.css.fontSize) {
+        data.styles += `font-size:${item.css.fontSize}px !important;`
+      }
+      if(item.css.background){
+        data.styles += `background-color:${item.css.background};`
+      }
+      if(item.css.color){
+        data.styles += `color:${item.css.color};`
+      }
+      if(item.css.fontFamily!='系统默认字体'){
+        data.styles += `font-family:${item.css.fontFamily};`
+      }
+      if(item.css.fontWeight){
+        data.styles += `font-weight:${item.css.fontWeight};`
+      }
+      if(item.css.padding){
+        data.styles += `padding:${item.css.padding}rpx;`
+        data.css.width = data.css.width + item.css.padding*2;
+        data.css.height = data.css.height + item.css.padding;
+      }
+      if(item.css.textAlign){
+        data.styles += `text-align:'${item.css.textAlign}';`
+      }
+      if(item.css.textDecoration){
+        data.styles += `text-decoration:${item.css.textDecoration};`
+      }
+      if(item.css.textStyle=="stroke"){
+        data.styles += `color:white;-webkit-text-stroke:1rpx ${item.css.color};`
+      }
+      item.scale = 1;
+      data.scale = flag ? item.scale * this.data.syncScale : this.data.syncScale;
+      data.angle = 0;
+      data.active = false;
+      data.css.left = flag ? (x - textWidth / 2) : 0;
+      data.css.top = flag ? (y - textHeight / 2) : 0;
+      data.css.display = 'block';
+      
+      if(op=='add') {
+        list[list.length] = data;
+      } else if(op=='update') {
+        list[index] = data;
+      }
+      that.setData({
+        itemList: list
+      });
+    },
+
     // 初始化图片数据
     initItems(items) {
       for (let i = 0; i < items.length; i++) {
         let item = items[i]
-        // 初始化标志，判断是否读取已有item
-        let flag = Boolean(item)
-        let data = {css:{}}
-        let that = this;
+
         if(item.type=='image') {
-          wx.getImageInfo({
-            src: item.url,
-            success: res => {
-              // 初始化数据
-              data.id = itemId++;
-              data.url = item.url;
-              data.css.width = res.width; //item.css.width; //宽度
-              data.css.height = res.height; //item.css.height; //高度
-              var newHeight = res.height, newWidth = res.width;
-              if (data.css.width > maxWidth || data.css.height > maxHeight) { // 原图宽或高大于最大值就执行
-                if (data.css.width / data.css.height > maxWidth / maxHeight) { // 判断比n大值的宽或高作为基数计算
-                  newWidth = maxWidth;
-                  newHeight = Math.round(maxWidth * (data.css.height / data.css.width));
-                } else {
-                  newHeight = maxHeight;
-                  newWidth = Math.round(maxHeight * (data.css.width / data.css.height));
-                }
-              }
-              data.css.width = newWidth
-              data.css.height = newHeight
-              // 图片中心坐标
-              data.x =  data.css.width / 2;
-              data.y =  data.css.height / 2;
-              // 定位坐标
-              data.css.left = flag ? item.css.left : 0; //left定位
-              data.css.top = flag ? item.css.top : 0; //top定位
-              // data.scale = 1; //scale缩放
-              item.scale = 1;
-              data.scale = flag ? item.scale * that.data.syncScale : that.data.syncScale;
-              // data.oScale = 1; //控件缩放
-              data.oScale = 1 / data.scale;
-              data.angle = 0;
-              data.active = false; //选中状态
-              data.type = 'image';
-              data.css.display = 'block';
-              list[list.length] = data;
-              that.setData({
-                itemList: list
-              })
-            }
-          })
+
+          this._setImgItem(item);
+
         } else if(item.type=='text') {
           if (!item.text || typeof(item.text)=='undefined' || item.text=="") {
             return
           }
-          data.type = 'text';
-          data.id = itemId++;
-          data.text = item.text;
-          this.codeCtx.font = `normal ${item.css.fontSize}px arial`;
-          //判断是否有换行符
-          let contentArr = data.text.split(/[(\r\n)\r\n]+/);
-
-          var textWidth = 0, textHeight = 0;
-          if(contentArr.length==1) {
-            textWidth = this.codeCtx.measureText(item.text).width;
-            textHeight = item.css.fontSize + 10;
-          } else if(contentArr.length>1) {
-            contentArr.forEach((elem) => {
-              textWidth = Math.max(textWidth, that.codeCtx.measureText(elem).width);
-            });
-            textHeight = (item.css.fontSize + 10)*contentArr.length;
-          }
-
-          const x = item.css.left + textWidth / 2;
-          const y = item.css.top + textHeight / 2;
-          data.x = x;
-          data.y = y;
-          data.css = item.css;
-          data.css.width = textWidth;
-          data.css.height = textHeight;
-          
-          data.scale = 1;
-          data.styles = ''
-          if(item.css.textVertical){
-            let maxHeightStr = 0;
-            data.styles += "writing-mode:vertical-lr;text-orientation: upright;";
-            data.css.width = (item.css.fontSize + 10) * contentArr.length;
-            contentArr.forEach((elem) => {
-              maxHeightStr = Math.max(maxHeightStr, that.measureTextHeight(elem));
-            });
-            data.css.height = maxHeightStr;
-          }
-
-          if((data.css.width-this.data.canvasWidth)>50) {
-            wx.showToast({
-              title: '文字长度过大于画布宽度,换行显示更佳',
-              icon: 'none',
-              duration: 2000
-            });
-            return;
-          }
-          if((data.css.height-this.data.canvasHeight)>50) {
-            wx.showToast({
-              title: '文字高度过大于画布高度',
-              icon: 'none',
-              duration: 2000
-            });
-            return;
-          }
-
-          if(item.css.fontSize) {
-            data.styles += `font-size:${item.css.fontSize}px !important;`
-          }
-          if(item.css.background){
-            data.styles += `background-color:${item.css.background};`
-          }
-          if(item.css.color){
-            data.styles += `color:${item.css.color};`
-          }
-          if(item.css.fontFamily!='系统默认字体'){
-            data.styles += `font-family:${item.css.fontFamily};`
-          }
-          if(item.css.fontWeight){
-            data.styles += `font-weight:${item.css.fontWeight};`
-          }
-          if(item.css.padding){
-            data.styles += `padding:${item.css.padding}rpx;`
-            data.css.width = data.css.width + item.css.padding*2;
-            data.css.height = data.css.height + item.css.padding;
-          }
-          if(item.css.textAlign){
-            data.styles += `text-align:'${item.css.textAlign}';`
-          }
-          if(item.css.textDecoration){
-            data.styles += `text-decoration:${item.css.textDecoration};`
-          }
-          if(item.css.textStyle=="stroke"){
-            data.styles += `color:white;-webkit-text-stroke:1rpx ${item.css.color};`
-          }
-          item.scale = 1;
-          data.scale = flag ? item.scale * this.data.syncScale : this.data.syncScale;
-          data.angle = 0;
-          data.active = false;
-          data.css.left = flag ? (x - textWidth / 2) : 0;
-          data.css.top = flag ? (y - textHeight / 2) : 0;
-          data.css.display = 'block';
-          list[list.length] = data;
-          that.setData({
-            itemList: list
-          })
+          this._setTextItem(item);
         }
       }
     },
@@ -373,6 +401,7 @@ Component({
       for (let i = 0; i < list.length; i++) {
         if (e.currentTarget.dataset.id == list[i].id) {
           list.splice(i, 1);
+          this.triggerEvent('hideMenu', {});
           this.setData({
             "itemList": list
           })
@@ -554,6 +583,48 @@ Component({
       // console.log(angle)
       return angle;
     },
+
+    dragYStart(e){
+      var self = this
+      self.dragStartY = e.touches[0].clientY
+    },
+
+    dragYMove(e){
+      var self = this
+      var item = list[index]
+      var dragLengthY = (e.touches[0].clientY - self.dragStartY) * 0.03
+      var moveDis = dragLengthY + item.css.height
+      if(moveDis>=MIN_HEIGHT && this.data.canvasHeight>moveDis) {
+        list[index].y = moveDis/2
+        list[index].css.height = moveDis
+        self.setData({
+          itemList: list
+        })
+      } else {
+        return
+      }
+    },
+
+    dragXStart(e){
+      var self = this
+      self.dragStartX = e.touches[0].clientX
+    },
+
+    dragXMove(e){
+      var self = this
+      var item = list[index]
+      var dragLengthX = (e.touches[0].clientX - self.dragStartX) * 0.03
+      var moveDis = dragLengthX + item.css.width
+      if(moveDis>=MIN_WIDTH && this.data.canvasWidth>moveDis) {
+        list[index].css.width = moveDis
+        list[index].x = moveDis / 2
+        self.setData({
+          itemList: list
+        })
+      } else {
+        return
+      }
+    },
     
     // 点击图片以外隐藏控件
     hideControls(e) {
@@ -570,13 +641,16 @@ Component({
         }
       }
       // 若有图片被选中则当点击图片以外的区域取消选中状态（安全区域扩大10个像素）
-      if(isActive && (x < list[index].css.left - 10 || x > list[index].css.left + list[index].css.width + 10||
-      y < list[index].css.top - 10 || y > list[index].css.top + list[index].css.height + 10)){
+      let flag = (x < list[index].css.left - 10 || x > list[index].css.left + list[index].css.width + 10||
+        y < list[index].css.top - 10 || y > list[index].css.top + list[index].css.height + 10);
+      if(isActive && flag){
         list[index].active = false;
-        this.triggerEvent('hideMenu', {});
         this.setData({
           itemList: list
         })
+      }
+      if(flag) {
+        this.triggerEvent('hideMenu', {});
       }
     },
 
@@ -776,7 +850,27 @@ Component({
     getItem() {
       return list[index];
     },
-    
+    replaceItem(item) {
+      if(item.type=='image') {
+        this._setImgItem(item, 'update');
+      } else if(item.type=='text') {
+        this._setTextItem(item, 'update');
+      }
+    },
+    //恢复尺寸
+    recoverSize() {
+      let item = list[index];
+      wx.getImageInfo({
+        src: item.url,
+        success: resInfo => {
+          item.css.width = resInfo.width; //宽度
+          item.css.height = resInfo.height; //高度
+          item.scale = 1;
+          list[index] = item;
+          this.setData({itemList: list});
+        }
+      })
+    },
     //------------------------------------单击item编辑 end------------------------------------//
   },
 });

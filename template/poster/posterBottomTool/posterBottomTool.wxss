@@ -18,7 +18,7 @@
   justify-content:space-around;
   align-items: center;
   margin-right: 12rpx;
-  width: 100rpx;
+  width: 101rpx;
   height: 120rpx;
   line-height: 120rpx;
 }
@@ -50,8 +50,8 @@
   text-align: center;
 }
 .edit-pop .item-menu{
-  height: 90rpx;
-  line-height: 90rpx;
+  height: 100rpx;
+  line-height: 100rpx;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -163,10 +163,20 @@
   margin: 0 5rpx;
   color: var(--primary-dark-gray-color);
 }
-.edit-pop .select{
-  color: var(--primary-color);
+.text-edit-pop .select{
+  color: var(--primary-color) !important;
 }
-
+.text-edit-pop .tab-flow-items{
+  display: flex;
+  flex-direction: row;
+  flex-flow: row wrap;
+  margin: 30rpx;
+}
+.text-edit-pop .tab-flow-items .flow-item{
+  margin: 0 35rpx 35rpx 0;
+  color: var(--primary-dark-gray-color);
+  font-size: var(--primary-font-size-2);
+}
 .popbg {
   position: fixed;
   top: 0;
@@ -209,8 +219,8 @@
 .text-edit-pop .btn text{
   width: 200rpx;
   text-align: center;
+  margin-top: 20rpx;
 }
-
 /* color picker */
 .color-picker-view {
   position: absolute;

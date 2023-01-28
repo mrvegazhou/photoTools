@@ -409,6 +409,24 @@ function sortBy(property){
   }
 }
 
+function createCanvasContext(width, height) {
+  const canvas = wx.createOffscreenCanvas({
+    type: '2d',
+    width,
+    height,
+  })
+  const context = canvas.getContext("2d")
+  return [canvas, context]
+}
+function createImage() {
+  // 创建离屏canvas
+  const canvas = wx.createOffscreenCanvas({
+    type: '2d',
+  })
+  // 创建一个图片
+  const image = canvas.createImage()
+  return image
+}
 
 module.exports = {
   formatTime: formatTime,
@@ -431,5 +449,7 @@ module.exports = {
   breakLines4Canvas: breakLines4Canvas,
   drawVerticalText4Canvas: drawVerticalText4Canvas,
   openConfirm: openConfirm,
-  sortBy: sortBy
+  sortBy: sortBy,
+  createCanvasContext: createCanvasContext,
+  createImage: createImage
 }

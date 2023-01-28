@@ -7,10 +7,12 @@
 <!-- 操作区域 -->
 <view class="contentWarp" catchtap="hideControls">
   <block wx:for="{{itemList}}" wx:key="id">
-    <view class="touchWrap" style="transform:scale({{item.scale}});top:{{item.css.top}}px;left:{{item.css.left}}px;z-index:{{item.id}};">
+    <view class="touchWrap" style="display:{{item.css.display}};transform:scale({{item.scale}});top:{{item.css.top}}px;left:{{item.css.left}}px;z-index:{{item.id}};">
       <view class="imgWrap {{item.active? 'touchActive':''}}" style="transform:rotate({{item.angle}}deg);">
 
         <block wx:if="{{item.type==='image'}}">
+          <view class="imgXY" style="display:{{item.active?'block':'none'}};width:32rpx;height:12rpx;top:{{item.css.height-3}}px;left:{{item.css.width/2-8}}px;" catchtouchstart="dragYStart" catchtouchmove="dragYMove"></view>
+          <view class="imgXY" style="display:{{item.active?'block':'none'}};width:12rpx;height:32rpx;left:{{item.css.width-3}}px;top:{{item.css.height/2-8}}px;" catchtouchstart="dragXStart" catchtouchmove="dragXMove"></view>
           <image src='{{item.url}}' data-id='{{item.id}}' style='display:{{item.css.display}};width:{{item.css.width}}px;height:{{item.css.height}}px;' bindtap="clickItem" bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'></image>
         </block>
         <block wx:if="{{item.type==='text'}}">

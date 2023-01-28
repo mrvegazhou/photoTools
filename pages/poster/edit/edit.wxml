@@ -12,4 +12,5 @@
 
   <!-- 图片生成弹出页面-->
   <template is="posterImgCard" data="{{imgCardShow, imageUrl}}" />
+  <canvas type="2d" id="canvas" class="canvas" style="top: -{{ canvasHeight+1000 }}px; left: -{{canvasWidth + 1000}}px"></canvas>
 </view>

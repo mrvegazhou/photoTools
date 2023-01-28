@@ -1,8 +1,8 @@
 import ImageCropper from '../../../component/image-cropper/cropper';
 import MyDoodleCpt from '../../../component/doodle/doodle';
 import CanvasDrag from '../../../component/canvas-drag/canvas-drag';
+import AlloyImage from "../../../component/alloyimage/alloyImage.js"
 const util = require("../../../utils/util");
-const app = getApp()
 const families =
   [ "系统默认字体",
     "Courier New", "Courier", "monospace", "Franklin Gothic Medium", "Arial Narrow", "Arial", "Gill Sans", "Gill Sans MT",
@@ -10,11 +10,17 @@ const families =
     "Verdana", "sans-serif", "Segoe UI", "Tahoma", "Times", "Times New Roman", "serif", "-apple-system", "BlinkMacSystemFont", 
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica", "Helvetica Neue", "Cambria", "Cochin", "Georgia", "cursive", 
     "fantasy", "Impact", "Haettenschweiler"
-  ]
+]
 var openStatus = true;
 const OFFSET = 10;
+let canvasWidth = 1239;
+let canvasHeight = 696;
 
 Page({
+  canvas: null, // 画布
+  ctx: null,
+  originalCanvas: null,
+  originalCtx: null,
   /**
    * 页面的初始数据
    */
@@ -70,7 +76,12 @@ Page({
 
       txtPopHeight: '470rpx', //文字编辑层高度
       isBg: 'bg.img',
-      isReplaceImg: '',
+      editMenu: '', //编辑item的菜单选项
+
+      //滤镜展示菜单
+      filterTitles:[
+        '原图', '美肤', '素描', '自然增强', '紫调', '柔焦', '黑白', 'lomo', '暖秋', '木雕'
+      ],
     },
     //画布标尺
     scaleStyles: {
@@ -83,8 +94,9 @@ Page({
       display: 'block'
     },
 
-    imgCardShow: false,
-    imageUrl: '../../../images/img.png',
+    imgCardShow: false, //是否开启保存画板照片的标识
+    imageUrl: '', //需要下载的画板生成的图片路径
+
     itemText: {
       css:{
         top: 50,
@@ -111,8 +123,12 @@ Page({
       css: {
         top: 10,
         left: 10,
-        display: 'block'
-      }
+        display: 'block',
+        width: 0,
+        height: 0,
+      },
+      filterOp: '原图',
+      originalImgUrl: ''
     },
     items: [
     ],
@@ -123,6 +139,10 @@ Page({
     },
     //图层展示列表
     optSortList:[],
+
+    canvasWidth,
+    canvasHeight,
+    handleResults:{}
   },
 
   /**
@@ -137,6 +157,15 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
+  },
+
+  onShow() {
+    wx.createSelectorQuery().select('#canvas').node((res) => {
+      this.canvas = res.node;
+      this.canvas.width = canvasWidth
+      this.canvas.height = canvasHeight
+      this.ctx = this.canvas.getContext("2d")
+    }).exec()
   },
 
   onHandelCancel() {
@@ -196,7 +225,6 @@ Page({
   },
 
   onSaveImageToPhotosAlbum: function(imageUrl){
-    var that = this;
     if(imageUrl.target){
       imageUrl = imageUrl.target.dataset.imgurl || this.data.imageUrl;
     }
@@ -349,13 +377,16 @@ Page({
   },
   // 在海报组件中调用隐藏主菜单
   hideMenu() {
+    this._initMenu();
+  },
+  //初始化菜单
+  _initMenu(name='mainPage') {
     this.setData({
       'menu.menuShow': '',
       'menu.secondMenu':'',
-      'menu.mainPageShow': 'mainPage'
+      'menu.mainPageShow': name
     });
   },
-
   //-----------------------------------背景设置 begin----------------------------------------------------//
   editBgOk(){
     if( this.data.bg.tmpColor=='') {
@@ -380,9 +411,16 @@ Page({
       'bg.tmpColor': rgba
     })
   },
-  changeBg(e){
+  changeTab(e){
     let type = e.currentTarget.dataset['type'];
-    this.setData({'menu.isBg': type})
+    let typeName = type.split(".")[0];
+    if(typeName=='ri') {
+      //替换操作
+      this.setData({'menu.editMenu': type});
+    } else if(typeName=='bg') {
+      //更换画板背景图操作
+      this.setData({'menu.isBg': type});
+    }
   },
   //背景选照片
   getBgPhoto(e){
@@ -395,8 +433,9 @@ Page({
       setTimeout(()=>{that.setData({'menu.secondMenu':''});}, 1000);
       return;
     }
-    this.baseGetPhoto(type).then((url)=>{
-      switch(type){
+    let typeName = type.split('.')[1];
+    this.baseGetPhoto(typeName).then((url)=>{
+      switch(typeName){
         case 'camera':
           that.setData({'menu.carema.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':type});
           break;
@@ -410,7 +449,6 @@ Page({
           break;
       }
     });
-
   },
   //-----------------------------------背景设置 end----------------------------------------------------//
 
@@ -502,6 +540,9 @@ Page({
           this.addItemImg(res.tempImagePath);
         } else if(use=='bg'){
           this.setData({'bg.img': res.tempImagePath});
+        } else if(use=='ri'){
+          //图片替换功能
+          this.replaceItem(res.tempImagePath);
         }
       },
       fail: () => {
@@ -529,7 +570,7 @@ Page({
   //-----------------------------------画布 end---------------------------------------------------//
   //-----------------------------------文字编辑 begin-------------------------------------------------//
   // 编辑文字...
-  closeTxtEdit() {
+  closePopEdit() {
     this.setData({'menu.menuShow': ''})
   },
   // 编辑文字确认
@@ -763,14 +804,23 @@ Page({
   //-----------------------------------图层管理 end---------------------------------------------------//
 
   //-----------------------------------点击图片操作 start----------------------------------------------//
-  clickItem(item){
-    let page = 'editImgPage'
+  clickItem(e){
+    let page = 'editImgPage';
+    let item = e.detail.item;
+    let newItem;
     if(item.type=='text') {
       page = 'editTxtPage';
+    } else {
+      newItem = this.data.itemImg;
+      newItem.css.width = item.css.width;
+      newItem.css.height = item.css.height;
+      newItem.originalImgUrl = item.url;
+      this.setData({itemImg: newItem});
     }
+
     this.setData({
       'menu.mainPageShow': page,
-      'menu.menuShow': ''
+      'menu.menuShow': '',
     });
   },
   //复制
@@ -787,14 +837,39 @@ Page({
     });
   },
   //替换
-  replaceItem() {
+  replaceItem(url) {
     let oldItem = CanvasDrag.getItem();
     let newItem = {css:{}}
-    newItem.active = false;
-    newItem.css.top = OFFSET + item.css.top;
-    newItem.css.left = OFFSET + item.css.left;
+    newItem.css.top = OFFSET + oldItem.css.top;
+    newItem.css.left = OFFSET + oldItem.css.left;
     newItem.type = 'image';
-    newItem.url = item.url;
+    newItem.url = url;
+    newItem.id = oldItem.id;
+    newItem.active = true;
+    CanvasDrag.replaceItem(newItem);
+  },
+  //替换图片编辑
+  replaceImg(e){
+    let type = e.currentTarget.dataset['type'];
+    let that = this;
+    that.setData({'menu.secondMenu':type});
+    if(type=='ri.camera')
+      that.setData({'menu.camera.use': 'ri'});
+    let typeName = type.split('.')[1];
+    this.baseGetPhoto(typeName).then((url)=>{
+      switch(typeName){
+        case 'camera':
+          that.setData({'menu.carema.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':type});
+          break;
+        case 'album':
+          that.replaceItem(url);
+          break;
+        case 'talk':
+          that.replaceItem(url);
+          break;
+      }
+    });
+    setTimeout(()=>{that._initMenu('editImgPage');}, 2000);
   },
   //编辑菜单
   showEditMenu(e){
@@ -807,6 +882,13 @@ Page({
       case "copeImg":
         this.copyItem();
         break;
+      case "replaceImg":
+        this.setData({
+          'menu.editMenu': 'ri.localImgs'
+        });
+        break;
+      case "recoverSize":
+        CanvasDrag.recoverSize();
       default:
         break;
     }
@@ -815,5 +897,89 @@ Page({
       'menu.menuShow': type
     });
   },
+  //滤镜
+  filterImg(e) {
+    let that = this;
+    let itemImg = this.data.itemImg;
+    let originalImgUrl = itemImg.originalImgUrl=='' ? itemImg.url : itemImg.originalImgUrl;
+    let filter = e.currentTarget.dataset.type;
+
+    if(filter=='原图') {
+      that.setData({'itemImg.url': originalImgUrl});
+      return;
+    }
+
+    if(that.data.handleResults.hasOwnProperty(filter)) {
+      that.setData({
+        'itemImg.url': that.data.handleResults[filter+"-"+itemImg.id]
+      });
+      return;
+    }
+
+    if(!that.originalCanvas) {
+      // 创建一个离屏canvas 缓存原图
+      const [originalCanvas, originalCtx] = util.createCanvasContext(canvasWidth, canvasHeight);
+      that.originalCanvas = originalCanvas;
+      that.originalCtx = originalCtx;
+    }
+    wx.getImageInfo({
+      src: originalImgUrl,
+      success: resInfo => {
+        canvasWidth = resInfo.width; //宽度
+        canvasHeight = resInfo.height; //高度
+        that.setData({
+          canvasWidth: canvasWidth,
+          canvasHeight: canvasHeight,
+        });
+        that.canvas.width = canvasWidth;
+        that.canvas.height = canvasHeight;
+        const image = util.createImage();
+        image.src = originalImgUrl;
+        image.onload = () => {
+          that.originalCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+          that.originalCtx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+          that.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+          that.ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+          that._handleFilter(that, canvasWidth, canvasHeight, filter);
+        };
+      }
+    })
+    
+  },
+
+  _handleFilter(that, canvasWidth, canvasHeight, filter) {
+    const imageData = that.originalCtx.getImageData(0, 0, canvasWidth, canvasHeight);
+    console.log(imageData, '---d---');
+    let alloyImage = new AlloyImage(imageData);
+    wx.showLoading({
+      title: '处理中',
+      mask: true
+    })
+    let result = alloyImage.reflect(filter);
+    wx.hideLoading();
+    that.ctx.putImageData(result, 0, 0);
+
+    wx.canvasToTempFilePath({
+      canvas: that.canvas,
+      x: 0,
+      y: 0,
+      width: canvasWidth,
+      height: canvasHeight,
+      destWidth: canvasWidth,
+      destHeight: canvasHeight,
+    }, that).then(res => {
+      that.setData({
+        'itemImg.url': res.tempFilePath,
+      });
+      // 缓存
+      that.data.handleResults[filter+"-"+that.data.itemImg.id] = res.tempFilePath;
+      let itemImg = that.data.itemImg;
+      itemImg.url = res.tempFilePath;
+      that.setData({
+        items: [itemImg]
+      });
+    });
+  },
+
   //-----------------------------------点击图片操作 end------------------------------------------------//
 })

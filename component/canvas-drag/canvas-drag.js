@@ -93,4 +93,24 @@ CanvasDrag.getItem = () => {
   }
 };
 
+//替换图片
+CanvasDrag.replaceItem = (item) => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+      console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().replaceItem(item);
+  }
+};
+
+//恢复图片尺寸
+CanvasDrag.recoverSize = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+      console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().recoverSize();
+  }
+};
+
 export default CanvasDrag;

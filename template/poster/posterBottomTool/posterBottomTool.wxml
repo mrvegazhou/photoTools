@@ -41,11 +41,19 @@
     </view>
   </scroll-view>
 
-  <!--单击元素的二级编辑菜单-->
+  <!--单击元素的二级编辑菜单 editImgPage-->
   <scroll-view scroll-x="true" class="toolbar-bottom" wx:if="{{menu.mainPageShow==='editImgPage'}}">
     <view bindtap='showEditMenu' data-type="toMainPage" class="item-btn {{menu.menuShow=='toMainPage'?'menu-select':''}}">
       <text class="icon-item iconfont icon-fanhui"></text>
       <text class="text">返回</text>
+    </view>
+    <view bindtap='showEditMenu' data-type="recoverSize" class="item-btn {{menu.menuShow=='recoverSize'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-xiangcetupian"></text>
+      <text class="text">恢复</text>
+    </view>
+    <view bindtap='showEditMenu' data-type="cropper" class="item-btn {{menu.menuShow=='cropper'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-caijian"></text>
+      <text class="text">裁剪</text>
     </view>
     <view bindtap='showEditMenu' data-type="copeImg" class="item-btn {{menu.menuShow=='copeImg'?'menu-select':''}}">
       <text class="icon-item iconfont icon-fuzhi"></text>
@@ -81,48 +89,68 @@
     </view>
   </scroll-view>
 
+  <!--
+    滤镜二级菜单-->
+  <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='filterImg'}}">
+    <view class="popbg" bindtap="closePopEdit"></view>
+    <view class="popup" style="height:30vh;">
+      <view class="tab-wapper">
+      <view class="tab-item">滤镜选项</view>
+      </view>
+      <view class="tab-flow-items">
+        <block wx:for-items="{{menu.filterTitles}}" wx:key="key">
+          <view class="flow-item {{itemImg.filterOp==item?'select':''}}" bindtap="filterImg" data-type="{{item}}">{{item}}</view>
+        </block>
+      </view>
+    </view>
+  </view>
+
   <!--替换图片二级菜单-->
   <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='replaceImg'}}">
-    <view class="popbg" bindtap="closeTxtEdit" data-type="txt"></view>
-    <view class="popup" style="height:57vh;">
+    <view class="popbg" bindtap="closePopEdit"></view>
+    <view class="popup" style="height:55vh;">
       <view class="tab-wapper">
-        <view class="tab-item {{menu.isReplaceImg=='localImgs'?'select':''}}" bindtap="changeBg" data-type="localImgs">本地图片</view>
-        <view class="tab-item {{menu.isReplaceImg=='netImgs'?'select':''}}" bindtap="changeBg" data-type="netImgs">图库</view>
+        <view class="tab-item {{menu.editMenu=='ri.localImgs'?'select':''}}" bindtap="changeTab" data-type="ri.localImgs">本地图片</view>
+        <view class="tab-item {{menu.editMenu=='ri.netImgs'?'select':''}}" bindtap="changeTab" data-type="ri.netImgs">图库</view>
       </view>
-      <view class="text-background" wx:if="{{menu.isReplaceImg=='netImgs'}}">
-        <color-picker2  colorData="{{bg.color}}" bindchangecolor="onChangeBgColor"></color-picker2>
-        <view class="btn">
-          <text class="icon-item iconfont icon-queren1" bindtap="editBgOk"></text>
-          <text class="icon-item iconfont icon-quxiao1" bindtap="editBgCancel"></text>
+      <view wx:if="{{menu.editMenu=='ri.netImgs'}}">尽情期待</view>
+      <view class='text-background' style="margin:20rpx 0 0 calc(100%/3);" wx:elif="{{menu.editMenu=='ri.localImgs'}}">
+        <view class="item-menu {{menu.secondMenu=='ri.album' ? 'select' : ''}}" bindtap="replaceImg" data-type="ri.album">
+          <text class="iconfont icon-xiangcetupian"></text>
+          <text class="txt">相册</text>
         </view>
-      </view>
-      <view class='text-background' style="width:300rpx;" wx:else>
-        <view class='item-menu' bindtap="getBgPhoto" data-type="album"><text class="iconfont icon-xiangcetupian"></text>相册</view>
-        <view class='item-menu' bindtap="getBgPhoto" data-type="camera"><text class="iconfont icon-zhaoxiangji"></text>拍照</view>
-        <view class='item-menu' bindtap="getBgPhoto" data-type="talk"><text class="iconfont icon-web-icon-"></text>聊天记录</view>
-        <view class='item-menu' bindtap="getBgPhoto" data-type="cancel"><text class="iconfont icon-quxiao1"></text>取消</view>
+        <view class="item-menu {{menu.secondMenu=='ri.camera' ? 'select' : ''}}" bindtap="replaceImg" data-type="ri.camera">
+          <text class="iconfont icon-zhaoxiangji"></text>
+          <text class="txt">拍照</text>
+        </view>
+        <view class="item-menu {{menu.secondMenu=='ri.talk' ? 'select' : ''}}" bindtap="replaceImg" data-type="ri.talk">
+          <text class="iconfont icon-web-icon-"></text>
+          <text class="txt">聊天记录</text>
+        </view>
       </view>
     </view>
   </view>
 
   <!--背景设置二级菜单-->
   <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='bg'}}">
-    <view class="popbg" bindtap="closeTxtEdit" data-type="txt"></view>
-    <view class="popup" style="height:57vh;">
+    <view class="popbg" bindtap="closePopEdit" data-type="txt"></view>
+    <view class="popup" style="height:55vh;">
       <view class="tab-wapper">
-        <view class="tab-item {{menu.isBg=='bg.img'?'select':''}}" bindtap="changeBg" data-type="bg.img">背景图片</view>
-        <view class="tab-item {{menu.isBg=='bg.color'?'select':''}}" bindtap="changeBg" data-type="bg.color">背景颜色</view>
-        <view class="tab-item {{menu.isBg=='bg.gallery'?'select':''}}" bindtap="changeBg" data-type="bg.gallery">图库</view>
+        <view class="tab-item {{menu.isBg=='bg.img'?'select':''}}" bindtap="changeTab" data-type="bg.img">背景图片</view>
+        <view class="tab-item {{menu.isBg=='bg.color'?'select':''}}" bindtap="changeTab" data-type="bg.color">背景颜色</view>
+        <view class="tab-item {{menu.isBg=='bg.gallery'?'select':''}}" bindtap="changeTab" data-type="bg.netImgs">图库</view>
       </view>
       <view class="text-background" wx:if="{{menu.isBg=='bg.color'}}">
-        <color-picker2  colorData="{{bg.color}}" bindchangecolor="onChangeBgColor"></color-picker2>
-        <view class="btn">
-          <text class="icon-item iconfont icon-queren1" bindtap="editBgOk"></text>
-          <text class="icon-item iconfont icon-quxiao1" bindtap="editBgCancel"></text>
+        <view style="width:400rpx;margin:auto;">
+          <color-picker2  colorData="{{bg.color}}" bindchangecolor="onChangeBgColor"></color-picker2>
+          <view class="btn">
+            <text class="icon-item iconfont icon-queren1" bindtap="editBgOk"></text>
+            <text class="icon-item iconfont icon-quxiao1" bindtap="editBgCancel"></text>
+          </view>
         </view>
       </view>
-      <view wx:elif="bg.gallery">尽情期待</view>
-      <view class='text-background' style="margin:20rpx 0 0 calc(100%/3);" wx:else>
+      <view wx:elif="{{menu.isBg=='bg.netImgs'}}">尽情期待</view>
+      <view class='text-background' style="margin:20rpx 0 0 calc(100%/3);" wx:elif="{{menu.isBg=='bg.img'}}">
         <view class="item-menu {{menu.secondMenu=='bg.album' ? 'select' : ''}}" bindtap="getBgPhoto" data-type="bg.album">
           <text class="iconfont icon-xiangcetupian"></text>
           <text class="txt">相册</text>
@@ -170,7 +198,7 @@
   </view>
   <!--文字编辑层-->
   <view class="text-edit-pop" wx:if="{{menu.menuShow=='txt'}}">
-    <view class="popbg" bindtap="closeTxtEdit" data-type="txt"></view>
+    <view class="popbg" bindtap="closePopEdit"></view>
     <view class="popup" style="height:{{menu.txtPopHeight}}">
       <!--颜色-->
       <view class="color-picker-view" wx:if="{{menu.showColorPicker}}">

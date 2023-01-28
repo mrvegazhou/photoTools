@@ -1,6 +1,6 @@
 /* pages/drawing/component/colorpicker2/colorPicker.wxss */
 .picker-wapper{
-  margin-top: 20rpx;
+  margin-top: 15rpx;
 }
 .picker-bar {
   position: relative;
@@ -75,8 +75,8 @@
   z-index: 20;
 }
 .block-color{
-  width:150px;
-  height:40px;
+  width:120px;
+  height:25px;
   background:#fff;
-  margin:10px auto;
+  margin:6px auto;
 }
