@@ -4,156 +4,134 @@ Page({
    * 页面的初始数据
    */
   data: {
-    optionList: [],
-
-    movableViewInfo: {
-      y: 0,
-      showClass: 'none',
-      data: {}
-    },
-    scrollT:0,
-    scrollH: 0,
-    scrollTop: 0,
-    canScroll: true,
-    height: 400,
-    pageInfo: {
-      rowHeight: 47,
-      scrollHeight: 85,
-
-      startIndex: null,
-      scrollY: true,
-      readyPlaceIndex: null,
-      startY: 0,
-      selectedIndex: null,
-    }
-  },
-
-  dragStart: function (event) {
-    var startIndex = event.target.dataset.index
-    console.log('获取到的元素为', this.data.optionList[startIndex])
-    // 初始化页面数据
-    var pageInfo = this.data.pageInfo
-    pageInfo.startY = event.touches[0].clientY
-    pageInfo.readyPlaceIndex = startIndex
-    pageInfo.selectedIndex = startIndex
-    pageInfo.scrollY = false
-    pageInfo.startIndex = startIndex
-    
-    this.setData({
-      'movableViewInfo.y': pageInfo.startY - (pageInfo.rowHeight / 2)
-    })
-    // 初始化拖动控件数据
-    var movableViewInfo = this.data.movableViewInfo
-    movableViewInfo.data = this.data.optionList[startIndex]
-    movableViewInfo.showClass = "inline"
-
-    this.setData({
-      movableViewInfo: movableViewInfo,
-      pageInfo: pageInfo,
-      canScroll: false, 
-        
-    })
-  },
-
-  dragMove: function (event) {
-    var optionList = this.data.optionList
-    var pageInfo = this.data.pageInfo
-    // 计算拖拽距离
-    var movableViewInfo = this.data.movableViewInfo
-    var movedDistance = event.touches[0].clientY - pageInfo.startY
-    movableViewInfo.y = pageInfo.startY - (pageInfo.rowHeight / 2) + movedDistance
-    // console.log(movedDistance+event.touches[0].clientY-this.data.scrollT)
-    let sss = event.touches[0].clientY-this.data.scrollT + movedDistance;
-    // 修改预计放置位置
-    var movedIndex = parseInt(movedDistance / pageInfo.rowHeight)
-
-    if(sss>(this.data.scrollH-64)) {
-      wx.nextTick(() => {
-        let hhh = Math.ceil( (sss-(this.data.scrollH-64)) /64)*64
-        this.setData({scrollTop:hhh/2+47, height:400})
-       console.log(this.data.scrollTop, '-=-=-=-=')
-      });
-      
-    }
-
-
-    var readyPlaceIndex = pageInfo.startIndex + movedIndex
-    if (readyPlaceIndex < 0 ) {
-      readyPlaceIndex = 0
-    }
-    else if (readyPlaceIndex >= optionList.length){
-      readyPlaceIndex = optionList.length - 1
-    }
-    
-    if (readyPlaceIndex != pageInfo.selectedIndex ) {
-      var selectedData = optionList[pageInfo.selectedIndex]
-
-      optionList.splice(pageInfo.selectedIndex, 1)
-      optionList.splice(readyPlaceIndex, 0, selectedData)
-      pageInfo.selectedIndex = readyPlaceIndex
-    }
-    // 移动movableView
-    pageInfo.readyPlaceIndex = readyPlaceIndex
-    // console.log('移动到了索引', readyPlaceIndex, '选项为', optionList[readyPlaceIndex])
-    
-    this.setData({
-      movableViewInfo: movableViewInfo,
-      optionList: optionList,
-      pageInfo: pageInfo
-    })
-  },
-
-  dragEnd: function (event) {
-    // 重置页面数据
-    var pageInfo = this.data.pageInfo
-    pageInfo.readyPlaceIndex = null
-    pageInfo.startY = null
-    pageInfo.selectedIndex = null
-    pageInfo.startIndex = null
-    pageInfo.scrollY = true
-    // 隐藏movableView
-    var movableViewInfo = this.data.movableViewInfo
-    movableViewInfo.showClass = 'none'
-
-    this.setData({
-      pageInfo: pageInfo,
-      movableViewInfo: movableViewInfo,
-
-      canScroll: true
-    })
+    width:0,
+    height:0
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var optionList = [
-      "段落1 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-      "段落2 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-      "段落3 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-      "段落4 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-      "段落5 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-      "段落6 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-      "段落7 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-      "段落8 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-      "段落9 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-      "段落10 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-      "段落11 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-      "段落12 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-      "段落13 内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-    ]
-    let that = this;
-    const query = wx.createSelectorQuery();
-        query.select('#test').boundingClientRect(function (res) {
+    
+    const query = wx.createSelectorQuery()
+        query.select(`#myCanvas1`).fields({
+            node: true,
+            size: true
+        }).exec((res) => {
+            let that = this;
+            const canvas = res[0].node;
+            const ctx = canvas.getContext('2d');
+            const dpr = wx.getSystemInfoSync().pixelRatio;
+            canvas.width = res[0].width * dpr;
+            canvas.height = res[0].height * dpr;
+            ctx.scale(dpr, dpr);
+            // ctx.beginPath()
+            // ctx.rect(20,20,200,200)
+            // ctx.rect(100,250,100,100)
+            // ctx.rect(250,100,100,200)
+            // ctx.fillStyle="#999"
+            // ctx.fill()
+            const img = canvas.createImage();
+            img.src = 'https://cdn.shopifycdn.net/s/files/1/0343/0275/4948/files/png_7261d2f1-9f99-4972-8e2f-7a00535a9f34.png?v=1634027745';
+            img.crossOrigin="anonymous";
+            img.onload = () => {
+              canvas.width = img.width;
+               canvas.height = img.height;
+              that.setData({
+                width: canvas.width,
+                height: canvas.height
+              });
+              ctx.drawImage(img,0,0,canvas.width, canvas.height);
+              var imageData = ctx.getImageData(0,0,canvas.width, canvas.height);
+              const { data, width, height } = imageData;
+              let startX = width,
+                  startY = height,
+                  endX = 0,
+                  endY = 0;
+                  for (let col = 0; col < width; col++) {
+                    for (let row = 0; row < height; row++) {
+                      // 网格索引
+                      const pxStartIndex = (row * width + col) * 4;
+            
+                      // 网格的实际像素RGBA
+                      const pxData = {
+                        r: data[pxStartIndex],
+                        g: data[pxStartIndex + 1],
+                        b: data[pxStartIndex + 2],
+                        a: data[pxStartIndex + 3]
+                      };
+            
+                      // 存在色彩：不透明
+                      const colorExist = pxData.a !== 0;
+            
+                      /*
+                      如果当前像素点有色彩
+                      startX坐标取当前col和startX的最小值
+                      endX坐标取当前col和endX的最大值
+                      startY坐标取当前row和startY的最小值
+                      endY坐标取当前row和endY的最大值
+                      */
+                      if (colorExist) {
+                        startX = Math.min(col, startX);
+                        endX = Math.max(col, startX);
+                        startY = Math.min(row, startY);
+                        endY = Math.max(row, endY);
+                      }
+                    }
+                  }
+                  // 右下坐标需要扩展1px,才能完整的截取到图像
+                  endX += 1;
+                  endY += 1;
+                  let padding = 1;
+                  // 加上padding
+                  startX -= padding;
+                  startY -= padding;
+                  endX += padding;
+                  endY += padding;
 
-            that.setData({scrollH: res.height, scrollT: res.top});
+                  // 根据计算的起点终点进行裁剪
+                  const query = wx.createSelectorQuery()
+                  query.select(`#myCanvas2`).fields({
+                      node: true,
+                      size: true
+                  }).exec((res2) => {
+                    const cropCanvas = res2[0].node;
+                    const cropCtx = cropCanvas.getContext('2d');
+                    cropCanvas.width = endX - startX;
+                    cropCanvas.height = endY - startY;
+                    that.setData({
+                      width2: cropCanvas.width ,
+                      height2: cropCanvas.height
+                    });
 
-            console.log(res.top, res.height, res.height/64)
-        }).exec()
+                    cropCtx.drawImage(
+                      img,
+                      startX,
+                      startY,
+                      cropCanvas.width,
+                      cropCanvas.height,
+                      0,
+                      0,
+                      cropCanvas.width,
+                      cropCanvas.height
+                    );
+  
+                  });
+                  
+            };
 
-    that.setData({
-      optionList: optionList,
-    })
+            // ctx.beginPath();
+            //         ctx.strokeStyle="green";
+            //         // ctx.fillStyle = '#fff';
+            //         // ctx.rect(minX,minY,winW,winH)    //绘制图像内容区域
+            //         console.log(minX,minY,winW,winH, '---s---')
+            //         ctx.rect(10,10,50,50)
+            //         // ctx.fillRect(123 * dpr,890 * dpr,454 * dpr,0 * dpr)
+            //         ctx.stroke();
+
+
+        })
+
   },
 
   

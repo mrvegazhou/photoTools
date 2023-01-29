@@ -184,32 +184,42 @@ Component({
         success: resInfo => {
           data.id = itemId++;
           data.url = item.url;
-          data.css.width = resInfo.width; //宽度
-          data.css.height = resInfo.height; //高度
-          var newHeight = resInfo.height, newWidth = resInfo.width;
-          if (data.css.width > maxWidth || data.css.height > maxHeight) { // 原图宽或高大于最大值就执行
-            if (data.css.width / data.css.height > maxWidth / maxHeight) { // 判断比n大值的宽或高作为基数计算
-              newWidth = maxWidth;
-              newHeight = Math.round(maxWidth * (data.css.height / data.css.width));
-            } else {
-              newHeight = maxHeight;
-              newWidth = Math.round(maxHeight * (data.css.width / data.css.height));
+
+          if(op=='add') {
+            data.css.width = resInfo.width; //宽度
+            data.css.height = resInfo.height; //高度
+            var newHeight = resInfo.height, newWidth = resInfo.width;
+            if (data.css.width > maxWidth || data.css.height > maxHeight) { // 原图宽或高大于最大值就执行
+              if (data.css.width / data.css.height > maxWidth / maxHeight) { // 判断比n大值的宽或高作为基数计算
+                newWidth = maxWidth;
+                newHeight = Math.round(maxWidth * (data.css.height / data.css.width));
+              } else {
+                newHeight = maxHeight;
+                newWidth = Math.round(maxHeight * (data.css.width / data.css.height));
+              }
             }
+            data.css.width = newWidth;
+            data.css.height = newHeight;
+            //scale缩放
+            item.scale = 1;
+            data.scale = flag ? item.scale * that.data.syncScale : that.data.syncScale;
+            data.angle = 0;
+          } else {
+            data.css.width = item.css.width;
+            data.css.height = item.css.height;
+            data.scale = item.scale;
+            data.angle = item.angle;
           }
-          data.css.width = newWidth
-          data.css.height = newHeight
+          // 控件缩放
+          data.oScale = 1 / data.scale;
+          
           // 图片中心坐标
-          data.x =  data.css.width / 2;
-          data.y =  data.css.height / 2;
+          data.x = data.css.width / 2;
+          data.y = data.css.height / 2;
           // 定位坐标
           data.css.left = flag ? item.css.left : 0; //left定位
           data.css.top = flag ? item.css.top : 0; //top定位
-          // data.scale = 1; //scale缩放
-          item.scale = 1;
-          data.scale = flag ? item.scale * that.data.syncScale : that.data.syncScale;
-          // data.oScale = 1; //控件缩放
-          data.oScale = 1 / data.scale;
-          data.angle = 0;
+          
           if(typeof item.active==='undefined') {
             data.active = false; //选中状态
           } else {
@@ -218,6 +228,7 @@ Component({
           data.type = 'image';
           data.css.display = 'block';
           data.filterOp = item.filterOp;
+          data.originalImgUrl = item.originalImgUrl ? item.originalImgUrl : item.url;
           if(op=='add') {
             list[list.length] = data;
           } else if(op=='update') {
@@ -318,9 +329,9 @@ Component({
       if(item.css.textStyle=="stroke"){
         data.styles += `color:white;-webkit-text-stroke:1rpx ${item.css.color};`
       }
-      item.scale = 1;
+      item.scale = item.scale ? item.scale : 1;
       data.scale = flag ? item.scale * this.data.syncScale : this.data.syncScale;
-      data.angle = 0;
+      data.angle = item.angle ? item.angle : 0;
       data.active = false;
       data.css.left = flag ? (x - textWidth / 2) : 0;
       data.css.top = flag ? (y - textHeight / 2) : 0;
@@ -490,7 +501,7 @@ Component({
     },
     // 手指触摸结束
     WraptouchEnd() {
-
+      console.log(list[index], '---end----')
     },
     // 手指触摸开始（控件）
     oTouchStart(e) {
@@ -507,11 +518,10 @@ Component({
       list[index].ty = e.touches[0].clientY;
       // 记录移动开始时的角度
       list[index].anglePre = this.countDeg(list[index].x, list[index].y, list[index].tx, list[index].ty)
-      // 获取初始图片半径
-      // list[index].r = this.getDistance(list[index].x, list[index].y, list[index].css.left, list[index].css.top);
+
       //获取图片半径
       if (list[index].type==='image') {
-        list[index].r = this.getDistance(list[index].x, list[index].y, list[index].css.left, list[index].css.top) - 20;//20是右下角移动图片到本图边缘的估计值，因为这个获取半径的方法跟手指的位置有关
+        list[index].r = this.getDistance(list[index].x, list[index].y, list[index].css.left, list[index].css.top);
       } else {
         list[index].r = this.getDistance(list[index].x, list[index].y, list[index].tx, list[index].ty);
         if (list[index].r<150) {
@@ -525,7 +535,8 @@ Component({
       list[index]._tx = e.touches[0].clientX;
       list[index]._ty = e.touches[0].clientY;
       // 计算移动后的点到圆心的距离
-      list[index].disPtoO = this.getDistance(list[index].x, list[index].y, list[index]._tx-10, list[index]._ty-10)
+      list[index].disPtoO = this.getDistance(list[index].x, list[index].y, list[index]._tx, list[index]._ty);
+
       if(this.data.isScale){
         let scale = 1
         if(list[index].disPtoO / list[index].r < SCALE_MIN){
@@ -543,14 +554,15 @@ Component({
       // 计算移动后位置的角度
       list[index].angleNext = this.countDeg(list[index].x, list[index].y, list[index]._tx, list[index]._ty)
       // 计算角度差
-      list[index].new_rotate = list[index].angleNext - list[index].anglePre;
+      let newRotate = list[index].angleNext - list[index].anglePre;
       // 计算叠加的角度差
-      list[index].angle += list[index].new_rotate;
+      list[index].angle += newRotate;
       // 替换当前触摸坐标为触摸开始坐标
       list[index].tx = e.touches[0].clientX;
       list[index].ty = e.touches[0].clientY;
       // 更新移动角度
       list[index].anglePre = this.countDeg(list[index].x, list[index].y, list[index].tx, list[index].ty)
+
       // 渲染图片
       this.setData({
         itemList: list
@@ -735,7 +747,6 @@ Component({
         delete temp[i].disPtoO;
         delete temp[i].lx;
         delete temp[i].ly;
-        delete temp[i].new_rotate;
         delete temp[i].r;
         delete temp[i].tx;
         delete temp[i].ty;
@@ -866,6 +877,10 @@ Component({
           item.css.width = resInfo.width; //宽度
           item.css.height = resInfo.height; //高度
           item.scale = 1;
+          item.angle = 0;
+          item.oScale = 1 / item.scale;
+          item.x = item.css.width / 2;
+          item.y = item.css.height / 2;
           list[index] = item;
           this.setData({itemList: list});
         }

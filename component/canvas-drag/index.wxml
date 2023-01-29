@@ -18,7 +18,6 @@
         <block wx:if="{{item.type==='text'}}">
           <text data-id='{{item.id}}' style='display:{{item.css.display}};white-space:nowrap;font-size:{{item.css.fontSize*item.scale}};{{item.styles}}' bindtap="clickItem" bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'>{{item.text}}</text>
         </block>
-
         <image class="x" src="./icon/x.png" style="{{item.active ? 'display:'+item.css.display : ''}};transform:scale({{item.oScale}});transform-origin:center;" data-id="{{item.id}}" catchtap="deleteItem"></image>
         <image class="o" src="./icon/o.png" style="{{item.active ? 'display:'+item.css.display : ''}};transform:scale({{item.oScale}});transform-origin:center;" data-id="{{item.id}}" bindtouchstart="oTouchStart" bindtouchmove="oTouchMove" bindtouchend="WraptouchEnd"></image>
       </view>

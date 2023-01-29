@@ -19,8 +19,6 @@ let canvasHeight = 696;
 Page({
   canvas: null, // 画布
   ctx: null,
-  originalCanvas: null,
-  originalCtx: null,
   /**
    * 页面的初始数据
    */
@@ -600,7 +598,7 @@ Page({
     this.setData({
       items: items
     });
-    this.closeTxtEdit()
+    this.closePopEdit()
     //清除样式
     this.initTextData();
   },
@@ -653,7 +651,7 @@ Page({
     this.setData({
       'itemText.text': ''
     })
-    this.closeTxtEdit()
+    this.closePopEdit()
     this.initTextData()
   },
   textAreaInput(e){
@@ -814,6 +812,9 @@ Page({
       newItem = this.data.itemImg;
       newItem.css.width = item.css.width;
       newItem.css.height = item.css.height;
+      newItem.css.top = item.css.top;
+      newItem.css.left = item.css.left;
+      newItem.scale = item.scale;
       newItem.originalImgUrl = item.url;
       this.setData({itemImg: newItem});
     }
@@ -859,7 +860,7 @@ Page({
     this.baseGetPhoto(typeName).then((url)=>{
       switch(typeName){
         case 'camera':
-          that.setData({'menu.carema.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':type});
+          that.setData({'menu.carema.showCamera':true, 'menu.menuShow':'', 'menu.secondMenu':type});
           break;
         case 'album':
           that.replaceItem(url);
@@ -900,11 +901,15 @@ Page({
   //滤镜
   filterImg(e) {
     let that = this;
-    let itemImg = this.data.itemImg;
+    let itemImg = CanvasDrag.getItem();
     let originalImgUrl = itemImg.originalImgUrl=='' ? itemImg.url : itemImg.originalImgUrl;
+    itemImg.originalImgUrl = itemImg.url;
     let filter = e.currentTarget.dataset.type;
+    that.setData({'itemImg.filterOp': filter});
 
     if(filter=='原图') {
+      itemImg.url = originalImgUrl;
+      CanvasDrag.replaceItem(itemImg);
       that.setData({'itemImg.url': originalImgUrl});
       return;
     }
@@ -916,12 +921,6 @@ Page({
       return;
     }
 
-    if(!that.originalCanvas) {
-      // 创建一个离屏canvas 缓存原图
-      const [originalCanvas, originalCtx] = util.createCanvasContext(canvasWidth, canvasHeight);
-      that.originalCanvas = originalCanvas;
-      that.originalCtx = originalCtx;
-    }
     wx.getImageInfo({
       src: originalImgUrl,
       success: resInfo => {
@@ -933,23 +932,20 @@ Page({
         });
         that.canvas.width = canvasWidth;
         that.canvas.height = canvasHeight;
-        const image = util.createImage();
+        const image = that.canvas.createImage();
         image.src = originalImgUrl;
         image.onload = () => {
-          that.originalCtx.fillRect(0, 0, canvasWidth, canvasHeight);
-          that.originalCtx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
           that.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
           that.ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
-          that._handleFilter(that, canvasWidth, canvasHeight, filter);
+          that._handleFilter(itemImg, that, canvasWidth, canvasHeight, filter);
         };
       }
     })
     
   },
 
-  _handleFilter(that, canvasWidth, canvasHeight, filter) {
-    const imageData = that.originalCtx.getImageData(0, 0, canvasWidth, canvasHeight);
-    console.log(imageData, '---d---');
+  _handleFilter(itemImg, that, canvasWidth, canvasHeight, filter) {
+    const imageData = that.ctx.getImageData(0, 0, canvasWidth, canvasHeight);
     let alloyImage = new AlloyImage(imageData);
     wx.showLoading({
       title: '处理中',
@@ -967,18 +963,20 @@ Page({
       height: canvasHeight,
       destWidth: canvasWidth,
       destHeight: canvasHeight,
-    }, that).then(res => {
-      that.setData({
-        'itemImg.url': res.tempFilePath,
-      });
-      // 缓存
-      that.data.handleResults[filter+"-"+that.data.itemImg.id] = res.tempFilePath;
-      let itemImg = that.data.itemImg;
-      itemImg.url = res.tempFilePath;
-      that.setData({
-        items: [itemImg]
-      });
-    });
+      fail: err => {
+      },
+      success: function (res) {
+        // console.log("res: " + JSON.stringify(res), res);
+        that.setData({
+          'itemImg.url': res.tempFilePath,
+        });
+        // 缓存
+        that.data.handleResults[filter+"-"+that.data.itemImg.id] = res.tempFilePath;
+        itemImg.url = res.tempFilePath;
+        CanvasDrag.replaceItem(itemImg);
+      }
+    }, that);
+    
   },
 
   //-----------------------------------点击图片操作 end------------------------------------------------//

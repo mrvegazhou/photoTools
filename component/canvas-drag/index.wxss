@@ -40,31 +40,27 @@
 }
 .touchActive .x {
   display: block;
-  width: 45rpx;
-  height: 45rpx;
+  width: 44rpx;
+  height: 44rpx;
 }
 .touchActive .o {
   display: block;
-  width: 45rpx;
-  height: 45rpx;
+  width: 44rpx;
+  height: 44rpx;
 }
 /* 图片控件 */
 .x {
   position: absolute;
-  top: -25rpx;
-  left: -25rpx;
+  top: -22rpx;
+  left: -22rpx;
   z-index: 500;
   display: none;
-  width: 50rpx;
-  height: 50rpx;
   overflow: hidden;
 }
 .o {
   position: absolute;
-  bottom: -25rpx;
-  right: -25rpx;
-  width: 50rpx;
-  height: 50rpx;
+  bottom: -22rpx;
+  right: -22rpx;
   text-align: center;
   display: none;
   overflow: hidden;
