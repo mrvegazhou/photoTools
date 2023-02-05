@@ -13,7 +13,7 @@
         <block wx:if="{{item.type==='image'}}">
           <view class="imgXY" style="display:{{item.active?'block':'none'}};width:32rpx;height:12rpx;top:{{item.css.height-3}}px;left:{{item.css.width/2-8}}px;" catchtouchstart="dragYStart" catchtouchmove="dragYMove"></view>
           <view class="imgXY" style="display:{{item.active?'block':'none'}};width:12rpx;height:32rpx;left:{{item.css.width-3}}px;top:{{item.css.height/2-8}}px;" catchtouchstart="dragXStart" catchtouchmove="dragXMove"></view>
-          <image src='{{item.url}}' data-id='{{item.id}}' style='display:{{item.css.display}};width:{{item.css.width}}px;height:{{item.css.height}}px;' bindtap="clickItem" bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'></image>
+          <image id="img-{{item.id}}" src='{{item.url}}' data-id='{{item.id}}' style='display:{{item.css.display}};width:{{item.css.width}}px;height:{{item.css.height}}px;' bindtap="clickItem" bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'></image>
         </block>
         <block wx:if="{{item.type==='text'}}">
           <text data-id='{{item.id}}' style='display:{{item.css.display}};white-space:nowrap;font-size:{{item.css.fontSize*item.scale}};{{item.styles}}' bindtap="clickItem" bindtouchstart='WraptouchStart' bindtouchmove='WraptouchMove' bindtouchend='WraptouchEnd'>{{item.text}}</text>

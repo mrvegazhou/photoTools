@@ -19,6 +19,7 @@
   margin: auto;
 }
 .touchWrap {
+  position: absolute;
   transform-origin: center;
   position: absolute;
   z-index: 100;

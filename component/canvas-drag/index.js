@@ -58,6 +58,8 @@ Component({
     bgCenter: false,
     isScale: true,  // 是否支持缩放
     syncScale: 1,   // 同步缩放比例（同步场地与车辆图片的缩放）
+    tmpLeft:0,
+    tmpTop:0
   },
 
   lifetimes: {
@@ -446,12 +448,14 @@ Component({
       list[index]._lx = e.touches[0].clientX;
       list[index]._ly = e.touches[0].clientY;
       // 计算图片位置及圆心坐标
-      list[index].css.left += list[index]._lx - list[index].lx;
-      list[index].css.top += list[index]._ly - list[index].ly;
-      list[index].x += list[index]._lx - list[index].lx;
-      list[index].y += list[index]._ly - list[index].ly;
+      let xDis = list[index]._lx - list[index].lx;
+      let yDis = list[index]._ly - list[index].ly;
+      list[index].css.left += xDis;
+      list[index].css.top += yDis;
+      list[index].x += xDis;
+      list[index].y += yDis;
       // 边界移动阻止
-      this.boundaryStop(list[index]._lx - list[index].lx, list[index]._ly - list[index].ly)
+      this.boundaryStop(xDis, yDis)
       // 替换当前触摸坐标为触摸开始坐标
       list[index].lx = e.touches[0].clientX;
       list[index].ly = e.touches[0].clientY;
@@ -501,7 +505,6 @@ Component({
     },
     // 手指触摸结束
     WraptouchEnd() {
-      console.log(list[index], '---end----')
     },
     // 手指触摸开始（控件）
     oTouchStart(e) {
@@ -536,7 +539,6 @@ Component({
       list[index]._ty = e.touches[0].clientY;
       // 计算移动后的点到圆心的距离
       list[index].disPtoO = this.getDistance(list[index].x, list[index].y, list[index]._tx, list[index]._ty);
-
       if(this.data.isScale){
         let scale = 1
         if(list[index].disPtoO / list[index].r < SCALE_MIN){
@@ -581,7 +583,6 @@ Component({
       var ox = pointer_x - cx;
       var oy = pointer_y - cy;
       var to = Math.abs(ox / oy);
-      // console.log(to)
       var angle = Math.atan(to) / (2 * Math.PI) * 360;
       if (ox < 0 && oy < 0){ //相对在左上角，第4象限，按照正常坐标系来
         angle = -angle;
@@ -685,8 +686,8 @@ Component({
     },
 
     //获取画板模板
-    setPaintPallette(){
-      let tempItems = this.filterItemsAttr();
+    async setPaintPallette(){
+      let tempItems = await this.filterItemsAttr();
       let bg = this.data.bgImg!='' ? this.data.bgImg : (this.data.bgColor!='' ? this.data.bgColor : '');
       let template = {
         width: this.data.canvasWidth+"px",
@@ -714,10 +715,19 @@ Component({
       wx.hideLoading();
     },
 
+    getRectInfo(id) {
+      return new Promise((resolve, reject)=>{
+        wx.createSelectorQuery().in(this).select(id).boundingClientRect(function(rect){
+          return resolve(rect);
+        }).exec()
+      });
+    },
+
     // 清理元素无用属性
-    filterItemsAttr(){
+    async filterItemsAttr(){
       let temp = JSON.parse(JSON.stringify(this.data.itemList));
       let newTemp = []
+      let that = this;
       for (let i = 0; i < temp.length; i++) {
 
         delete temp[i].active;
@@ -726,20 +736,26 @@ Component({
         let scale = temp[i].scale;
         let width = temp[i].css.width*scale;
         let height = temp[i].css.height*scale;
+
+        await this.getRectInfo('#img-'+temp[i].id).then(rect => {
+          let rectT = rect.top;
+          let rectL = rect.left;
+          let rectW = rect.width;
+          let rectH = rect.height;
+          let tmpLeft = rectL+(rectW - width)/2;
+          let tmpTop = rectT+(rectH - height)/2;
+          temp[i].css.top = Number(tmpTop.toFixed(2))+"px";
+          temp[i].css.left = Number(tmpLeft.toFixed(2))+"px";
+        });
+
         temp[i].css.width = Number(width.toFixed(2)) + "px";
         temp[i].css.height = Number(height.toFixed(2)) + "px";
-
-        let top = temp[i].css.top;
-        let left = temp[i].css.left;
-        
-        temp[i].css.top = top==0 ? "0" : Number(top.toFixed(2))+"px";
-        temp[i].css.left = left==0 ? "0" : Number(left.toFixed(2))+"px";
-
+       
         delete temp[i].scale;
         delete temp[i].x;
         delete temp[i].y;
 
-        temp[i].css.rotate = temp[i].angle;
+        temp[i].css.rotate =  Math.round(temp[i].angle);
 
         delete temp[i].angle;
         delete temp[i].angleNext;
@@ -871,11 +887,40 @@ Component({
     //恢复尺寸
     recoverSize() {
       let item = list[index];
+      let that = this;
       wx.getImageInfo({
         src: item.url,
-        success: resInfo => {
+        success: async resInfo => {
+
+          await that.getRectInfo('#img-'+item.id).then(rect => {
+            let rectTop = rect.top;
+            let rectLeft = rect.left;
+            if(rectTop<0) {
+              rectTop = 10;
+            }
+            if(rectLeft<0) {
+              rectLeft = 10;
+            }
+            item.css.top = rectTop;
+            item.css.left = rectLeft;
+          });
+
           item.css.width = resInfo.width; //宽度
           item.css.height = resInfo.height; //高度
+          
+          var newHeight = resInfo.height, newWidth = resInfo.width;
+          if (item.css.width > maxWidth || item.css.height > maxHeight) { // 原图宽或高大于最大值就执行
+            if (item.css.width / item.css.height > maxWidth / maxHeight) { // 判断比n大值的宽或高作为基数计算
+              newWidth = maxWidth;
+              newHeight = Math.round(maxWidth * (item.css.height / item.css.width));
+            } else {
+              newHeight = maxHeight;
+              newWidth = Math.round(maxHeight * (item.css.width / item.css.height));
+            }
+          }
+          item.css.width = newWidth;
+          item.css.height = newHeight;
+
           item.scale = 1;
           item.angle = 0;
           item.oScale = 1 / item.scale;
