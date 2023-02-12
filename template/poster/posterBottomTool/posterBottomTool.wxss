@@ -1,3 +1,9 @@
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent;
+}
 /* 涂鸦窗口  */
 .toolbar-bottom {
   white-space: nowrap;
@@ -32,7 +38,6 @@
   font-size: var(--primary-icon-size);
   width: 50rpx;
   height: 50rpx;
-  padding-bottom: 35rpx;
 }
 .edit-pop .tab-wapper{
   display: flex;
@@ -360,40 +365,15 @@
   z-index: 99993;
 }
 .edit-cropper-foot{
-  color: #f4f4f4;
-  position: absolute;
-  width: 100%;
-  bottom: 150rpx;
-  display: flex;
-  z-index: 10;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  height: 120rpx;
+  border-top: none;
+  background-color: rgba(14, 13, 13, .0) !important;
+  bottom: var(--primary-bottom-height) !important;
+  padding-left: 20rpx;
+  padding-right: 20rpx;
 }
 .edit-cropper-foot .cropper-op{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  margin: 0 15rpx 0 15rpx;
-}
-.edit-cropper-foot view{
-  font-size: 30rpx;
-}
-.edit-cropper-foot .cropper-op .cropper-op-mid{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 0 20rpx 0 20rpx;
-}
-.edit-cropper-foot .cropper-op .cropper-op-mid text{
-  margin: 10rpx 0 10rpx 0;
-}
-.edit-cropper-foot text{
-  margin: 0 15rpx 0 15rpx;
-  font-size: 40rpx;
+  width: 70rpx !important;
+  color: var(--primary-white) !important;
+  font-size: 36rpx !important;
 }
 /* 裁剪样式 end */

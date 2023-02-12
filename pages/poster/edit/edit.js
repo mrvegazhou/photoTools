@@ -51,9 +51,11 @@ Page({
         height: 250, //高度
         max_width: 300,
         max_height: 300,
-        disable_rotate: true, //是否禁用旋转
+        img_width: 0,
+        img_height: 0,
+        disable_rotate: false, //是否禁用旋转
         disable_ratio: false, //锁定比例
-        limit_move: true, //是否限制移动
+        limit_move: false, //是否限制移动
       },
       //字体菜单下拉框
       fontFamilySelect: families,
@@ -73,9 +75,9 @@ Page({
       },
 
       txtPopHeight: '470rpx', //文字编辑层高度
-      isBg: 'bg.img',
+      isBg: 'bg.img', //背景选择
       editMenu: '', //编辑item的菜单选项
-
+      addImg: 'img.img', //添加图片选择
       //滤镜展示菜单
       filterTitles:[
         '原图', '美肤', '素描', '自然增强', '紫调', '柔焦', '黑白', 'lomo', '暖秋', '木雕'
@@ -140,7 +142,7 @@ Page({
 
     canvasWidth,
     canvasHeight,
-    handleResults:{}
+    handleResults:{},
   },
 
   /**
@@ -163,7 +165,7 @@ Page({
       this.canvas.width = canvasWidth
       this.canvas.height = canvasHeight
       this.ctx = this.canvas.getContext("2d")
-    }).exec()
+    }).exec();
   },
 
   onHandelCancel() {
@@ -259,16 +261,13 @@ Page({
         menu.secondMenu = 'txt.edit'
         menu.txtPopHeight = '470rpx'
         break;
-      case 'cropper':
-        this.chooseImage()
-        break;
       case 'img':
         var left = e.target.offsetLeft
         menu.menuShowLeft = left+5;
       case 'sys':
         break;
       case 'doodle':
-        // MyDoodleCpt.initDoodle();
+        menu.mainPageShow = 'doodle';
       case 'layer':
         this.getSortList();
       case 'sysScale':
@@ -345,6 +344,8 @@ Page({
             resolve(tempFilePaths[0].path);
           }
         })
+      } else if(type=='cancel') {
+        resolve();
       }
     });
   },
@@ -369,6 +370,10 @@ Page({
         case 'talk':
           that.addItemImg(url);
           that.setData({'menu.menuShow': '', 'menu.secondMenu':''});
+          break;
+        case 'cancel':
+          setTimeout(()=>{that.setData({'menu.secondMenu':''});}, 1000);
+          that.setData({'menu.menuShow': ''});
           break;
       }
     });
@@ -418,6 +423,8 @@ Page({
     } else if(typeName=='bg') {
       //更换画板背景图操作
       this.setData({'menu.isBg': type});
+    } else if(typeName=='img') {
+      this.setData({'menu.addImg': type});
     }
   },
   //背景选照片
@@ -495,17 +502,34 @@ Page({
     ImageCropper.setAngle(-90);
   },
   cropImg() {
-    ImageCropper.getImg((res)=>{
-      
+    wx.showToast({
+      title: '截图成功',
+    })
+    let that = this;
+    ImageCropper.getImg((newUrl)=>{
+      that.replaceItem(newUrl);
+      that.setData({'menu.menuShow': ''});
     });
-    
   },
   cropRecover() {
-    const src = this.data.menu.cropper.src;
-    ImageCropper.pushImg(src);
+    ImageCropper.imgReset();
+  },
+  clickcut(e) {
+    //点击裁剪框阅览图片
+    wx.previewImage({
+        current: e.detail.url, // 当前显示图片的http链接
+        urls: [e.detail.url] // 需要预览的图片http链接列表
+    })
   },
 
-  //-----------------------------------涂鸦动作----------------------------------------------------//
+  //-----------------------------------涂鸦动作 begin---------------------------------------------------//
+  goBackFromDoodle() {
+    this.setData({
+      'menu.menuShow': '',
+      'menu.mainPageShow': 'mainPage' 
+    });
+  },
+  //-----------------------------------涂鸦动作 end---------------------------------------------------//
 
   //-----------------------------------照相 begin-------------------------------------------------//
   //相机前后镜头转换
@@ -890,6 +914,14 @@ Page({
         break;
       case "recoverSize":
         CanvasDrag.recoverSize();
+      case "cropper":
+        let itemImg = CanvasDrag.getItem();
+        this.setData({
+          'menu.cropper.src': itemImg.url,
+          'menu.cropper.img_width': itemImg.css.width,
+          'menu.cropper.width': itemImg.css.height,
+          'menu.cropper.height': itemImg.css.height,
+        });
       default:
         break;
     }

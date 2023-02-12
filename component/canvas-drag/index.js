@@ -175,7 +175,19 @@ Component({
       });
       return height;
     },
-
+    _setImgSize(resInfo, width, height) {
+      var newHeight = resInfo.height, newWidth = resInfo.width;
+      if (width > maxWidth || height > maxHeight) { // 原图宽或高大于最大值就执行
+        if (width / height > maxWidth / maxHeight) { // 判断比n大值的宽或高作为基数计算
+          newWidth = maxWidth;
+          newHeight = Math.round(maxWidth * (height / width));
+        } else {
+          newHeight = maxHeight;
+          newWidth = Math.round(maxHeight * (width / height));
+        }
+      }
+      return [newWidth, newHeight];
+    },
     //处理上传的图片
     _setImgItem(item, op='add') {
       let that = this;
@@ -188,27 +200,23 @@ Component({
           data.url = item.url;
 
           if(op=='add') {
-            data.css.width = resInfo.width; //宽度
-            data.css.height = resInfo.height; //高度
-            var newHeight = resInfo.height, newWidth = resInfo.width;
-            if (data.css.width > maxWidth || data.css.height > maxHeight) { // 原图宽或高大于最大值就执行
-              if (data.css.width / data.css.height > maxWidth / maxHeight) { // 判断比n大值的宽或高作为基数计算
-                newWidth = maxWidth;
-                newHeight = Math.round(maxWidth * (data.css.height / data.css.width));
-              } else {
-                newHeight = maxHeight;
-                newWidth = Math.round(maxHeight * (data.css.width / data.css.height));
-              }
-            }
-            data.css.width = newWidth;
-            data.css.height = newHeight;
+            let size = that._setImgSize(resInfo, resInfo.width, resInfo.height);
+            data.css.width = size[0];
+            data.css.height = size[1];
             //scale缩放
             item.scale = 1;
             data.scale = flag ? item.scale * that.data.syncScale : that.data.syncScale;
             data.angle = 0;
           } else {
-            data.css.width = item.css.width;
-            data.css.height = item.css.height;
+            if(item.css.width && item.css.height) {
+              data.css.width = item.css.width;
+              data.css.height = item.css.height;
+            } else {
+              let size = that._setImgSize(resInfo, resInfo.width, resInfo.height);
+              data.css.width = size[0];
+              data.css.height = size[1];
+            }
+            
             data.scale = item.scale;
             data.angle = item.angle;
           }

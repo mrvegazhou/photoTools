@@ -11,4 +11,5 @@ page{
     --primary-icon-size: 50rpx;
     --primary-icon-size-2: 36rpx;
     --primary-box-shadow: 5px 5px 5px #eee;
+    --primary-bottom-height: 120rpx;
 }

@@ -7,7 +7,6 @@ Component({
             type: String,
             value: '',
             observer(src) {
-              console.log(src, '-00--')
               this.pushImg(src);
             }
         },

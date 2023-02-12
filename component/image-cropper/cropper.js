@@ -41,5 +41,9 @@ ImageCropper.pushImg = (src) => {
   } else {
   return ImageCropper().pushImg(src);
   }
-}
+};
+//重置
+ImageCropper.imgReset = () => {
+  ImageCropper.imgReset();
+};
 export default ImageCropper;

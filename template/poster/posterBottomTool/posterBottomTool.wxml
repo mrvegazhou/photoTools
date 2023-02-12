@@ -13,10 +13,6 @@
       <text class="icon-item iconfont icon-wenzi "></text>
       <text class="text">加字</text>
     </view>
-    <view bindtap='showSecondMenu' data-type="cropper" class="item-btn {{menu.menuShow=='cropper'?'menu-select':''}}">
-      <text class="icon-item iconfont icon-caijian"></text>
-      <text class="text">裁剪</text>
-    </view>
     <view bindtap='showSecondMenu' data-type="doodle" class="item-btn {{menu.menuShow=='doodle'?'menu-select':''}}">
       <text class="icon-item iconfont icon-huabi"></text>
       <text class="text">涂鸦</text>
@@ -138,7 +134,7 @@
       <view class="tab-wapper">
         <view class="tab-item {{menu.isBg=='bg.img'?'select':''}}" bindtap="changeTab" data-type="bg.img">背景图片</view>
         <view class="tab-item {{menu.isBg=='bg.color'?'select':''}}" bindtap="changeTab" data-type="bg.color">背景颜色</view>
-        <view class="tab-item {{menu.isBg=='bg.gallery'?'select':''}}" bindtap="changeTab" data-type="bg.netImgs">图库</view>
+        <view class="tab-item {{menu.isBg=='bg.netImgs'?'select':''}}" bindtap="changeTab" data-type="bg.netImgs">网络图库</view>
       </view>
       <view class="text-background" wx:if="{{menu.isBg=='bg.color'}}">
         <view style="width:400rpx;margin:auto;">
@@ -172,30 +168,37 @@
   </view>
 
   <!--加图二级菜单-->
-  <view class="tool-children" style="display: {{menu.menuShow=='img' ? 'block' : 'none'}};left:{{menu.menuShowLeft}}rpx;">
-    <view class="section-title">
-      选择图片:
-    </view>
-    <!--菜单-->
-    <view class="second-menu">
-      <view bindtap="getPhotos" data-type="img.album" class="{{menu.secondMenu=='img.album' ? 'select' : ''}}">
-        <text class="iconfont icon-xiangcetupian"></text>
-        <text class="tool_text">相册</text>
+  <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='img'}}">
+    <view class="popbg" bindtap="closePopEdit" data-type="txt"></view>
+    <view class="popup" style="height:55vh;">
+      <view class="tab-wapper">
+        <view class="tab-item {{menu.addImg=='img.img'?'select':''}}" bindtap="changeTab" data-type="img.img">本地图片</view>
+        <view class="tab-item {{menu.addImg=='img.netImgs'?'select':''}}" bindtap="changeTab" data-type="img.netImgs">网络图库</view>
       </view>
-      <view bindtap="getPhotos" data-type="img.camera" class="{{menu.secondMenu=='img.camera' ? 'select' : ''}}">
-        <text class="iconfont icon-zhaoxiangji"></text>
-        <text class="tool_text">拍照</text>
+      <view class="text-background" wx:if="{{menu.addImg=='img.netImgs'}}">
+        尽情期待
       </view>
-      <view bindtap="getPhotos" data-type="img.talk" class="{{menu.secondMenu=='img.talk' ? 'select' : ''}}">
-        <text class="iconfont icon-web-icon-"></text>
-        <text class="tool_text">聊天</text>
-      </view>
-      <view bindtap="getPhotos" data-type="img.gallery" class="{{menu.secondMenu=='img.gallery' ? 'select' : ''}}">
-        <text class="iconfont icon-tuku"></text>
-        <text class="tool_text">图库</text>
+      <view class='text-background' style="margin:20rpx 0 0 calc(100%/3);" wx:elif="{{menu.addImg=='img.img'}}">
+        <view class="item-menu {{menu.secondMenu=='img.album' ? 'select' : ''}}" bindtap="getPhotos" data-type="img.album">
+          <text class="iconfont icon-xiangcetupian"></text>
+          <text class="txt">相册</text>
+        </view>
+        <view class="item-menu {{menu.secondMenu=='img.camera' ? 'select' : ''}}" bindtap="getPhotos" data-type="img.camera">
+          <text class="iconfont icon-zhaoxiangji"></text>
+          <text class="txt">拍照</text>
+        </view>
+        <view class="item-menu {{menu.secondMenu=='img.talk' ? 'select' : ''}}" bindtap="getPhotos" data-type="img.talk">
+          <text class="iconfont icon-web-icon-"></text>
+          <text class="txt">聊天记录</text>
+        </view>
+        <view class="item-menu {{menu.secondMenu=='img.cancel' ? 'select' : ''}}" bindtap="getPhotos" data-type="img.cancel">
+          <text class="iconfont icon-quxiao1"></text>
+          <text class="txt">取消</text>
+        </view>
       </view>
     </view>
   </view>
+
   <!--文字编辑层-->
   <view class="text-edit-pop" wx:if="{{menu.menuShow=='txt'}}">
     <view class="popbg" bindtap="closePopEdit"></view>
@@ -315,24 +318,20 @@
   </view>
   <!-- 裁剪工具 -->>
   <view class="img-edit-cropper" wx:if="{{menu.menuShow=='cropper'}}">
-    <image-cropper id="image-cropper" bindload="cropperload" bindimageload="loadimage" bindtapcut="clickcut" width="{{menu.cropper.width}}" height="{{menu.cropper.height}}" imgSrc="{{menu.cropper.src}}" angle="{{menu.cropper.angle}}" >
+    <image-cropper id="image-cropper" imgSrc="{{menu.cropper.src}}" img_width="{{menu.cropper.img_width}}" img_height="{{menu.cropper.img_height}}" width="{{menu.cropper.width}}" height="{{menu.cropper.height}}" imgSrc="{{menu.cropper.src}}" angle="{{menu.cropper.angle}}" bindtapcut="clickcut">
     </image-cropper>
-    <view class="edit-cropper-foot">
-      <view bindtap="cropImg">截图</view>
-      <view class="cropper-op">
-        <text bindtap='cropLeft' class="iconfont icon-xiangzuosanjiaoxing"></text>
-        <view class="cropper-op-mid">
-          <text bindtap='cropTop' class="iconfont icon-xiangshangsanjiaoxing"></text>
-          <text bindtap='cropBottom' class="iconfont icon-xiangxiasanjiaoxing"></text>
-        </view>
-        <text bindtap='cropLeft' class="iconfont icon-xiangyousanjiaoxing"></text>
-      </view>
-      <text bindtap='cropRotateRight' class="iconfont icon-xuanzhuan-2"></text>
-      <text bindtap="cropRotateLeft" class="iconfont icon-xuanzhuan-1"></text>
-      <text bindtap='cropEnlarge' class="iconfont icon-fangda"></text>
-      <text bindtap='cropNarrow' class="iconfont icon-suoxiao"></text>
-      <view style="margin-left:25rpx;" bindtap="cropRecover">恢复</view>
-    </view>
+    <scroll-view scroll-x="true" class="toolbar-bottom edit-cropper-foot">
+      <text class="item-btn cropper-op text" bindtap="cropImg" style="font-size:28rpx !important;">截图</text>
+      <text class="item-btn cropper-op text icon-item iconfont icon-xiangzuosanjiaoxing" bindtap='cropLeft'></text>
+      <text class="item-btn cropper-op text icon-item iconfont icon-xiangshangsanjiaoxing" bindtap='cropTop'></text>
+      <text class="item-btn cropper-op text icon-item iconfont icon-xiangxiasanjiaoxing" bindtap='cropBottom'></text>
+      <text class="item-btn cropper-op text icon-item iconfont icon-xiangyousanjiaoxing" bindtap='cropLeft'></text>
+      <text class="item-btn cropper-op text icon-item iconfont icon-xuanzhuan-2" bindtap='cropRotateRight'></text>
+      <text class="item-btn cropper-op text icon-item iconfont icon-xuanzhuan-1" bindtap="cropRotateLeft"></text>
+      <text class="item-btn cropper-op text icon-item iconfont icon-fangda" bindtap='cropEnlarge'></text>
+      <text class="item-btn cropper-op text icon-item iconfont icon-suoxiao" bindtap='cropNarrow'></text>
+      <text class="item-btn cropper-op text" bindtap="cropRecover" style="font-size:28rpx !important;">恢复</text>
+    </scroll-view>
   </view>
   <!--图层编辑层-->
   <view class="layer-float" wx:if="{{menu.menuShow=='layer'}}" style="{{optSortList.length>4 ? 'height:500rpx;' : '400rpx;'}}">
@@ -341,7 +340,7 @@
   </view>
   <!--涂鸦编辑层-->
   <view wx:if="{{menu.menuShow=='doodle'}}">
-    <doodle id="myDoodleCpt"></doodle>
+    <doodle id="myDoodleCpt" bind:goBack="goBackFromDoodle"></doodle>
   </view>
   <!--二级菜单照相功能-->
   <view class="popbg" wx:if="{{menu.carema.showCamera}}" style="z-index: 99999;background: rgba(0, 0, 0, 0.9);">

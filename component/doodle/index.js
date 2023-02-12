@@ -55,7 +55,9 @@ Component({
     radius: 50,
 
     isEraser: false, //是否是橡皮擦
-    canvasAlpha: 1 //画布透明度
+    canvasAlpha: 1,  //画布透明度
+
+    detectBorder: true, //检测边框
   },
 
   lifetimes: {
@@ -78,7 +80,7 @@ Component({
         success: (res) => {
           this.setData({
             windowWidth: res.windowWidth,
-            windowHeight: res.windowHeight - that.data.navHeight*2
+            windowHeight: res.windowHeight - that.data.navHeight
           });
         }
       })
@@ -115,6 +117,8 @@ Component({
           this.setDrawCircle()
           break;
         case "brush":
+          this.changeDataStatus();
+          this.setData({ isPen: true })
           // 默认笔刷是 星星
           let type = 'star';
           this.setBrush(type)
@@ -122,9 +126,11 @@ Component({
         case "colorPicker":
           this.changeDataStatus({ isColorPicker: !this.data.isColorPicker })
           break;
+        case "back":
+          this.triggerEvent('goBack', {});
+          break;
         default:
           break;
-
       }
       this.setData({showTool: true})
       if (type != this.data.name) {
@@ -147,7 +153,6 @@ Component({
       this.context.save();
       this.saveCanvas().then(()=>{
         this.setData({ canvasHidden: true})
-        console.log(this.data.canvasHidden)
       })
     },
     //点击canvas图片
@@ -476,6 +481,11 @@ Component({
     cancelClear(){
       this.changeDataStatus()
       this.setData({showTool: false, name:'', canvasHidden: false})
+    },
+
+    //自动检测画笔边框
+    checkDetectBorder() {
+      this.setData({ 'detectBorder': !this.data.detectBorder });
     },
   },
 });

@@ -12,6 +12,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.icon-fanhui:before {
+  content: "\e610";
+}
 
 .icon-touming:before {
   content: "\e607";
@@ -237,6 +240,7 @@ page{
   --primary-color: #69a794; /*梧枝绿*/
   --primary-text-color: #333;
   --primary-select-bg: #aec4b7; /* #aec4b7 淡灰绿*/
+  --primary-dark-gray-color: #5e616d;
 }
 /* 涂鸦样式 begin */
 .doodle-edit-pop{
@@ -255,32 +259,34 @@ page{
   width: 100%;
   height: 100%;
 }
-.doodle-paint{
-  background: #ffffff;
-}
+
 .doodle-board text{
   font-size: 35rpx;
-  color: #f4f4f4;
+  /* color: #f4f4f4; */
 }
 .doodle-tools{
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #ffffff;
   white-space: nowrap;
   width: 100%;
   text-align: center;
+  border-top: 1rpx solid var(--primary-dark-gray-color);
 }
 .doodle-tools .doodle-icon {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content:center;
-  width: 100rpx;
+  color: var(--primary-dark-gray-color);
+  margin-right: 12rpx;
+  width: 101rpx;
 }
 .doodle-tools .icon-item{
   width: 50rpx;
   height: 50rpx;
+  font-size: 50rpx;
 }
 .doodle-icon .txt{
-  font-size: 22rpx;
+  font-size: 26rpx;
 }
 .doodle-tool-children{
   position:absolute;
