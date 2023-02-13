@@ -71,6 +71,7 @@ Component({
           items[i].styles = styles;
         }
       }
+      items.sort(this.sortBy('id'))
       this.setData({
         optionList: items
       });
@@ -78,6 +79,14 @@ Component({
   },
 
   methods: {
+
+    sortBy(property){
+      return function(value1,value2){
+          let a=value1[property]
+          let b=value2[property]
+          return a < b ? 1:a > b? -1 : 0
+      }
+    },
 
     dragStart: function (event) {
       var startIndex = event.currentTarget.dataset.index;
@@ -160,22 +169,28 @@ Component({
       });
       let optionList = this.data.optionList;
       //id排序
-      let len =  optionList.length;
-      for(var i = 0; i < len; i++){
+      let len = optionList.length;
+      for(var i = 0; i < optionList.length; i++){
         optionList[i].id = len;
         len--;
       }
-      this.triggerEvent('flushItemSort', {optionList:optionList});
+      this.triggerEvent('flushItemSort', {optionList: optionList});
+      this.setData({optionList: optionList});
     },
 
     hideItem: function(e) {
-      let index = e.currentTarget.dataset.index;
+      let id = e.currentTarget.dataset.id;
       let optionList = this.data.optionList;
-      optionList[index].css.display = optionList[index].css.display=='block' ? 'none' : 'block';
+      let arr = JSON.parse(JSON.stringify( optionList ));
+      for(var i = 0; i < arr.length; i++) {
+        if(arr[i].id==id) {
+          arr[i].css.display = arr[i].css.display=='block' ? 'none' : 'block';
+          this.triggerEvent('hideItem', {id: id});
+        }
+      }
       this.setData({
-        optionList: optionList
+        optionList: arr
       });
-      this.triggerEvent('hideItem', {index: index});
     },
 
     //向page返回optionList

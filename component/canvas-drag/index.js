@@ -676,15 +676,17 @@ Component({
     },
 
     //隐藏item
-    hideItem(index) {
-      for (let i = 0; i < list.length; i++) {
-        if(i==index){
-          list[index].css.display = list[index].css.display=='block' ? 'none' : 'block';
-          break
+    hideItem(id) {
+      let arr = JSON.parse(JSON.stringify( list ));
+      for (let i = 0; i < arr.length; i++) {
+        if(arr[i].id==id) {
+          arr[i].css.display = arr[i].css.display=='block' ? 'none' : 'block';
+          break;
         }
       }
+      list = arr;
       this.setData({
-        itemList: list
+        itemList: arr
       })
     },
 

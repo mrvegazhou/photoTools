@@ -34,7 +34,7 @@
   <scroll-view scroll-y='{{pageInfo.scrollY}}' style='height: {{scrollHeight}}px;'>
     <block wx:for='{{optionList}}' wx:key="index">
       <view class='row list-row {{pageInfo.readyPlaceIndex == index ? "ready-place" : ""}}' style='height:{{pageInfo.rowHeight}}px;'>
-        <view class="col1" bindtap="hideItem" data-index='{{index}}'>
+        <view class="col1" bindtap="hideItem" data-id='{{item.id}}'>
           <text wx:if="{{item.css.display=='block'}}" class="icon-item iconfont icon-xianshi"></text>
           <text wx:else class="icon-item iconfont icon-guanbixianshi"></text>
         </view>
@@ -43,7 +43,7 @@
             <text style='{{item.styles}}'>{{item.text}}</text>
           </block>
           <block wx:if="{{item.type==='image'}}">
-            <image style="width: 30rpx;" src="{{item.url}}" mode="aspectFit"></image>
+            <image style="width: 40rpx;" src="{{item.url}}" mode="aspectFit"></image>
           </block>
         </view>
         <view class="col3" data-index='{{index}}' bindtouchstart='dragStart' bindtouchmove='dragMove' bindtouchend='dragEnd'>

@@ -809,9 +809,9 @@ Page({
 
   //-----------------------------------图层管理 start---------------------------------------------------//
   dragSortListHideItem(event) {
-    if(typeof(event.detail.index) == "undefined") return;
+    if(typeof(event.detail.id) == "undefined") return;
     // 调用画板组件的隐藏item方法
-    CanvasDrag.hideItem(event.detail.index);
+    CanvasDrag.hideItem(event.detail.id);
   },
   //item排序
   getSortList(){

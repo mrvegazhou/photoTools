@@ -451,23 +451,27 @@ Component({
         title: '生成图片中',
         mask: true
       })
-      this.saveCanvas().then(()=>{
-        wx.saveImageToPhotosAlbum({
-          filePath: this.data.imgCanvas,
-          success: (res) => {
-            wx.hideLoading()
-            wx.showToast({
-              title: '已保存到相册和海报中',
-              icon: 'success',
-              duration: 1500
-            })
-          },
-          fail: (err) => {
-            wx.hideLoading()
-            console.error(err)
-          }
+      if(this.data.detectBorder) {
+        this.autoDetectBorder(1)
+      } else {
+        this.saveCanvas().then(()=>{
+          wx.saveImageToPhotosAlbum({
+            filePath: this.data.imgCanvas,
+            success: (res) => {
+              wx.hideLoading()
+              wx.showToast({
+                title: '已保存到相册和海报中',
+                icon: 'success',
+                duration: 1500
+              })
+            },
+            fail: (err) => {
+              wx.hideLoading()
+              console.error(err)
+            }
+          })
         })
-      })
+      }
     },
     // 移动到海报窗口
     move2Post() {
@@ -487,5 +491,106 @@ Component({
     checkDetectBorder() {
       this.setData({ 'detectBorder': !this.data.detectBorder });
     },
+    //自动裁剪空白边缘
+    autoDetectBorder(padding) {
+      let that = this;
+      var imageData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
+      const { data, width, height } = imageData;
+      let startX = width,
+          startY = height,
+            endX = 0,
+            endY = 0;
+      for (let col = 0; col < width; col++) {
+        for (let row = 0; row < height; row++) {
+          // 网格索引
+          const pxStartIndex = (row * width + col) * 4;
+          // 网格的实际像素RGBA
+          const pxData = {
+            r: data[pxStartIndex],
+            g: data[pxStartIndex + 1],
+            b: data[pxStartIndex + 2],
+            a: data[pxStartIndex + 3]
+          };
+          // 存在色彩：不透明
+          const colorExist = pxData.a !== 0;
+          /*
+          如果当前像素点有色彩
+          startX坐标取当前col和startX的最小值
+          endX坐标取当前col和endX的最大值
+          startY坐标取当前row和startY的最小值
+          endY坐标取当前row和endY的最大值
+          */
+          if (colorExist) {
+            startX = Math.min(col, startX);
+            endX = Math.max(col, startX);
+            startY = Math.min(row, startY);
+            endY = Math.max(row, endY);
+          }
+        }
+      }
+      // 右下坐标需要扩展1px,才能完整的截取到图像
+      endX += 1;
+      endY += 1;
+      // 加上padding
+      startX -= padding;
+      startY -= padding;
+      endX += padding;
+      endY += padding;
+
+      // 根据计算的起点终点进行裁剪
+      const query = wx.createSelectorQuery().in(this)
+      query.select(`#otherCanvas`).fields({
+          node: true,
+          size: true
+      }).exec( (res2) => {
+        const cropCanvas = res2[0].node;
+        const cropCtx = cropCanvas.getContext('2d');
+        cropCanvas.width = endX - startX;
+        cropCanvas.height = endY - startY;
+        const img = cropCanvas.createImage();
+        img.src = that.data.imgCanvas;
+        img.onload = () => {
+          cropCtx.drawImage(
+            img,
+            startX,
+            startY,
+            cropCanvas.width,
+            cropCanvas.height,
+            0,
+            0,
+            cropCanvas.width,
+            cropCanvas.height
+          );
+          wx.canvasToTempFilePath({
+            canvas: cropCanvas,
+            success: (res) => {
+              let imgPath = res.tempFilePath;
+              that.setData({ imgCanvas: imgPath });
+              that.saveCanvas().then(()=>{
+                console.log(that.data.imgCanvas, imgPath, '---imgPath---')
+                wx.saveImageToPhotosAlbum({
+                  filePath: imgPath,
+                  success: (res) => {
+                    wx.hideLoading()
+                    wx.showToast({
+                      title: '已保存到相册和海报中',
+                      icon: 'success',
+                      duration: 1500
+                    })
+                  },
+                  fail: (err) => {
+                    wx.hideLoading()
+                    console.error(err)
+                  }
+                })
+              })
+            },
+            fail: (err) => {
+              console.error('error', err);
+            }
+          })
+        };
+      });
+    }
   },
 });
