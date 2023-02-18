@@ -253,6 +253,7 @@ Component({
     
     //处理上传的文字
     _setTextItem(item, op='add') {
+      let flag = Boolean(item);
       let that = this;
       let data = {css:{}};
       data.type = 'text';
@@ -284,9 +285,10 @@ Component({
       data.scale = 1;
       data.styles = ''
       if(item.css.textVertical){
+        data.text = contentArr;
         let maxHeightStr = 0;
         data.styles += "writing-mode:vertical-lr;text-orientation: upright;";
-        data.css.width = (item.css.fontSize + 10) * contentArr.length;
+        data.css.width = (item.css.fontSize) * contentArr.length;
         contentArr.forEach((elem) => {
           maxHeightStr = Math.max(maxHeightStr, that.measureTextHeight(elem));
         });
@@ -326,9 +328,11 @@ Component({
         data.styles += `font-weight:${item.css.fontWeight};`
       }
       if(item.css.padding){
-        data.styles += `padding:${item.css.padding}rpx;`
+        if(!item.css.textVertical){
+          data.styles += `padding:${item.css.padding}rpx;`
+        }
         data.css.width = data.css.width + item.css.padding*2;
-        data.css.height = data.css.height + item.css.padding;
+        data.css.height = data.css.height + item.css.padding*2;
       }
       if(item.css.textAlign){
         data.styles += `text-align:'${item.css.textAlign}';`
@@ -452,6 +456,7 @@ Component({
     },
     // 手指触摸移动（图片）
     WraptouchMove(e) {
+      console.log(e.touches[0], '----rectL s----')
       // 记录移动时触摸的坐标
       list[index]._lx = e.touches[0].clientX;
       list[index]._ly = e.touches[0].clientY;
@@ -662,16 +667,20 @@ Component({
         }
       }
       // 若有图片被选中则当点击图片以外的区域取消选中状态（安全区域扩大10个像素）
-      let flag = (x < list[index].css.left - 10 || x > list[index].css.left + list[index].css.width + 10||
-        y < list[index].css.top - 10 || y > list[index].css.top + list[index].css.height + 10);
-      if(isActive && flag){
-        list[index].active = false;
-        this.setData({
-          itemList: list
-        })
-      }
-      if(flag) {
-        this.triggerEvent('hideMenu', {});
+      try {
+        let flag = (x < list[index].css.left - 10 || x > list[index].css.left + list[index].css.width + 10||
+          y < list[index].css.top - 10 || y > list[index].css.top + list[index].css.height + 10);
+        if(isActive && flag){
+          list[index].active = false;
+          this.setData({
+            itemList: list
+          })
+        }
+        if(flag) {
+          this.triggerEvent('hideMenu', {});
+        }
+      } catch(err) {
+        //console.log(err);
       }
     },
 
@@ -735,9 +744,10 @@ Component({
 
     // 清理元素无用属性
     async filterItemsAttr(){
+      let that = this;
       let temp = JSON.parse(JSON.stringify(this.data.itemList));
       let newTemp = []
-      let that = this;
+      
       for (let i = 0; i < temp.length; i++) {
 
         delete temp[i].active;
@@ -747,16 +757,22 @@ Component({
         let width = temp[i].css.width*scale;
         let height = temp[i].css.height*scale;
 
-        await this.getRectInfo('#img-'+temp[i].id).then(rect => {
-          let rectT = rect.top;
-          let rectL = rect.left;
-          let rectW = rect.width;
-          let rectH = rect.height;
-          let tmpLeft = rectL+(rectW - width)/2;
-          let tmpTop = rectT+(rectH - height)/2;
-          temp[i].css.top = Number(tmpTop.toFixed(2))+"px";
-          temp[i].css.left = Number(tmpLeft.toFixed(2))+"px";
-        });
+        let domType = temp[i].type=='image' ? '#img-' : '#txt-';
+        let left = temp[i].css.left;
+        left = Number(left.toFixed(2));
+
+        if(!temp[i].css.textVertical){
+          await this.getRectInfo(domType+temp[i].id).then(rect => {
+            let rectT = rect.top;
+            let rectL = rect.left;
+            let rectW = rect.width;
+            let rectH = rect.height;
+            let tmpLeft = rectL+(rectW - width)/2;
+            let tmpTop = rectT+(rectH - height)/2;
+            temp[i].css.top = Number(tmpTop.toFixed(2))+"px";
+            temp[i].css.left = Number(tmpLeft.toFixed(2))+"px";
+          });
+        }
 
         temp[i].css.width = Number(width.toFixed(2)) + "px";
         temp[i].css.height = Number(height.toFixed(2)) + "px";
@@ -788,9 +804,13 @@ Component({
           delete temp[i].styles;
           delete temp[i].css.width;
           delete temp[i].css.height;
+
           if(temp[i].css.fontFamily=='系统默认字体') delete temp[i].css.fontFamily;
           temp[i].css.textDecoration = temp[i].css.textDecoration.trim();
+          temp[i].css.padding *= scale;
+          let padding = temp[i].css.padding;
           temp[i].css.padding += "px";
+          temp[i].css.fontSize *= scale;
           temp[i].css.fontSize += "px";
           if(temp[i].css.shadow==''){
             delete temp[i].css.shadow;
@@ -802,30 +822,47 @@ Component({
             delete temp[i].css.textStyle;
           }
           if(temp[i].css.textVertical) {
-            let contentArr = temp[i].text.split(/[(\r\n)\r\n]+/);
+            let contentArr = temp[i].text;
             let tmpText = "";
-            let idx = 0;
+            let nums = contentArr.map((ele) => { return ele.length; });
+            let maxLen = Math.max(...nums);
+            let items = [];
             for (let j = 0; j < contentArr.length; j++) {
               if(contentArr[j]=='') continue
-              let fStrWidth = this.codeCtx.measureText(contentArr[j][0]).width+5;
               let strLen = contentArr[j].length;
+              let firstWidth = this.codeCtx.measureText(contentArr[j][0]).width+padding*2;
               for (let a = 0; a < contentArr[j].length; a++) {
                 tmpText = `${tmpText}${contentArr[j][a]}\n`;
                 if(a==strLen-1) {
                   let css = Object.assign({}, temp[i].css);
+                  tmpText = tmpText.trim();
+                  let diffLen = maxLen - contentArr[j].length;
+                  if(diffLen>0) {
+                    tmpText += new Array(diffLen+1).join('\n');
+                  }
                   let item = {
-                    type: "text", 
+                    type: "text",
                     text: tmpText,
                     css: css
                   };
                   tmpText = "";
-                  item.css.left = `${left + idx}px`;
-                  idx += fStrWidth;
+                  await this.getRectInfo('#txt-'+temp[i].id+'-'+j).then(rect => {
+                    let rectT = rect.top;
+                    let rectL = rect.left;
+                    let rectW = rect.width;
+                    let rectH = rect.height;
+                    let tmpLeft = rectL+(rectW - firstWidth)/2;
+                    let tmpTop = rectT+(rectH - height)/2;
+                    item.css.top = Number(tmpTop.toFixed(2))+"px";
+                    item.css.left = Number(tmpLeft.toFixed(2))+"px";
+                  });
                   item.css.textAlign = 'center';
-                  newTemp.push(item);
+                  item.css.padding = (padding/2-1)+"px";
+                  items.push(item);
                 }
               }
             }
+            newTemp = newTemp.concat(items)
           } else {
             newTemp.push(temp[i]);
           }

@@ -235,12 +235,11 @@
   background-color: #fff;
 }
 .color-picker-view .color-picker-content {
-  height: 55vh;
-  justify-content: space-around;
-  align-items: center;
-  display: flex;
   text-align: center;
-  flex-direction: column;
+  width: 500rpx;
+  margin-left: auto;
+  margin-right: auto;
+
 }
 .color-picker-view .color-picker-content .current-color {
   width: 100%;

@@ -205,6 +205,7 @@
     <view class="popup" style="height:{{menu.txtPopHeight}}">
       <!--颜色-->
       <view class="color-picker-view" wx:if="{{menu.showColorPicker}}">
+        <view class="input-label" style="margin: 20rpx;">字体颜色: {{tools.getHexColor(menu.colorData.color)}}</view>
         <view class="color-picker-content">
           <color-picker2 colorData="{{menu.colorData.color}}" bindchangecolor="onChangeColor"></color-picker2>
           <text bindtap="closeColorPicker" class="icon-item iconfont icon-queren1"></text>
@@ -253,16 +254,16 @@
         <view>
           <view style="display: flex;flex-direction: row;">
             <text class="input-label">背景色:</text>
-            <view>{{itemText.css.background}}</view>
+            <view>{{itemText.css.background=='rgba(NaN,NaN,NaN,1)' ? '' : tools.getHexColor(itemText.css.background)}}</view>
           </view>
-          <view class="edit-css-content text-background">
+          <view class="edit-css-content text-background" style="width: 500rpx;margin-left: auto;margin-right: auto;">
             <color-picker2 colorData="{{menu.backgroundColor.color}}" bindchangecolor="onChangeBackColor"></color-picker2>
           </view>
         </view>
-        <view style="display: flex;flex-direction: row; margin-bottom: 20rpx;">
+        <!-- <view style="display: flex;flex-direction: row; margin-bottom: 20rpx;">
           <text class="input-label">背景色边际与文字间距:</text>
           <input value="{{itemText.css.padding}}"  class="text-input" maxlength="3" type="number" bindinput='paddingInput'/>
-        </view>
+        </view> -->
       </view>
       <!-- 阴影 -->
       <view class="text-edit-css" wx:if="{{menu.secondMenu=='txt.shadow'}}">

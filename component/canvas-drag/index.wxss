@@ -30,7 +30,7 @@
   transform-origin: center;
   float: left;
 }
-.imgWrap image {
+.imgWrap .img {
   float: left;
 }
 /* 触摸选中 */
