@@ -175,6 +175,20 @@ Component({
       });
       return height;
     },
+
+    measureTextWidth(letter) {
+      let that = this;
+      if (/[a-zA-Z]/.test(letter)) {
+        return that.codeCtx.measureText(letter).width;
+      } else if (/[0-9]/.test(letter)) {
+        return that.codeCtx.measureText(letter).width;
+      } else if (/[\u4e00-\u9fa5]/.test(letter)) {  //中文匹配
+        let metrics = that.codeCtx.measureText(letter);
+        return metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent; //metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent; 
+      } else {
+        return that.codeCtx.measureText(letter).width;
+      }
+    },
     _setImgSize(resInfo, width, height) {
       var newHeight = resInfo.height, newWidth = resInfo.width;
       if (width > maxWidth || height > maxHeight) { // 原图宽或高大于最大值就执行
@@ -274,10 +288,6 @@ Component({
         textHeight = (item.css.fontSize + 10)*contentArr.length;
       }
 
-      const x = item.css.left + textWidth / 2;
-      const y = item.css.top + textHeight / 2;
-      data.x = x;
-      data.y = y;
       data.css = item.css;
       data.css.width = textWidth;
       data.css.height = textHeight;
@@ -285,14 +295,17 @@ Component({
       data.scale = 1;
       data.styles = ''
       if(item.css.textVertical){
-        data.text = contentArr;
+        // data.text = contentArr;
         let maxHeightStr = 0;
         data.styles += "writing-mode:vertical-lr;text-orientation: upright;";
         data.css.width = (item.css.fontSize) * contentArr.length;
+        let maxWidthStr = 0;
         contentArr.forEach((elem) => {
           maxHeightStr = Math.max(maxHeightStr, that.measureTextHeight(elem));
+          maxWidthStr += that.measureTextWidth(elem[0]);
         });
         data.css.height = maxHeightStr;
+        data.css.width = maxWidthStr;
       }
 
       if((data.css.width-this.data.canvasWidth)>50) {
@@ -311,6 +324,12 @@ Component({
         });
         return;
       }
+
+      //计算中心点
+      const x = item.css.left + data.css.width / 2;
+      const y = item.css.top + data.css.height / 2;
+      data.x = x;
+      data.y = y;
 
       if(item.css.fontSize) {
         data.styles += `font-size:${item.css.fontSize}px !important;`
@@ -347,8 +366,8 @@ Component({
       data.scale = flag ? item.scale * this.data.syncScale : this.data.syncScale;
       data.angle = item.angle ? item.angle : 0;
       data.active = false;
-      data.css.left = flag ? (x - textWidth / 2) : 0;
-      data.css.top = flag ? (y - textHeight / 2) : 0;
+      data.css.left = item.css.left;
+      data.css.top = item.css.top;
       data.css.display = 'block';
       
       if(op=='add') {
@@ -456,7 +475,6 @@ Component({
     },
     // 手指触摸移动（图片）
     WraptouchMove(e) {
-      console.log(e.touches[0], '----rectL s----')
       // 记录移动时触摸的坐标
       list[index]._lx = e.touches[0].clientX;
       list[index]._ly = e.touches[0].clientY;
@@ -517,7 +535,8 @@ Component({
       }
     },
     // 手指触摸结束
-    WraptouchEnd() {
+    WraptouchEnd(e){
+
     },
     // 手指触摸开始（控件）
     oTouchStart(e) {
@@ -583,6 +602,9 @@ Component({
         itemList: list
       })
     },
+    oTouchEnd(e) {
+    },
+
     // 计算两点之间距离
     getDistance(cx, cy, pointer_x, pointer_y) {
       var ox = pointer_x - cx;
@@ -744,7 +766,6 @@ Component({
 
     // 清理元素无用属性
     async filterItemsAttr(){
-      let that = this;
       let temp = JSON.parse(JSON.stringify(this.data.itemList));
       let newTemp = []
       
@@ -754,12 +775,15 @@ Component({
         delete temp[i].oScale;
 
         let scale = temp[i].scale;
+        scale = Number(scale.toFixed(2));
         let width = temp[i].css.width*scale;
         let height = temp[i].css.height*scale;
 
         let domType = temp[i].type=='image' ? '#img-' : '#txt-';
         let left = temp[i].css.left;
         left = Number(left.toFixed(2));
+        let top = temp[i].css.top;
+        top = Number(top.toFixed(2));
 
         if(!temp[i].css.textVertical){
           await this.getRectInfo(domType+temp[i].id).then(rect => {
@@ -781,7 +805,8 @@ Component({
         delete temp[i].x;
         delete temp[i].y;
 
-        temp[i].css.rotate =  Math.round(temp[i].angle);
+        let rotate = temp[i].angle;
+        temp[i].css.rotate =  Math.round(rotate);
 
         delete temp[i].angle;
         delete temp[i].angleNext;
@@ -809,6 +834,8 @@ Component({
           temp[i].css.textDecoration = temp[i].css.textDecoration.trim();
           temp[i].css.padding *= scale;
           let padding = temp[i].css.padding;
+          padding = Number(padding.toFixed(2));
+
           temp[i].css.padding += "px";
           temp[i].css.fontSize *= scale;
           temp[i].css.fontSize += "px";
@@ -823,46 +850,44 @@ Component({
           }
           if(temp[i].css.textVertical) {
             let contentArr = temp[i].text;
-            let tmpText = "";
             let nums = contentArr.map((ele) => { return ele.length; });
             let maxLen = Math.max(...nums);
-            let items = [];
+            let letterLeft = left/scale;
+            let letterTop = top/scale;
+
             for (let j = 0; j < contentArr.length; j++) {
-              if(contentArr[j]=='') continue
               let strLen = contentArr[j].length;
-              let firstWidth = this.codeCtx.measureText(contentArr[j][0]).width+padding*2;
-              for (let a = 0; a < contentArr[j].length; a++) {
-                tmpText = `${tmpText}${contentArr[j][a]}\n`;
-                if(a==strLen-1) {
-                  let css = Object.assign({}, temp[i].css);
-                  tmpText = tmpText.trim();
-                  let diffLen = maxLen - contentArr[j].length;
-                  if(diffLen>0) {
-                    tmpText += new Array(diffLen+1).join('\n');
-                  }
-                  let item = {
-                    type: "text",
-                    text: tmpText,
-                    css: css
-                  };
-                  tmpText = "";
-                  await this.getRectInfo('#txt-'+temp[i].id+'-'+j).then(rect => {
-                    let rectT = rect.top;
-                    let rectL = rect.left;
-                    let rectW = rect.width;
-                    let rectH = rect.height;
-                    let tmpLeft = rectL+(rectW - firstWidth)/2;
-                    let tmpTop = rectT+(rectH - height)/2;
-                    item.css.top = Number(tmpTop.toFixed(2))+"px";
-                    item.css.left = Number(tmpLeft.toFixed(2))+"px";
-                  });
-                  item.css.textAlign = 'center';
-                  item.css.padding = (padding/2-1)+"px";
-                  items.push(item);
-                }
+              let diffLen = maxLen - strLen;
+              if(diffLen>0) {
+                contentArr[j] += new Array(diffLen+1).join('\t');
               }
             }
-            newTemp = newTemp.concat(items)
+
+            let tmpText = '';
+            for(let i = 0; i < maxLen; i++) {
+              for(let j = 0; j < contentArr.length; j++) {
+                let letter = contentArr[j][i];
+                if (!/[\u4e00-\u9fa5]/.test(letter)) {  //中文匹配
+                  letter = '\t'+letter+'\t';
+                }
+                tmpText = `${tmpText}${letter} \t`;
+              }
+              tmpText = `${tmpText}\n`;
+            }
+            console.log(tmpText, '----tmpText---')
+            let css = Object.assign({}, temp[i].css);
+            let item = {
+              type: "text",
+              text: tmpText,
+              css: css
+            };
+            item.css.left = letterLeft+"px";
+            item.css.top = letterTop+"px";
+            item.css.textAlign = 'center';
+            item.css.padding = (padding/2)+"px";
+            item.css.rotate = rotate;
+            console.log(item, '----item---')
+            newTemp.push(item);
           } else {
             newTemp.push(temp[i]);
           }
@@ -871,6 +896,48 @@ Component({
         }
       }
       return newTemp;
+    },
+
+    transform(options, angle) {
+      const { x, y, width, height } = options;
+      const r = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2)) / 2;
+      const a = Math.round(Math.atan(height / width) * 180 / Math.PI);
+      const tlbra = 180 - angle - a;
+      const trbla = a - angle;
+      const topLeft = {
+          x: x + width / 2 + r * Math.cos(tlbra * Math.PI / 180),
+          y: y + height / 2 - r * Math.sin(tlbra * Math.PI / 180)
+      };
+      const topRight = {
+          x: x + width / 2 + r * Math.cos(trbla * Math.PI / 180),
+          y: y + height / 2 - r * Math.sin(trbla * Math.PI / 180)
+      };
+      const bottomRight = {
+          x: x + width / 2 - r * Math.cos(tlbra * Math.PI / 180),
+          y: y + height / 2 + r * Math.sin(tlbra * Math.PI / 180)
+      };
+      const bottomLeft = {
+          x: x + width / 2 - r * Math.cos(trbla * Math.PI / 180),
+          y: y + height / 2 + r * Math.sin(trbla * Math.PI / 180)
+      };
+      const minX = Math.min(topLeft.x, topRight.x, bottomRight.x, bottomLeft.x);
+      const maxX = Math.max(topLeft.x, topRight.x, bottomRight.x, bottomLeft.x);
+      const minY = Math.min(topLeft.y, topRight.y, bottomRight.y, bottomLeft.y);
+      const maxY = Math.max(topLeft.y, topRight.y, bottomRight.y, bottomLeft.y);
+      return {
+          point: {
+              topLeft,
+              topRight,
+              bottomLeft,
+              bottomRight,
+          },
+          width: maxX - minX,
+          height: maxY - minY,
+          left: minX,
+          right: maxX,
+          top: minY,
+          bottom: maxY
+      }
     },
 
     // 下载画板图片

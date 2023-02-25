@@ -137,7 +137,7 @@
         <view class="tab-item {{menu.isBg=='bg.netImgs'?'select':''}}" bindtap="changeTab" data-type="bg.netImgs">网络图库</view>
       </view>
       <view class="text-background" wx:if="{{menu.isBg=='bg.color'}}">
-        <view style="width:400rpx;margin:auto;">
+        <view style="width:500rpx;margin:auto;">
           <color-picker2  colorData="{{bg.color}}" bindchangecolor="onChangeBgColor"></color-picker2>
           <view class="btn">
             <text class="icon-item iconfont icon-queren1" bindtap="editBgOk"></text>
