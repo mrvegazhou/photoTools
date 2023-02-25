@@ -270,9 +270,9 @@
         <view>
           <view style="display: flex;flex-direction: row;">
             <text class="input-label">阴影颜色:</text>
-            <view>{{itemText.css.shadow}}</view>
+            <view>{{itemText.css.shadow=='rgba(NaN,NaN,NaN,1)' ? '' : tools.getHexColor(itemText.css.shadow)}}</view>
           </view>
-          <view class="edit-css-content text-background">
+          <view class="edit-css-content text-background" style="width: 500rpx;margin-left: auto;margin-right: auto;">
             <color-picker2 colorData="{{menu.shadowColor.color}}" bindchangecolor="onChangeShadowColor"></color-picker2>
           </view>
         </view>

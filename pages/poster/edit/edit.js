@@ -259,7 +259,8 @@ Page({
     switch(type) {
       case 'txt':
         menu.secondMenu = 'txt.edit'
-        menu.txtPopHeight = '470rpx'
+        menu.txtPopHeight = '480rpx'
+        menu.showColorPicker = false
         break;
       case 'img':
         var left = e.target.offsetLeft
@@ -708,13 +709,13 @@ Page({
         this.setData({'menu.showColorPicker': true, 'menu.txtPopHeight':'55vh'});
         break;
       case 'txt.background':
-        this.setData({'menu.txtPopHeight':'70vh'});
+        this.setData({'menu.txtPopHeight':'65vh'});
         break;
       case 'txt.shadow':
         this.setData({'menu.txtPopHeight':'77vh'});
         break;
       default:
-        this.setData({'menu.txtPopHeight':'470rpx'});
+        this.setData({'menu.txtPopHeight':'550rpx'});
     }
     this.setData({'menu.secondMenu': type})
   },

@@ -62,7 +62,6 @@ Component({
   //监听器
   observers: {
     'hsv':function(val){
-      console.log("监听颜色",val)
       this.getColorVal()
     },
   },

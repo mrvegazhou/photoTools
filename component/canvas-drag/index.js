@@ -849,45 +849,47 @@ Component({
             delete temp[i].css.textStyle;
           }
           if(temp[i].css.textVertical) {
-            let contentArr = temp[i].text;
+            let contentArr = (temp[i].text).split("\n");
             let nums = contentArr.map((ele) => { return ele.length; });
             let maxLen = Math.max(...nums);
-            let letterLeft = left/scale;
-            let letterTop = top/scale;
-
+            let maxWidth = 0;
             for (let j = 0; j < contentArr.length; j++) {
               let strLen = contentArr[j].length;
               let diffLen = maxLen - strLen;
               if(diffLen>0) {
-                contentArr[j] += new Array(diffLen+1).join('\t');
+                contentArr[j] += new Array(diffLen+1).join(' ');
               }
+              maxWidth =  Math.max(this.measureTextWidth(contentArr[j][0]), maxWidth);
             }
 
-            let tmpText = '';
-            for(let i = 0; i < maxLen; i++) {
-              for(let j = 0; j < contentArr.length; j++) {
-                let letter = contentArr[j][i];
-                if (!/[\u4e00-\u9fa5]/.test(letter)) {  //中文匹配
-                  letter = '\t'+letter+'\t';
+            let tmpText = "";
+            let idx = 0;
+            maxWidth += 8;
+            let testWidth = this.measureTextWidth("测")+2;
+            maxWidth = Math.max(testWidth, maxWidth);
+            for (let j = 0; j < contentArr.length; j++) {
+              // if(contentArr[j]=='') continue
+              let strLen = contentArr[j].length;
+              for (let a = 0; a < contentArr[j].length; a++) {
+                tmpText = `${tmpText}${contentArr[j][a]}\n`;
+                if(a==strLen-1) {
+                  let css = Object.assign({}, temp[i].css);
+                  tmpText = tmpText.slice(0, tmpText.length-1);
+                  let item = {
+                    type: "text",
+                    text: tmpText,
+                    css: css
+                  };
+                  tmpText = "";
+                  item.css.left = `${left + idx}px`;
+                  item.css.top = top+'px';
+                  item.css.padding = '2px';
+                  idx += maxWidth;
+                  item.css.textAlign = 'center';
+                  newTemp.push(item);
                 }
-                tmpText = `${tmpText}${letter} \t`;
               }
-              tmpText = `${tmpText}\n`;
             }
-            console.log(tmpText, '----tmpText---')
-            let css = Object.assign({}, temp[i].css);
-            let item = {
-              type: "text",
-              text: tmpText,
-              css: css
-            };
-            item.css.left = letterLeft+"px";
-            item.css.top = letterTop+"px";
-            item.css.textAlign = 'center';
-            item.css.padding = (padding/2)+"px";
-            item.css.rotate = rotate;
-            console.log(item, '----item---')
-            newTemp.push(item);
           } else {
             newTemp.push(temp[i]);
           }
