@@ -706,13 +706,13 @@ Page({
     const type = e.currentTarget.dataset['type'];
     switch (type) {
       case 'txt.color':
-        this.setData({'menu.showColorPicker': true, 'menu.txtPopHeight':'55vh'});
+        this.setData({'menu.showColorPicker': true, 'menu.txtPopHeight':'650rpx'});
         break;
       case 'txt.background':
-        this.setData({'menu.txtPopHeight':'65vh'});
+        this.setData({'menu.txtPopHeight':'795rpx'});
         break;
       case 'txt.shadow':
-        this.setData({'menu.txtPopHeight':'77vh'});
+        this.setData({'menu.txtPopHeight':'935rpx'});
         break;
       default:
         this.setData({'menu.txtPopHeight':'550rpx'});

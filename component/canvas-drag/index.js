@@ -73,7 +73,7 @@ Component({
       this.ctx.exec((res) => {
         const codeCanvas = res[0].node
         const codeCtx = codeCanvas.getContext('2d')
-
+        // console.log( wx.getSystemInfoSync().pixelRatio, '----dpr-----');
         that.codeCanvas = codeCanvas;
         that.codeCtx = codeCtx;
         
@@ -168,7 +168,11 @@ Component({
             height += that.codeCtx.measureText(item).width;
           } else if (/[\u4e00-\u9fa5]/.test(item)) {  //中文匹配
             let metrics = that.codeCtx.measureText(item);
-            height += metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent; //metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent; 
+            if(metrics.actualBoundingBoxAscent && metrics.actualBoundingBoxDescent) {
+              height += metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+            } else {
+              height += metrics.width;
+            }
           } else {
             height += that.codeCtx.measureText(item).width;
           }
@@ -184,7 +188,11 @@ Component({
         return that.codeCtx.measureText(letter).width;
       } else if (/[\u4e00-\u9fa5]/.test(letter)) {  //中文匹配
         let metrics = that.codeCtx.measureText(letter);
-        return metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent; //metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent; 
+        if(metrics.actualBoundingBoxAscent && metrics.actualBoundingBoxDescent) {
+          return metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+        } else {
+          return metrics.width;
+        }
       } else {
         return that.codeCtx.measureText(letter).width;
       }
@@ -268,6 +276,9 @@ Component({
     //处理上传的文字
     _setTextItem(item, op='add') {
       let flag = Boolean(item);
+      if(!flag) {
+        console.log('text error!');
+      }
       let that = this;
       let data = {css:{}};
       data.type = 'text';
@@ -275,7 +286,7 @@ Component({
       data.text = item.text;
       this.codeCtx.font = `normal ${item.css.fontSize}px arial`;
       //判断是否有换行符
-      let contentArr = data.text.split(/[(\r\n)\r\n]+/);
+      let contentArr = data.text.split("\n");
 
       var textWidth = 0, textHeight = 0;
       if(contentArr.length==1) {
@@ -293,11 +304,12 @@ Component({
       data.css.height = textHeight;
       
       data.scale = 1;
+      item.scale = item.scale ? item.scale : 1;
+
       data.styles = ''
       if(item.css.textVertical){
-        // data.text = contentArr;
         let maxHeightStr = 0;
-        data.styles += "writing-mode:vertical-lr;text-orientation: upright;";
+        data.styles += "writing-mode:vertical-lr;text-orientation:upright;";
         data.css.width = (item.css.fontSize) * contentArr.length;
         let maxWidthStr = 0;
         contentArr.forEach((elem) => {
@@ -332,9 +344,12 @@ Component({
       data.y = y;
 
       if(item.css.fontSize) {
-        data.styles += `font-size:${item.css.fontSize}px !important;`
+        let fontSize = item.css.fontSize*data.scale;
+        fontSize = Number(fontSize.toFixed(2));
+        data.css.fontSize = fontSize;
+        // data.styles += `font-size:${fontSize}px !important;`
       }
-      if(item.css.background){
+      if(item.css.background && item.css.background!='rgba(NaN,NaN,NaN,1)'){
         data.styles += `background-color:${item.css.background};`
       }
       if(item.css.color){
@@ -361,9 +376,13 @@ Component({
       }
       if(item.css.textStyle=="stroke"){
         data.styles += `color:white;-webkit-text-stroke:1rpx ${item.css.color};`
+        data.css.textStyle = item.css.textStyle;
       }
-      item.scale = item.scale ? item.scale : 1;
-      data.scale = flag ? item.scale * this.data.syncScale : this.data.syncScale;
+      if(item.css.textStyle=="italic"){
+        data.styles += `font-style:italic;`;
+        data.css.textStyle = item.css.textStyle;
+      }
+      
       data.angle = item.angle ? item.angle : 0;
       data.active = false;
       data.css.left = item.css.left;
@@ -578,10 +597,10 @@ Component({
         }else if(list[index].disPtoO / list[index].r > SCALE_MAX){
           scale = SCALE_MAX
         }else{
-          scale = list[index].disPtoO / list[index].r
+          scale = list[index].disPtoO / list[index].r;
         }
         // 通过上面的值除以图片原始半径获得缩放比例
-        list[index].scale = scale;
+        list[index].scale = Number(scale.toFixed(2));
         // 控件反向缩放，即相对视口保持原来的大小不变
         list[index].oScale = 1 / list[index].scale;
       }
@@ -594,9 +613,13 @@ Component({
       // 替换当前触摸坐标为触摸开始坐标
       list[index].tx = e.touches[0].clientX;
       list[index].ty = e.touches[0].clientY;
+      
       // 更新移动角度
       list[index].anglePre = this.countDeg(list[index].x, list[index].y, list[index].tx, list[index].ty)
-
+      
+      if(list[index].css.textVertical==true) {
+        list[index].angle = 0;
+      }
       // 渲染图片
       this.setData({
         itemList: list
@@ -779,6 +802,12 @@ Component({
         let width = temp[i].css.width*scale;
         let height = temp[i].css.height*scale;
 
+        let padding = 0;
+        if(temp[i].type=='text') {
+          padding = temp[i].css.padding;
+          padding = Number(padding.toFixed(2))+2;
+        }
+
         let domType = temp[i].type=='image' ? '#img-' : '#txt-';
         let left = temp[i].css.left;
         left = Number(left.toFixed(2));
@@ -791,8 +820,8 @@ Component({
             let rectL = rect.left;
             let rectW = rect.width;
             let rectH = rect.height;
-            let tmpLeft = rectL+(rectW - width)/2;
-            let tmpTop = rectT+(rectH - height)/2;
+            let tmpLeft = rectL+(rectW - width)/2+padding/2;
+            let tmpTop = rectT+(rectH - height)/2+padding/2;
             temp[i].css.top = Number(tmpTop.toFixed(2))+"px";
             temp[i].css.left = Number(tmpLeft.toFixed(2))+"px";
           });
@@ -832,12 +861,10 @@ Component({
 
           if(temp[i].css.fontFamily=='系统默认字体') delete temp[i].css.fontFamily;
           temp[i].css.textDecoration = temp[i].css.textDecoration.trim();
+          // temp[i].css.padding /= 2;
           temp[i].css.padding *= scale;
-          let padding = temp[i].css.padding;
-          padding = Number(padding.toFixed(2));
-
           temp[i].css.padding += "px";
-          temp[i].css.fontSize *= scale;
+          temp[i].css.fontSize *= (scale+0.25);
           temp[i].css.fontSize += "px";
           if(temp[i].css.shadow==''){
             delete temp[i].css.shadow;
@@ -848,6 +875,7 @@ Component({
           if(platform=='devtools') {
             delete temp[i].css.textStyle;
           }
+          console.log(temp[i], '----temp[i]---')
           if(temp[i].css.textVertical) {
             let contentArr = (temp[i].text).split("\n");
             let nums = contentArr.map((ele) => { return ele.length; });
@@ -865,10 +893,11 @@ Component({
             let tmpText = "";
             let idx = 0;
             maxWidth += 8;
-            let testWidth = this.measureTextWidth("测")+2;
+            let testWidth = this.measureTextWidth("测")+6;
             maxWidth = Math.max(testWidth, maxWidth);
+            maxWidth *= scale;
             for (let j = 0; j < contentArr.length; j++) {
-              // if(contentArr[j]=='') continue
+              if(contentArr[j]=='') continue
               let strLen = contentArr[j].length;
               for (let a = 0; a < contentArr[j].length; a++) {
                 tmpText = `${tmpText}${contentArr[j][a]}\n`;
@@ -898,48 +927,6 @@ Component({
         }
       }
       return newTemp;
-    },
-
-    transform(options, angle) {
-      const { x, y, width, height } = options;
-      const r = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2)) / 2;
-      const a = Math.round(Math.atan(height / width) * 180 / Math.PI);
-      const tlbra = 180 - angle - a;
-      const trbla = a - angle;
-      const topLeft = {
-          x: x + width / 2 + r * Math.cos(tlbra * Math.PI / 180),
-          y: y + height / 2 - r * Math.sin(tlbra * Math.PI / 180)
-      };
-      const topRight = {
-          x: x + width / 2 + r * Math.cos(trbla * Math.PI / 180),
-          y: y + height / 2 - r * Math.sin(trbla * Math.PI / 180)
-      };
-      const bottomRight = {
-          x: x + width / 2 - r * Math.cos(tlbra * Math.PI / 180),
-          y: y + height / 2 + r * Math.sin(tlbra * Math.PI / 180)
-      };
-      const bottomLeft = {
-          x: x + width / 2 - r * Math.cos(trbla * Math.PI / 180),
-          y: y + height / 2 + r * Math.sin(trbla * Math.PI / 180)
-      };
-      const minX = Math.min(topLeft.x, topRight.x, bottomRight.x, bottomLeft.x);
-      const maxX = Math.max(topLeft.x, topRight.x, bottomRight.x, bottomLeft.x);
-      const minY = Math.min(topLeft.y, topRight.y, bottomRight.y, bottomLeft.y);
-      const maxY = Math.max(topLeft.y, topRight.y, bottomRight.y, bottomLeft.y);
-      return {
-          point: {
-              topLeft,
-              topRight,
-              bottomLeft,
-              bottomRight,
-          },
-          width: maxX - minX,
-          height: maxY - minY,
-          left: minX,
-          right: maxX,
-          top: minY,
-          bottom: maxY
-      }
     },
 
     // 下载画板图片
