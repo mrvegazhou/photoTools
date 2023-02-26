@@ -37,7 +37,7 @@
     </view>
   </scroll-view>
 
-  <!--单击元素的二级编辑菜单 editImgPage-->
+  <!--单击元素的二级图片编辑菜单 editImgPage-->
   <scroll-view scroll-x="true" class="toolbar-bottom" wx:if="{{menu.mainPageShow==='editImgPage'}}">
     <view bindtap='showEditMenu' data-type="toMainPage" class="item-btn {{menu.menuShow=='toMainPage'?'menu-select':''}}">
       <text class="icon-item iconfont icon-fanhui"></text>
@@ -85,8 +85,7 @@
     </view>
   </scroll-view>
 
-  <!--
-    滤镜二级菜单-->
+  <!--滤镜二级菜单-->
   <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='filterImg'}}">
     <view class="popbg" bindtap="closePopEdit"></view>
     <view class="popup" style="height:30vh;">

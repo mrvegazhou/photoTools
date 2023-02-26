@@ -360,7 +360,7 @@
 
 /* 裁剪样式 begin */
 .img-edit-cropper{
-  z-index: 99993;
+  position:absolute;
 }
 .edit-cropper-foot{
   border-top: none;

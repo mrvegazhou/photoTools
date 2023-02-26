@@ -19,14 +19,15 @@
   margin: auto;
 }
 .touchWrap {
-  position: absolute;
   transform-origin: center;
+  position: absolute;
   z-index: 100;
 }
 .imgWrap {
   box-sizing: border-box;
   width: 100%;
   transform-origin: center;
+  float: left;
 }
 .imgWrap .img {
   float: left;

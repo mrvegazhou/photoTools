@@ -197,6 +197,7 @@ Component({
         return that.codeCtx.measureText(letter).width;
       }
     },
+
     _setImgSize(resInfo, width, height) {
       var newHeight = resInfo.height, newWidth = resInfo.width;
       if (width > maxWidth || height > maxHeight) { // 原图宽或高大于最大值就执行
@@ -302,6 +303,9 @@ Component({
       data.css = item.css;
       data.css.width = textWidth;
       data.css.height = textHeight;
+
+      data.css.left = (!item.css.left || item.css.left==0) ? 50 : item.css.left;
+      data.css.top = (!item.css.top || item.css.top==0) ? 50 : item.css.top;
       
       data.scale = 1;
       item.scale = item.scale ? item.scale : 1;
@@ -746,6 +750,7 @@ Component({
 
     //清空画布
     clearCanvas() {
+      list = new Array();
       this.setData({itemList: []});
     },
 

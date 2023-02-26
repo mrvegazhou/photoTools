@@ -283,8 +283,11 @@ Page({
           confirmText: "确认",
           cancelText: "取消",
           success: function (res) {
-            CanvasDrag.clearCanvas();
-            that.hideMenu();
+            if (res.confirm) {
+              that.setData({'items':[]});
+              CanvasDrag.clearCanvas();
+              that.hideMenu();
+            }
           }
         });
         break;
@@ -915,13 +918,13 @@ Page({
         break;
       case "recoverSize":
         CanvasDrag.recoverSize();
-      case "cropper":
+      case "cropper": //截图功能
         let itemImg = CanvasDrag.getItem();
         this.setData({
           'menu.cropper.src': itemImg.url,
           'menu.cropper.img_width': itemImg.css.width,
           'menu.cropper.width': itemImg.css.height,
-          'menu.cropper.height': itemImg.css.height,
+          'menu.cropper.height': itemImg.css.height
         });
       default:
         break;
