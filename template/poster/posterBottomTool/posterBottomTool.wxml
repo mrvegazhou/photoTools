@@ -37,6 +37,50 @@
     </view>
   </scroll-view>
 
+  <!--单击元素的二级文字编辑菜单 editTextPage-->
+  <scroll-view scroll-x="true" class="toolbar-bottom" wx:if="{{menu.mainPageShow==='editTextPage'}}">
+    <view bindtap='showEditTypeMenu' data-type="toMainPage" class="item-btn {{menu.menuShow=='toMainPage'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-fanhui"></text>
+      <text class="text">返回</text>
+    </view>
+    <view bindtap='showEditTypeMenu' data-type="recoverText" class="item-btn {{menu.menuShow=='recoverText'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-wenzi1"></text>
+      <text class="text">恢复</text>
+    </view>
+    <view bindtap='showEditTypeMenu' data-type="copeText" class="item-btn {{menu.menuShow=='copeText'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-fuzhi"></text>
+      <text class="text">复制</text>
+    </view>
+    <view bindtap='showEditTypeMenu' data-type="editExistedText" class="item-btn {{menu.menuShow=='editExistedText'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-bianji"></text>
+      <text class="text">编辑</text>
+    </view>
+    <view bindtap='showEditTypeMenu' data-type="editExistedTextColor" class="item-btn {{menu.menuShow=='editExistedTextColor'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-yanse"></text>
+      <text class="text">颜色</text>
+    </view>
+    <view bindtap='showEditTypeMenu' data-type="editExistedTextCss" class="item-btn {{menu.menuShow=='editExistedTextCss'?'menu-select':''}}">
+      <text class="icon-item iconfont icon--zitiyangshi"></text>
+      <text class="text">样式</text>
+    </view>
+    <view bindtap='showEditTypeMenu' data-type="editExistedTextBgColor" class="item-btn {{menu.menuShow=='editExistedTextBgColor'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-beijingse"></text>
+      <text class="text">背景色</text>
+    </view>
+    <view bindtap='showEditTypeMenu' data-type="editExistedTextShadow" class="item-btn {{menu.menuShow=='editExistedTextShadow'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-yinying"></text>
+      <text class="text">阴影</text>
+    </view>
+    <view bindtap='showEditTypeMenu' data-type="flip" class="item-btn {{menu.menuShow=='flip'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-fanzhuan"></text>
+      <text class="text">翻转</text>
+    </view>
+    <view bindtap='showEditTypeMenu' data-type="editExistedTextAdjust" class="item-btn {{menu.menuShow=='editExistedTextAdjust'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-fangxiang"></text>
+      <text class="text">微调</text>
+    </view>
+  </scroll-view>
+
   <!--单击元素的二级图片编辑菜单 editImgPage-->
   <scroll-view scroll-x="true" class="toolbar-bottom" wx:if="{{menu.mainPageShow==='editImgPage'}}">
     <view bindtap='showEditMenu' data-type="toMainPage" class="item-btn {{menu.menuShow=='toMainPage'?'menu-select':''}}">
@@ -63,23 +107,23 @@
       <text class="icon-item iconfont icon-lvjing1"></text>
       <text class="text">滤镜</text>
     </view>
-    <view bindtap='showEditMenu' data-type="bg" class="item-btn {{menu.menuShow=='copeImg'?'menu-select':''}}">
+    <view bindtap='showEditMenu' data-type="matting" class="item-btn {{menu.menuShow=='matting'?'menu-select':''}}">
       <text class="icon-item iconfont icon-xiutu"></text>
       <text class="text">抠图</text>
     </view>
-    <view bindtap='showEditMenu' data-type="bg" class="item-btn {{menu.menuShow=='copeImg'?'menu-select':''}}">
+    <view bindtap='showEditMenu' data-type="shape" class="item-btn {{menu.menuShow=='shape'?'menu-select':''}}">
       <text class="icon-item iconfont icon-14xingzhuangjiehe"></text>
       <text class="text">形状</text>
     </view>
-    <view bindtap='showEditMenu' data-type="bg" class="item-btn {{menu.menuShow=='copeImg'?'menu-select':''}}">
+    <view bindtap='showEditMenu' data-type="flip" class="item-btn {{menu.menuShow=='flip'?'menu-select':''}}">
       <text class="icon-item iconfont icon-fanzhuan"></text>
       <text class="text">翻转</text>
     </view>
-    <view bindtap='showEditMenu' data-type="bg" class="item-btn {{menu.menuShow=='copeImg'?'menu-select':''}}">
+    <view bindtap='showEditMenu' data-type="transparent" class="item-btn {{menu.menuShow=='transparent'?'menu-select':''}}">
       <text class="icon-item iconfont icon-touming"></text>
       <text class="text">透明度</text>
     </view>
-    <view bindtap='showEditMenu' data-type="bg" class="item-btn {{menu.menuShow=='copeImg'?'menu-select':''}}">
+    <view bindtap='showEditMenu' data-type="adjust" class="item-btn {{menu.menuShow=='adjust'?'menu-select':''}}">
       <text class="icon-item iconfont icon-fangxiang"></text>
       <text class="text">微调</text>
     </view>
@@ -88,7 +132,7 @@
   <!--滤镜二级菜单-->
   <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='filterImg'}}">
     <view class="popbg" bindtap="closePopEdit"></view>
-    <view class="popup" style="height:30vh;">
+    <view class="popup" style="height:280rpx;">
       <view class="tab-wapper">
       <view class="tab-item">滤镜选项</view>
       </view>
@@ -96,6 +140,38 @@
         <block wx:for-items="{{menu.filterTitles}}" wx:key="key">
           <view class="flow-item {{itemImg.filterOp==item?'select':''}}" bindtap="filterImg" data-type="{{item}}">{{item}}</view>
         </block>
+      </view>
+    </view>
+  </view>
+
+  <!--透明化二级菜单-->
+  <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='transparent'}}">
+    <view class="popbg" bindtap="closePopEdit"></view>
+    <view class="popup" style="height:280rpx;">
+      <view class="tab-wapper">
+      <view class="tab-item">透明度</view>
+      </view>
+      <view style="text-align:center;width:70%;margin-left: auto;margin-right: auto;">
+        <slider class="slider" block-size="1" activeColor="#69a794" bindchange="changeImgTrans" min="10" max="100" value="{{menu.imgTrans}}" show-value/>
+        <view class="btn">
+          <text class="icon-item iconfont icon-queren1" bindtap="imgTransOk"></text>
+          <text class="icon-item iconfont icon-quxiao1" bindtap="imgTransCancel"></text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!--形状二级菜单-->
+  <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='shape'}}">
+    <view class="popbg" bindtap="closePopEdit"></view>
+    <view class="popup" style="height:280rpx;">
+      <view class="tab-wapper">
+      <view class="tab-item">形状</view>
+      </view>
+      <view class="tab-flow-items">
+        <view class="flow-item {{itemImg.filterOp=='circle'?'select':''}}" bindtap="shapeImg" data-type="circle">圆形</view>
+        <view class="flow-item {{itemImg.filterOp=='star'?'select':''}}" bindtap="shapeImg" data-type="star">五角星</view>
+        <view class="flow-item {{itemImg.filterOp=='triangle'?'select':''}}" bindtap="shapeImg" data-type="triangle">三角形</view>
       </view>
     </view>
   </view>
@@ -240,7 +316,7 @@
           <text bindtap="selectFontStyle" data-type='textStyle#italic' class="iconfont icon-zitixieti {{itemText.css.textStyle=='italic'?'checked':''}}">斜体</text>
           <text bindtap="selectFontStyle" data-type='textDecoration#underline' class="iconfont icon-xiahuaxian {{tools.strInclude(itemText.css.textDecoration+'', 'underline')!=-1 ? 'checked' : ''}}">下划线</text>
           <text bindtap="selectFontStyle" data-type='textDecoration#line-through' class="iconfont icon-zitishanchuxian {{tools.strInclude(itemText.css.textDecoration, 'line-through')!=-1 ? 'checked' : ''}}">删除线</text>
-          <text bindtap="selectFontStyle" data-type='direction' class="iconfont icon-directionhorizontal {{itemText.css.textVertical==true?'checked':''}}">垂直</text>
+          <text bindtap="selectFontStyle" data-type='direction' class="iconfont icon-jurassic_shupai-text {{itemText.css.textVertical==true?'checked':''}}">垂直</text>
           <text bindtap="selectFontStyle" data-type='textAlign#center' class="iconfont icon-juzhong {{itemText.css.textAlign=='center'?'checked':''}}">居中</text>
           <text bindtap="selectFontStyle" data-type='textAlign#left' class="iconfont icon-zuoduiqi {{itemText.css.textAlign=='left'?'checked':''}}">左对齐</text>
           <text bindtap="selectFontStyle" data-type='textAlign#right' class="iconfont icon-youduiqi {{itemText.css.textAlign=='right'?'checked':''}}">右对齐</text>
@@ -291,7 +367,7 @@
         </view>
       </view>
       <view class="edit-pannel" style="display:{{(menu.secondMenu=='txt.edit')?'block':'none'}};">
-        <textarea class="input" placeholder="请输入文字" placeholder-class="place-holder" maxlength='120' value="{{item.text}}" bindinput='textAreaInput'/>
+        <textarea class="input" placeholder="请输入文字" placeholder-class="place-holder" maxlength='120' value="{{itemText.text}}" bindinput='textAreaInput'/>
       </view>
       <view class="text-edit-menu">
         <view class="item {{menu.secondMenu=='txt.edit'?'select':''}}" bindtap="editText" data-type="txt.edit">
@@ -316,7 +392,7 @@
       </view>
     </view>
   </view>
-  <!-- 裁剪工具 -->>
+  <!-- 裁剪工具 -->
   <view class="img-edit-cropper" wx:if="{{menu.menuShow=='cropper'}}">
     <image-cropper id="image-cropper" imgSrc="{{menu.cropper.src}}" img_width="{{menu.cropper.img_width}}" img_height="{{menu.cropper.img_height}}" width="{{menu.cropper.width}}" height="{{menu.cropper.height}}" imgSrc="{{menu.cropper.src}}" angle="{{menu.cropper.angle}}" bindtapcut="clickcut">
     </image-cropper>
@@ -325,7 +401,7 @@
       <text class="item-btn cropper-op text icon-item iconfont icon-xiangzuosanjiaoxing" bindtap='cropLeft'></text>
       <text class="item-btn cropper-op text icon-item iconfont icon-xiangshangsanjiaoxing" bindtap='cropTop'></text>
       <text class="item-btn cropper-op text icon-item iconfont icon-xiangxiasanjiaoxing" bindtap='cropBottom'></text>
-      <text class="item-btn cropper-op text icon-item iconfont icon-xiangyousanjiaoxing" bindtap='cropLeft'></text>
+      <text class="item-btn cropper-op text icon-item iconfont icon-xiangyousanjiaoxing" bindtap='cropRight'></text>
       <text class="item-btn cropper-op text icon-item iconfont icon-xuanzhuan-2" bindtap='cropRotateRight'></text>
       <text class="item-btn cropper-op text icon-item iconfont icon-xuanzhuan-1" bindtap="cropRotateLeft"></text>
       <text class="item-btn cropper-op text icon-item iconfont icon-fangda" bindtap='cropEnlarge'></text>
@@ -345,5 +421,21 @@
   <!--二级菜单照相功能-->
   <view class="popbg" wx:if="{{menu.carema.showCamera}}" style="z-index: 99999;background: rgba(0, 0, 0, 0.9);">
     <template is="cameraView" data="{{menu}}" />
+  </view>
+  <!--微调-->
+  <view class="text-edit-pop" wx:if="{{menu.menuShow=='adjust'}}">
+    <view class="popbg" bindtap="closePopEdit"></view>
+    <view class="popup" style="height:230rpx;text-align:center;">
+      <view style="margin:20rpx 0 20rpx 0;">
+        <text class="icon-item iconfont icon-xiangshangsanjiaoxing" bindtap='adjustPos' data-type="top"></text>
+      </view>
+      <view style="margin-bottom:20rpx;width:50%;margin-left:auto;margin-right:auto;display:flex;flex-direction:row;justify-content:space-around;">
+        <text class="icon-item iconfont icon-xiangzuosanjiaoxing" bindtap='adjustPos' data-type="left"></text>
+        <text class="icon-item iconfont icon-xiangyousanjiaoxing" bindtap='adjustPos' data-type="right"></text>
+      </view>
+      <view style="margin-top:20rpx;">
+        <text class="icon-item iconfont icon-xiangxiasanjiaoxing" bindtap='adjustPos' data-type="down"></text>
+      </view>
+    </view>
   </view>
 </template>

@@ -82,6 +82,7 @@ Page({
       filterTitles:[
         '原图', '美肤', '素描', '自然增强', '紫调', '柔焦', '黑白', 'lomo', '暖秋', '木雕'
       ],
+      imgTrans: 100, //图片透明化
     },
     //画布标尺
     scaleStyles: {
@@ -244,6 +245,46 @@ Page({
   },
 
   //-----------------------------------菜单动作----------------------------------------------------//
+  //文字和图片初始值
+  initItem() {
+    let itemText = {
+      css:{
+        top: 50,
+        left: 50,
+        fontSize: 20,
+        fontFamily: '',
+        color: '',
+        fontWeight: 'normal',
+        background: '',
+        padding: 10,
+        textAlign: '',
+        textStyle: '',
+        textDecoration: '',
+        textVertical: false,
+        shadow: '',
+        display: 'block'
+      }, 
+      type:'text', 
+      text:''
+    };
+    let itemImg = {
+      type: 'image',
+      url:'',
+      css: {
+        top: 10,
+        left: 10,
+        display: 'block',
+        width: 0,
+        height: 0,
+      },
+      filterOp: '原图',
+      originalImgUrl: ''
+    };
+    this.setData({
+      itemText: itemText,
+      itemImg: itemImg
+    });
+  },
   showSecondMenu(e) {
     let that = this;
     const type = e.currentTarget.dataset['type'];
@@ -258,11 +299,13 @@ Page({
     var menu = this.data.menu
     switch(type) {
       case 'txt':
+        this.initItem();
         menu.secondMenu = 'txt.edit'
         menu.txtPopHeight = '480rpx'
         menu.showColorPicker = false
         break;
       case 'img':
+        this.initItem();
         var left = e.target.offsetLeft
         menu.menuShowLeft = left+5;
       case 'sys':
@@ -835,7 +878,7 @@ Page({
     let item = e.detail.item;
     let newItem;
     if(item.type=='text') {
-      page = 'editTxtPage';
+      page = 'editTextPage';
     } else {
       newItem = this.data.itemImg;
       newItem.css.width = item.css.width;
@@ -853,14 +896,21 @@ Page({
     });
   },
   //复制
-  copyItem() {
+  copyItem(type) {
     let item = CanvasDrag.getItem();
     let newItem = {css:{}}
     newItem.active = false;
     newItem.css.top = OFFSET + item.css.top;
     newItem.css.left = OFFSET + item.css.left;
-    newItem.type = 'image';
-    newItem.url = item.url;
+    newItem.type = type;
+    if(type == 'image') {
+      newItem.url = item.url;
+    } else {
+      let css = Object.assign({}, item.css);
+      newItem.css = css;
+      newItem.text = item.text;
+    }
+    
     this.setData({
       items: [newItem]
     });
@@ -904,12 +954,19 @@ Page({
   showEditMenu(e){
     let type = e.currentTarget.dataset['type'];
     let mainPage = 'editImgPage';
+    if(type==this.data.menu.menuShow) {
+      this.setData({
+        'menu.mainPageShow': mainPage,
+        'menu.menuShow': ''
+      });
+      return;
+    }
     switch(type){
       case "toMainPage":
         mainPage = 'mainPage';
         break;
       case "copeImg":
-        this.copyItem();
+        this.copyItem('image');
         break;
       case "replaceImg":
         this.setData({
@@ -918,6 +975,7 @@ Page({
         break;
       case "recoverSize":
         CanvasDrag.recoverSize();
+        break;
       case "cropper": //截图功能
         let itemImg = CanvasDrag.getItem();
         this.setData({
@@ -926,6 +984,21 @@ Page({
           'menu.cropper.width': itemImg.css.height,
           'menu.cropper.height': itemImg.css.height
         });
+        break;
+      case "matting":
+
+        break;
+      case "shape":
+
+        break;
+      case "flip":
+        this.flip();
+        break;
+      case "transparent":
+        this.transImg(0.3);
+        break;
+      case "adjust":
+        break;
       default:
         break;
     }
@@ -968,6 +1041,7 @@ Page({
         });
         that.canvas.width = canvasWidth;
         that.canvas.height = canvasHeight;
+        that.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         const image = that.canvas.createImage();
         image.src = originalImgUrl;
         image.onload = () => {
@@ -977,7 +1051,6 @@ Page({
         };
       }
     })
-    
   },
 
   _handleFilter(itemImg, that, canvasWidth, canvasHeight, filter) {
@@ -1002,7 +1075,6 @@ Page({
       fail: err => {
       },
       success: function (res) {
-        // console.log("res: " + JSON.stringify(res), res);
         that.setData({
           'itemImg.url': res.tempFilePath,
         });
@@ -1012,8 +1084,349 @@ Page({
         CanvasDrag.replaceItem(itemImg);
       }
     }, that);
-    
+  },
+
+  //图片透明化
+  transImg(alpha) {
+    let that = this;
+    let itemImg = CanvasDrag.getItem();
+    let url = itemImg.url;
+    wx.showLoading({
+      title: '处理中',
+      mask: true
+    });
+    wx.getImageInfo({
+      src: url,
+      success: resInfo => {
+        canvasWidth = resInfo.width; //宽度
+        canvasHeight = resInfo.height; //高度
+        that.setData({
+          canvasWidth: canvasWidth,
+          canvasHeight: canvasHeight,
+        });
+        that.canvas.width = canvasWidth;
+        that.canvas.height = canvasHeight;
+        that.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        const image = that.canvas.createImage();
+        image.src = url;
+        image.onload = () => {
+          that.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+          that.ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+          var imgData = that.ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+          for(var i = 0 , len = imgData.data.length ; i < len ; i += 4 ) {
+            // 改变每个像素的透明度
+            imgData.data[i + 3] = imgData.data[i + 3] * alpha;
+          }
+          that.ctx.putImageData(imgData, 0, 0);
+          wx.canvasToTempFilePath({
+            canvas: that.canvas,
+            x: 0,
+            y: 0,
+            width: canvasWidth,
+            height: canvasHeight,
+            destWidth: canvasWidth,
+            destHeight: canvasHeight,
+            fail: err => {
+            },
+            success: function (res) {
+              that.setData({
+                'itemImg.url': res.tempFilePath,
+              });
+              itemImg.url = res.tempFilePath;
+              CanvasDrag.replaceItem(itemImg);
+            }
+          }, that);
+          wx.hideLoading();
+        };
+      }
+    });
+  },
+  //图片透明度设置滑动
+  changeImgTrans(e) {
+    let alpha = e.detail.value;
+    this.setData({
+      'menu.imgTrans': alpha
+    })
+  },
+  //确定透明化图片
+  imgTransOk() {
+    let alpha = this.data.menu.imgTrans;
+    this.transImg(alpha/100);
+  },
+  imgTransCancel() {
+    this.setData({
+      'menu.menuShow': '',
+      'menu.imgTrans': 100,
+    });
+  },
+
+  flip() {
+    let item = CanvasDrag.getItem();
+    item.angle += 10;
+    item.active = true;
+    CanvasDrag.replaceItem(item);
+  },
+
+  shapeImg(e) {
+    let shapeType = e.currentTarget.dataset.type;
+    switch(shapeType) {
+      case "circle":
+        this.circleImg(shapeType, false);
+        break;
+      case "triangle":
+        this.triangleImg(shapeType);
+        break;
+      case "star":
+        this.startImg(shapeType);
+        break;
+      default:
+        break;
+    }
+  },
+  // 图片裁剪为圆形
+  circleImg(type, isBlur) {
+    let that = this;
+    let itemImg = CanvasDrag.getItem();
+    let url = itemImg.url;
+    if(itemImg.originalImgUrl!=='') {
+      url = itemImg.originalImgUrl;
+    } else {
+      itemImg.originalImgUrl = url;
+    }
+    itemImg.filterOp = type;
+    wx.showLoading({
+      title: '处理中',
+      mask: true
+    });
+    util.canvasHandleImg(that, that.ctx, that.canvas, url).then(resInfo => {
+      let radius = Math.min(resInfo.width, resInfo.height) / 2;
+      let cx = resInfo.width / 2;
+      let cy = resInfo.height / 2;
+      that.ctx.globalCompositeOperation = 'destination-in';
+      that.ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+      if(isBlur) {
+        let grad = that.ctx.createRadialGradient(150, 150, 40, 150, 150, 60);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        that.ctx.fillStyle = grad;
+      }
+      that.ctx.fill();
+      that.ctx.globalCompositeOperation = 'lighter'
+      that.ctx.fillStyle = 'rgba(0,0,0,0)'
+      that.ctx.fillRect(0, 0, that.canvas.width, that.canvas.height);
+      wx.canvasToTempFilePath({
+        canvas: that.canvas,
+        x: 0,
+        y: 0,
+        width: that.canvas.width,
+        height: that.canvas.height,
+        destWidth: that.canvas.width,
+        destHeight: that.canvas.height,
+        fail: err => {
+          console.log(err);
+        },
+        success: function (res) {
+          that.setData({
+            'itemImg.url': res.tempFilePath,
+          });
+          itemImg.url = res.tempFilePath;
+          CanvasDrag.replaceItem(itemImg);
+        }
+      }, that);
+    }).catch(error => {
+      console.log(error);
+    });
+  },
+  //五角星裁剪图片
+  startImg(type) {
+    let that = this;
+    let itemImg = CanvasDrag.getItem();
+    let url = itemImg.url;
+    if(itemImg.originalImgUrl!=='') {
+      url = itemImg.originalImgUrl;
+    } else {
+      itemImg.originalImgUrl = url;
+    }
+    itemImg.filterOp = type;
+    wx.showLoading({
+      title: '处理中',
+      mask: true
+    });
+    util.canvasHandleImg(that, that.ctx, that.canvas, url).then(resInfo => {
+      let R = Math.min(resInfo.width, resInfo.height) / 2;
+      let cx = resInfo.width / 2;
+      let cy = resInfo.height / 2;
+      that.ctx.globalCompositeOperation = 'destination-in';
+      var r = R / 2;
+      util.drawStar(that.ctx, R, r, 20, cx, cy);
+      that.ctx.clip();
+      wx.canvasToTempFilePath({
+        canvas: that.canvas,
+        x: 0,
+        y: 0,
+        width: that.canvas.width,
+        height: that.canvas.height,
+        destWidth: that.canvas.width,
+        destHeight: that.canvas.height,
+        fail: err => {
+          console.log(err);
+        },
+        success: function (res) {
+          that.setData({
+            'itemImg.url': res.tempFilePath,
+          });
+          itemImg.url = res.tempFilePath;
+          CanvasDrag.replaceItem(itemImg);
+        }
+      }, that);
+    }).catch(error => {
+      console.log(error);
+    });
+  },
+  //三角形裁剪图片
+  triangleImg(type) {
+    let that = this;
+    let itemImg = CanvasDrag.getItem();
+    let url = itemImg.url;
+    if(itemImg.originalImgUrl!=='') {
+      url = itemImg.originalImgUrl;
+    } else {
+      itemImg.originalImgUrl = url;
+    }
+    itemImg.filterOp = type;
+    wx.showLoading({
+      title: '处理中',
+      mask: true
+    });
+    util.canvasHandleImg(that, that.ctx, that.canvas, url).then(resInfo => {
+      let cx = resInfo.width;
+      let cy = resInfo.height;
+      that.ctx.globalCompositeOperation = 'destination-in';
+      that.ctx.beginPath(); 
+      that.ctx.moveTo(cx, 0); 
+      that.ctx.lineTo(0, cy);
+      that.ctx.lineTo(0, 0); 
+      that.ctx.fill();
+      that.ctx.clip();
+      wx.canvasToTempFilePath({
+        canvas: that.canvas,
+        x: 0,
+        y: 0,
+        width: that.canvas.width,
+        height: that.canvas.height,
+        destWidth: that.canvas.width,
+        destHeight: that.canvas.height,
+        fail: err => {
+          console.log(err);
+        },
+        success: function (res) {
+          that.setData({
+            'itemImg.url': res.tempFilePath,
+          });
+          itemImg.url = res.tempFilePath;
+          CanvasDrag.replaceItem(itemImg);
+        }
+      }, that);
+    }).catch(error => {
+      console.log(error);
+    });
   },
 
   //-----------------------------------点击图片操作 end------------------------------------------------//
+  //-----------------------------------点击文字操作 start----------------------------------------------//
+  showEditTypeMenu(e) {
+    let type = e.currentTarget.dataset['type'];
+    let mainPage = 'editTextPage';
+    switch(type) {
+      case "toMainPage":
+        mainPage = 'mainPage';
+        break;
+      case 'recoverText': //取消文字样式
+        CanvasDrag.recoverText();
+        break;
+      case 'copeText': //cope文字
+        this.copyItem('text');
+        break;
+      case 'editExistedText': //编辑文字
+        this.editExistedText('txt.edit');
+        break;
+      case 'editExistedTextColor':
+        this.editExistedText('txt.color');
+        break;
+      case 'editExistedTextCss':
+        this.editExistedText('txt.css');
+        break;
+      case 'editExistedTextBgColor':
+        this.editExistedText('txt.background');
+        break;
+      case 'editExistedTextShadow':
+        this.editExistedText('txt.shadow');
+        break;
+      case 'editExistedTextAdjust':
+        this.setData({
+          'menu.menuShow': 'adjust'
+        });
+        break;
+      case 'flip':
+        this.flip();
+        break;
+      default:
+        break;
+    }
+    this.setData({
+      'menu.mainPageShow': mainPage
+    });
+  },
+  editExistedText(editType) {
+    let itemText = CanvasDrag.getItem();
+    if(!itemText || typeof itemText==='undefined') {
+      return;
+    }
+    if(editType=='txt.color') {
+      this.setData({
+        'menu.txtPopHeight':'650rpx',
+        'menu.menuShow': 'txt',
+        'menu.showColorPicker': true,
+        'itemText': itemText
+      });
+    } else {
+      this.setData({
+        'menu.menuShow': 'txt',
+        'menu.secondMenu': editType,
+        'itemText': itemText
+      }); 
+    }
+  },
+  //微调动作
+  adjustPos(e) {
+    let item = CanvasDrag.getItem();
+    let type = e.currentTarget.dataset['type'];
+    if(!item || typeof item==='undefined') {
+      return;
+    }
+    switch(type) {
+      case 'top':
+        if(item.css.top>0) {
+          item.css.top -= 1;
+        }
+        break;
+      case 'down':
+        item.css.top += 1;
+        break;
+      case 'left':
+        if(item.css.left>0) {
+          item.css.left -= 1;
+        }
+        break;
+      case 'right':
+        let size = CanvasDrag.getCanvasSize();
+        if(item.css.left<size.width) {
+          item.css.left += 1;
+        }
+        break;
+    }
+    item.active = true;
+    CanvasDrag.replaceItem(item);
+  },
+  //-----------------------------------点击文字操作 end------------------------------------------------//
 })

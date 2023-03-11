@@ -1,5 +1,5 @@
 <view>
 
-  <canvas type="2d" id="myCanvas1" style="width: {{width}}px;height: {{height}}px; background-color: orange;"></canvas>
-  <canvas type="2d" id="myCanvas2" style="width: {{width2}}px;height: {{height2}}px; background-color: blue;"></canvas>
+  <canvas type="2d" id="myCanvas1" style="width: {{width}}px;height: {{height}}px; "></canvas>
+
 </view>

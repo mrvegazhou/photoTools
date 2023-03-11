@@ -977,6 +977,10 @@ Component({
       })
     },
 
+    getCanvasSize() {
+      return {width: this.data.canvasWidth, height:this.data.canvasHeight};
+    },
+
     //------------------------------------单击item编辑 begin------------------------------------//
     //单击单个元素动作
     clickItem() {

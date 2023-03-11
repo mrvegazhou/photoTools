@@ -428,6 +428,56 @@ function createImage() {
   return image
 }
 
+//在canvas上绘图
+function canvasHandleImg(that, ctx, canvas, url) {
+  return new Promise((resolve, reject)=>{
+            wx.getImageInfo({
+              src: url,
+              success: resInfo => {
+                let canvasWidth = resInfo.width; //宽度
+                let canvasHeight = resInfo.height; //高度
+                that.setData({
+                  canvasWidth: canvasWidth,
+                  canvasHeight: canvasHeight,
+                });
+                canvas.width = canvasWidth;
+                canvas.height = canvasHeight;
+
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+                const image = canvas.createImage();
+                image.src = url;
+                image.onload = () => {
+
+                  ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+                  resolve(resInfo);
+                  ctx.restore();
+                  wx.hideLoading();
+                };
+              }
+            });
+  });
+}
+
+//绘制五角星
+function drawStar(ctx, R, r, rotate, x, y){
+  // beginPath：开始绘制一段新的路径
+  ctx.beginPath();
+  var angle = 360/5;
+  for (var i = 0; i < 5; i++) {
+      // 角度转弧度：角度/180*Math.PI
+      var roateAngle = i * angle - rotate; // 旋转动起来
+      // 外圆顶点坐标
+      ctx.lineTo(Math.cos((18 + roateAngle) / 180 * Math.PI) * R + x, -Math.sin((18 + roateAngle) / 180 * Math.PI) * R + y);
+      // 內圆顶点坐标
+      ctx.lineTo(Math.cos((54 + roateAngle) / 180 * Math.PI) * r + x, -Math.sin((54 + roateAngle) / 180 * Math.PI) * r + y);
+  }
+  // closePath：关闭路径，将路径的终点与起点相连
+  ctx.closePath();
+  ctx.fillStyle = 'RGBA(0,0,0,1)';
+  ctx.fill();
+  // ctx.stroke();
+}
+
 module.exports = {
   formatTime: formatTime,
   tools: tools,
@@ -451,5 +501,7 @@ module.exports = {
   openConfirm: openConfirm,
   sortBy: sortBy,
   createCanvasContext: createCanvasContext,
-  createImage: createImage
+  createImage: createImage,
+  canvasHandleImg: canvasHandleImg,
+  drawStar: drawStar
 }

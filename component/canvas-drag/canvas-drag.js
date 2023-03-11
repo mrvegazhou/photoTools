@@ -113,4 +113,14 @@ CanvasDrag.recoverSize = () => {
   }
 };
 
+//获取画板尺寸
+CanvasDrag.getCanvasSize = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().getCanvasSize();
+  }
+};
+
 export default CanvasDrag;
