@@ -169,9 +169,9 @@
       <view class="tab-item">形状</view>
       </view>
       <view class="tab-flow-items">
-        <view class="flow-item {{itemImg.filterOp=='circle'?'select':''}}" bindtap="shapeImg" data-type="circle">圆形</view>
-        <view class="flow-item {{itemImg.filterOp=='star'?'select':''}}" bindtap="shapeImg" data-type="star">五角星</view>
-        <view class="flow-item {{itemImg.filterOp=='triangle'?'select':''}}" bindtap="shapeImg" data-type="triangle">三角形</view>
+        <block wx:for="{{menu.dictShapes}}" wx:key="index">
+          <view class="flow-item {{itemImg.filterOp==index?'select':''}}" bindtap="shapeImg" data-type='{{index}}'>{{item}}</view>
+        </block>
       </view>
     </view>
   </view>

@@ -429,29 +429,52 @@ function createImage() {
 }
 
 //在canvas上绘图
-function canvasHandleImg(that, ctx, canvas, url) {
+function canvasHandleImg(that, url, success) {
   return new Promise((resolve, reject)=>{
             wx.getImageInfo({
               src: url,
               success: resInfo => {
+                wx.showLoading({
+                  title: '处理中',
+                  mask: true
+                });
                 let canvasWidth = resInfo.width; //宽度
                 let canvasHeight = resInfo.height; //高度
                 that.setData({
                   canvasWidth: canvasWidth,
                   canvasHeight: canvasHeight,
                 });
-                canvas.width = canvasWidth;
-                canvas.height = canvasHeight;
+                that.canvas.width = canvasWidth;
+                that.canvas.height = canvasHeight;
+                
+                that.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-                const image = canvas.createImage();
+                resolve(resInfo);
+                
+                const image = that.canvas.createImage();
                 image.src = url;
                 image.onload = () => {
+                  that.ctx.save();
+                  that.ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+                  that.ctx.restore();
+                  wx.canvasToTempFilePath({
+                    canvas: that.canvas,
+                    x: 0,
+                    y: 0,
+                    width: that.canvas.width,
+                    height: that.canvas.height,
+                    destWidth: that.canvas.width,
+                    destHeight: that.canvas.height,
+                    fail: err => {
+                      console.log(err);
+                    },
+                    success: function (res) {
+                      
+                      success(res.tempFilePath);
 
-                  ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
-                  resolve(resInfo);
-                  ctx.restore();
-                  wx.hideLoading();
+                      wx.hideLoading();
+                    }
+                  }, that);
                 };
               }
             });

@@ -15,7 +15,9 @@ var openStatus = true;
 const OFFSET = 10;
 let canvasWidth = 1239;
 let canvasHeight = 696;
-
+let dictShapes = {
+  'circle':'圆形', 'star':'五角星', 'triangle': '三角形'
+};
 Page({
   canvas: null, // 画布
   ctx: null,
@@ -28,6 +30,7 @@ Page({
       menuShow: '', // img.加图 txt.加字 clip.裁剪 doodle.涂鸦 layer.图层
       menuShowLeft: 0,
       secondMenu:'',
+      dictShapes: dictShapes,
       showColorPicker: false, // 颜色选择器
       colorData: {
         transparency: 1,
@@ -505,23 +508,6 @@ Page({
   //-----------------------------------背景设置 end----------------------------------------------------//
 
   //-----------------------------------裁剪动作----------------------------------------------------//
-  chooseImage() {
-    let _self = this;
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['original', 'compressed'],
-      sourceType: ['album', 'camera'],
-      success (res) {
-        // tempFilePath可以作为img标签的src属性显示图片
-        const tempFilePaths = res.tempFilePaths[0];
-        let temp = _self.data.menu;
-        temp.cropper.src = tempFilePaths;
-        _self.setData({
-          menu: temp
-        })
-      }
-    })
-  },
   cropTop() {
     ImageCropper.setTransform({y: -3});
   },
@@ -954,6 +940,7 @@ Page({
   showEditMenu(e){
     let type = e.currentTarget.dataset['type'];
     let mainPage = 'editImgPage';
+    let that = this;
     if(type==this.data.menu.menuShow) {
       this.setData({
         'menu.mainPageShow': mainPage,
@@ -967,6 +954,9 @@ Page({
         break;
       case "copeImg":
         this.copyItem('image');
+        setTimeout(()=>{that.setData({
+          'menu.menuShow=': ''
+        });}, 2000);
         break;
       case "replaceImg":
         this.setData({
@@ -975,6 +965,9 @@ Page({
         break;
       case "recoverSize":
         CanvasDrag.recoverSize();
+        setTimeout(()=>{that.setData({
+          'menu.menuShow=': ''
+        });}, 2000);
         break;
       case "cropper": //截图功能
         let itemImg = CanvasDrag.getItem();
@@ -1171,7 +1164,7 @@ Page({
     let shapeType = e.currentTarget.dataset.type;
     switch(shapeType) {
       case "circle":
-        this.circleImg(shapeType, false);
+        this.circleImg(shapeType);
         break;
       case "triangle":
         this.triangleImg(shapeType);
@@ -1184,7 +1177,7 @@ Page({
     }
   },
   // 图片裁剪为圆形
-  circleImg(type, isBlur) {
+  circleImg(type) {
     let that = this;
     let itemImg = CanvasDrag.getItem();
     let url = itemImg.url;
@@ -1194,45 +1187,20 @@ Page({
       itemImg.originalImgUrl = url;
     }
     itemImg.filterOp = type;
-    wx.showLoading({
-      title: '处理中',
-      mask: true
-    });
-    util.canvasHandleImg(that, that.ctx, that.canvas, url).then(resInfo => {
+    
+    util.canvasHandleImg(that, url, function(path){
+      that.setData({
+        'itemImg.url': path,
+      });
+      itemImg.url = path;
+      CanvasDrag.replaceItem(itemImg);
+    }).then(resInfo => {
       let radius = Math.min(resInfo.width, resInfo.height) / 2;
       let cx = resInfo.width / 2;
       let cy = resInfo.height / 2;
-      that.ctx.globalCompositeOperation = 'destination-in';
-      that.ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
-      if(isBlur) {
-        let grad = that.ctx.createRadialGradient(150, 150, 40, 150, 150, 60);
-        grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
-        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-        that.ctx.fillStyle = grad;
-      }
-      that.ctx.fill();
-      that.ctx.globalCompositeOperation = 'lighter'
-      that.ctx.fillStyle = 'rgba(0,0,0,0)'
-      that.ctx.fillRect(0, 0, that.canvas.width, that.canvas.height);
-      wx.canvasToTempFilePath({
-        canvas: that.canvas,
-        x: 0,
-        y: 0,
-        width: that.canvas.width,
-        height: that.canvas.height,
-        destWidth: that.canvas.width,
-        destHeight: that.canvas.height,
-        fail: err => {
-          console.log(err);
-        },
-        success: function (res) {
-          that.setData({
-            'itemImg.url': res.tempFilePath,
-          });
-          itemImg.url = res.tempFilePath;
-          CanvasDrag.replaceItem(itemImg);
-        }
-      }, that);
+      that.ctx.beginPath()
+      that.ctx.arc(cx, cy, radius, 0, 2 * Math.PI, false);
+      that.ctx.clip();
     }).catch(error => {
       console.log(error);
     });
@@ -1252,33 +1220,19 @@ Page({
       title: '处理中',
       mask: true
     });
-    util.canvasHandleImg(that, that.ctx, that.canvas, url).then(resInfo => {
+    util.canvasHandleImg(that, url, function(path){
+      that.setData({
+        'itemImg.url': path,
+      });
+      itemImg.url = path;
+      CanvasDrag.replaceItem(itemImg);
+    }).then(resInfo => {
       let R = Math.min(resInfo.width, resInfo.height) / 2;
       let cx = resInfo.width / 2;
       let cy = resInfo.height / 2;
-      that.ctx.globalCompositeOperation = 'destination-in';
       var r = R / 2;
       util.drawStar(that.ctx, R, r, 20, cx, cy);
       that.ctx.clip();
-      wx.canvasToTempFilePath({
-        canvas: that.canvas,
-        x: 0,
-        y: 0,
-        width: that.canvas.width,
-        height: that.canvas.height,
-        destWidth: that.canvas.width,
-        destHeight: that.canvas.height,
-        fail: err => {
-          console.log(err);
-        },
-        success: function (res) {
-          that.setData({
-            'itemImg.url': res.tempFilePath,
-          });
-          itemImg.url = res.tempFilePath;
-          CanvasDrag.replaceItem(itemImg);
-        }
-      }, that);
     }).catch(error => {
       console.log(error);
     });
@@ -1298,35 +1252,20 @@ Page({
       title: '处理中',
       mask: true
     });
-    util.canvasHandleImg(that, that.ctx, that.canvas, url).then(resInfo => {
+    util.canvasHandleImg(that, url, function(path){
+      that.setData({
+        'itemImg.url': path,
+      });
+      itemImg.url = path;
+      CanvasDrag.replaceItem(itemImg);
+    }).then(resInfo => {
       let cx = resInfo.width;
       let cy = resInfo.height;
-      that.ctx.globalCompositeOperation = 'destination-in';
       that.ctx.beginPath(); 
       that.ctx.moveTo(cx, 0); 
       that.ctx.lineTo(0, cy);
       that.ctx.lineTo(0, 0); 
-      that.ctx.fill();
       that.ctx.clip();
-      wx.canvasToTempFilePath({
-        canvas: that.canvas,
-        x: 0,
-        y: 0,
-        width: that.canvas.width,
-        height: that.canvas.height,
-        destWidth: that.canvas.width,
-        destHeight: that.canvas.height,
-        fail: err => {
-          console.log(err);
-        },
-        success: function (res) {
-          that.setData({
-            'itemImg.url': res.tempFilePath,
-          });
-          itemImg.url = res.tempFilePath;
-          CanvasDrag.replaceItem(itemImg);
-        }
-      }, that);
     }).catch(error => {
       console.log(error);
     });

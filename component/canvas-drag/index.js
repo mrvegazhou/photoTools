@@ -1019,7 +1019,10 @@ Component({
 
           item.css.width = resInfo.width; //宽度
           item.css.height = resInfo.height; //高度
-          
+          //恢复原图
+          if(item.originalImgUrl && item.originalImgUrl!='') {
+            item.url = item.originalImgUrl;
+          }
           var newHeight = resInfo.height, newWidth = resInfo.width;
           if (item.css.width > maxWidth || item.css.height > maxHeight) { // 原图宽或高大于最大值就执行
             if (item.css.width / item.css.height > maxWidth / maxHeight) { // 判断比n大值的宽或高作为基数计算
