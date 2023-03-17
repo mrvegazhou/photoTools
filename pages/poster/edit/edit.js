@@ -35,6 +35,7 @@ Page({
       colorData: {
         transparency: 1,
         color: '#333333',
+        done: false,
       },
       backgroundColor: {
         transparency: 1,
@@ -65,6 +66,7 @@ Page({
       fontFamilyIndex: 0,
       fontFamilyShow: false,
       fontFamilyShowVal: '',
+      fontFamilyDone: false, //判断是否点击过选择动作
 
       //照相
       camera: {
@@ -77,7 +79,7 @@ Page({
         use: 'img'
       },
 
-      txtPopHeight: '470rpx', //文字编辑层高度
+      txtPopHeight: '480rpx', //文字编辑层高度
       isBg: 'bg.img', //背景选择
       editMenu: '', //编辑item的菜单选项
       addImg: 'img.img', //添加图片选择
@@ -86,6 +88,7 @@ Page({
         '原图', '美肤', '素描', '自然增强', '紫调', '柔焦', '黑白', 'lomo', '暖秋', '木雕'
       ],
       imgTrans: 100, //图片透明化
+      txtEditType: 'add',
     },
     //画布标尺
     scaleStyles: {
@@ -119,7 +122,9 @@ Page({
         display: 'block'
       }, 
       type:'text', 
-      text:''
+      text:'',
+      id: null,
+      active: null,
     },
     itemImg: {
       type: 'image',
@@ -132,7 +137,10 @@ Page({
         height: 0,
       },
       filterOp: '原图',
-      originalImgUrl: ''
+      originalImgUrl: '',
+      originalImgUrl2: '',
+      id: null,
+      active: null,
     },
     items: [
     ],
@@ -562,6 +570,15 @@ Page({
       'menu.mainPageShow': 'mainPage' 
     });
   },
+  //保存涂鸦图片到画板
+  saveImg2Canvas(event) {
+    if(typeof(event.detail.imgPath) == "undefined") return;
+    let itemImg = this.data.itemImg;
+    itemImg.url = event.detail.imgPath;
+    this.setData({
+      'items': [itemImg]
+    });
+  },
   //-----------------------------------涂鸦动作 end---------------------------------------------------//
 
   //-----------------------------------照相 begin-------------------------------------------------//
@@ -629,8 +646,14 @@ Page({
     this.setData({'menu.menuShow': ''})
   },
   // 编辑文字确认
-  editTxtOk() {
-    let item = this.data.itemText;
+  editTxtAdd() {
+    this.editTxtCommon('add');
+  },
+  editTxtUpdate() {
+    this.editTxtCommon('update');
+  },
+  editTxtCommon(op) {
+    let item = JSON.parse(JSON.stringify(this.data.itemText));
     let content = item.text;
     let type = item.type;
     if(type!='text')
@@ -650,11 +673,27 @@ Page({
     if(this.data.menu.shadowColor.color!='' && this.data.menu.shadowColor.blur!=0) {
       item.css.shadow = `${this.data.menu.shadowColor.hShadow} ${this.data.menu.shadowColor.vShadow} ${this.data.menu.shadowColor.blur} ${this.data.menu.shadowColor.color}`;
     }
-    let items = this.data.items;
-    items = [item]
-    this.setData({
-      items: items
-    });
+    if(op=='add') {
+      this.setData({
+        items: [item]
+      });
+    } else {
+      let oldItem = CanvasDrag.getItem();
+      if(typeof(oldItem) == "undefined" || oldItem==null) {
+        this.setData({
+          items: [item]
+        });
+      } else {
+        item.id = oldItem.id;
+        item.css.left = oldItem.css.left;
+        item.css.top = oldItem.css.top;
+        item.active = oldItem.active;
+        item.css.color = this.data.menu.colorData.done==false ? oldItem.css.color : this.data.menu.colorData.color;
+        item.css.fontFamily = this.data.menu.fontFamilyDone==false ? oldItem.css.fontFamily : this.data.menu.menu.fontFamilyShowVal;
+        CanvasDrag.replaceItem(item);
+      }
+      
+    }
     this.closePopEdit()
     //清除样式
     this.initTextData();
@@ -720,6 +759,7 @@ Page({
   onChangeColor(e) {
     let rgba = e.detail.rgba;
     this.setData({
+      'menu.colorData.done': true,
       'menu.colorData.color': rgba,
       'menu.colorData.transparency': e.detail.alpha || 1,
       'itemText.css.color': rgba,
@@ -757,6 +797,7 @@ Page({
     this.setData({
       'menu.fontFamilyShowVal': families[index],
       'menu.fontFamilyIndex': index,
+      'menu.fontFamilyDone': true,
     });
     if(index>0) {
       this.setData({'itemText.css.fontFamily': families[index]})
@@ -835,7 +876,10 @@ Page({
       'itemText.css.textDecoration': '',
       'itemText.css.textVertical': false,
       'menu.colorData.transparency': 1,
-      'menu.colorData.color': '#333333'
+      'menu.colorData.color': '#333333',
+      'menu.colorData.done': false,
+      'menu.fontFamilyDone': false,
+      'menu.txtEditType': 'add'
     })
   },
   //-----------------------------------文字编辑 end---------------------------------------------------//
@@ -865,6 +909,13 @@ Page({
     let newItem;
     if(item.type=='text') {
       page = 'editTextPage';
+      newItem = this.data.itemText;
+      newItem.active = item.active;
+      newItem.id = item.id;
+      newItem.scale = item.scale;
+      let css = Object.assign({}, item.css);
+      newItem.css = css;
+      this.setData({itemText: newItem});
     } else {
       newItem = this.data.itemImg;
       newItem.css.width = item.css.width;
@@ -875,7 +926,7 @@ Page({
       newItem.originalImgUrl = item.url;
       this.setData({itemImg: newItem});
     }
-
+    
     this.setData({
       'menu.mainPageShow': page,
       'menu.menuShow': '',
@@ -984,8 +1035,11 @@ Page({
       case "shape":
 
         break;
-      case "flip":
-        this.flip();
+      case 'upFlip':
+        this.flip('up');
+        break;
+      case 'inverseFlip':
+        this.flip('inverse');
         break;
       case "transparent":
         this.transImg(0.3);
@@ -1065,6 +1119,7 @@ Page({
       height: canvasHeight,
       destWidth: canvasWidth,
       destHeight: canvasHeight,
+      quality: 1,
       fail: err => {
       },
       success: function (res) {
@@ -1153,9 +1208,13 @@ Page({
     });
   },
 
-  flip() {
+  flip(type) {
     let item = CanvasDrag.getItem();
-    item.angle += 10;
+    if(type=='up') {
+      item.angle += 10;
+    } else {
+      item.angle -= 10;
+    }
     item.active = true;
     CanvasDrag.replaceItem(item);
   },
@@ -1181,10 +1240,10 @@ Page({
     let that = this;
     let itemImg = CanvasDrag.getItem();
     let url = itemImg.url;
-    if(itemImg.originalImgUrl!=='') {
-      url = itemImg.originalImgUrl;
+    if(dictShapes.hasOwnProperty(itemImg.filterOp)) {
+      url = itemImg.originalImgUrl2;
     } else {
-      itemImg.originalImgUrl = url;
+      itemImg.originalImgUrl2 = url;
     }
     itemImg.filterOp = type;
     
@@ -1210,10 +1269,10 @@ Page({
     let that = this;
     let itemImg = CanvasDrag.getItem();
     let url = itemImg.url;
-    if(itemImg.originalImgUrl!=='') {
-      url = itemImg.originalImgUrl;
+    if(dictShapes.hasOwnProperty(itemImg.filterOp)) {
+      url = itemImg.originalImgUrl2;
     } else {
-      itemImg.originalImgUrl = url;
+      itemImg.originalImgUrl2 = url;
     }
     itemImg.filterOp = type;
     wx.showLoading({
@@ -1242,10 +1301,10 @@ Page({
     let that = this;
     let itemImg = CanvasDrag.getItem();
     let url = itemImg.url;
-    if(itemImg.originalImgUrl!=='') {
-      url = itemImg.originalImgUrl;
+    if(dictShapes.hasOwnProperty(itemImg.filterOp)) {
+      url = itemImg.originalImgUrl2;
     } else {
-      itemImg.originalImgUrl = url;
+      itemImg.originalImgUrl2 = url;
     }
     itemImg.filterOp = type;
     wx.showLoading({
@@ -1306,8 +1365,11 @@ Page({
           'menu.menuShow': 'adjust'
         });
         break;
-      case 'flip':
-        this.flip();
+      case 'upFlip':
+        this.flip('up');
+        break;
+      case 'inverseFlip':
+        this.flip('inverse');
         break;
       default:
         break;
@@ -1330,9 +1392,11 @@ Page({
       });
     } else {
       this.setData({
+        'menu.txtPopHeight': '480rpx',
         'menu.menuShow': 'txt',
         'menu.secondMenu': editType,
-        'itemText': itemText
+        'itemText': itemText,
+        'menu.txtEditType': 'update'
       }); 
     }
   },

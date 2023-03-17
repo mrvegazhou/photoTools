@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3687307 */
-  src: url('//at.alicdn.com/t/c/font_3687307_nxe6xieffp.woff2?t=1677595871480') format('woff2'),
-       url('//at.alicdn.com/t/c/font_3687307_nxe6xieffp.woff?t=1677595871480') format('woff'),
-       url('//at.alicdn.com/t/c/font_3687307_nxe6xieffp.ttf?t=1677595871480') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_3687307_0bwmt02r1m6q.woff2?t=1678805777642') format('woff2'),
+       url('//at.alicdn.com/t/c/font_3687307_0bwmt02r1m6q.woff?t=1678805777642') format('woff'),
+       url('//at.alicdn.com/t/c/font_3687307_0bwmt02r1m6q.ttf?t=1678805777642') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-fanzhuanshunshizhen:before {
+  content: "\e602";
 }
 
 .icon-jurassic_shupai-text:before {
@@ -25,8 +29,8 @@
   content: "\e613";
 }
 
-.icon-fanzhuan:before {
-  content: "\e64d";
+.icon-fanzhuannishizhen:before {
+  content: "\e601";
 }
 
 .icon-fuzhi:before {

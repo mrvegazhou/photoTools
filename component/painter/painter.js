@@ -746,6 +746,7 @@ Component({
         wx.canvasToTempFilePath(
           {
             ...(that.properties.use2D ? optionsOf2d : optionsOfOld),
+            quality: 1,
             success: function (res) {
               that.getImageInfo(res.tempFilePath);
             },

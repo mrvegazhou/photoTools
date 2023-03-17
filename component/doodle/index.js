@@ -447,6 +447,7 @@ Component({
     },
     //保存图片
     saveAsImg() {
+      let that = this;
       wx.showLoading({
         title: '生成图片中',
         mask: true
@@ -455,8 +456,11 @@ Component({
         this.autoDetectBorder(1)
       } else {
         this.saveCanvas().then(()=>{
+          //保存到海报画布
+          let imgPath = this.data.imgCanvas;
+          that.triggerEvent('saveImg2Canvas', {imgPath: imgPath});
           wx.saveImageToPhotosAlbum({
-            filePath: this.data.imgCanvas,
+            filePath: imgPath,
             success: (res) => {
               wx.hideLoading()
               wx.showToast({
@@ -566,8 +570,9 @@ Component({
             success: (res) => {
               let imgPath = res.tempFilePath;
               that.setData({ imgCanvas: imgPath });
+              //保存到海报画布
+              that.triggerEvent('saveImg2Canvas', {imgPath: imgPath});
               that.saveCanvas().then(()=>{
-                console.log(that.data.imgCanvas, imgPath, '---imgPath---')
                 wx.saveImageToPhotosAlbum({
                   filePath: imgPath,
                   success: (res) => {

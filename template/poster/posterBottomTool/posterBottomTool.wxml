@@ -71,9 +71,13 @@
       <text class="icon-item iconfont icon-yinying"></text>
       <text class="text">阴影</text>
     </view>
-    <view bindtap='showEditTypeMenu' data-type="flip" class="item-btn {{menu.menuShow=='flip'?'menu-select':''}}">
-      <text class="icon-item iconfont icon-fanzhuan"></text>
-      <text class="text">翻转</text>
+    <view bindtap='showEditTypeMenu' data-type="upFlip" class="item-btn {{menu.menuShow=='upFlip'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-fanzhuanshunshizhen"></text>
+      <text class="text">顺时转</text>
+    </view>
+    <view bindtap='showEditTypeMenu' data-type="inverseFlip" class="item-btn {{menu.menuShow=='inverseFlip'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-fanzhuannishizhen"></text>
+      <text class="text">逆时转</text>
     </view>
     <view bindtap='showEditTypeMenu' data-type="editExistedTextAdjust" class="item-btn {{menu.menuShow=='editExistedTextAdjust'?'menu-select':''}}">
       <text class="icon-item iconfont icon-fangxiang"></text>
@@ -115,9 +119,13 @@
       <text class="icon-item iconfont icon-14xingzhuangjiehe"></text>
       <text class="text">形状</text>
     </view>
-    <view bindtap='showEditMenu' data-type="flip" class="item-btn {{menu.menuShow=='flip'?'menu-select':''}}">
-      <text class="icon-item iconfont icon-fanzhuan"></text>
-      <text class="text">翻转</text>
+    <view bindtap='showEditMenu' data-type="upFlip" class="item-btn {{menu.menuShow=='upFlip'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-fanzhuanshunshizhen"></text>
+      <text class="text">顺时转</text>
+    </view>
+    <view bindtap='showEditMenu' data-type="inverseFlip" class="item-btn {{menu.menuShow=='inverseFlip'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-fanzhuannishizhen"></text>
+      <text class="text">逆时转</text>
     </view>
     <view bindtap='showEditMenu' data-type="transparent" class="item-btn {{menu.menuShow=='transparent'?'menu-select':''}}">
       <text class="icon-item iconfont icon-touming"></text>
@@ -280,9 +288,9 @@
     <view class="popup" style="height:{{menu.txtPopHeight}}">
       <!--颜色-->
       <view class="color-picker-view" wx:if="{{menu.showColorPicker}}">
-        <view class="input-label" style="margin: 20rpx;">字体颜色: {{tools.getHexColor(menu.colorData.color)}}</view>
+        <view class="input-label" style="margin: 20rpx;">字体颜色: {{tools.getHexColor(menu.txtEditType=='update' ? itemText.css.color : menu.colorData.color)}}</view>
         <view class="color-picker-content">
-          <color-picker2 colorData="{{menu.colorData.color}}" bindchangecolor="onChangeColor"></color-picker2>
+          <color-picker2 colorData="{{menu.txtEditType=='update' ? itemText.css.color : menu.colorData.color}}" bindchangecolor="onChangeColor"></color-picker2>
           <text bindtap="closeColorPicker" class="icon-item iconfont icon-queren1"></text>
         </view>
       </view>
@@ -302,9 +310,16 @@
             </view>
           </view>
           <view class="edit-css {{menu.fontFamilyShow ? 'show':'disappear'}}">
-            <view wx:for="{{menu.fontFamilySelect}}" wx:key="index" bindtap='selectFontFamily' data-index="{{index}}" class="line {{menu.fontFamilyIndex==index?'checked':''}}">
-              <text style="font-family:{{item}};white-space:nowrap;overflow:hidden;">{{item}}</text>
-            </view>
+            <block wx:if="{{menu.txtEditType=='update'}}">
+              <view wx:for="{{menu.fontFamilySelect}}" wx:key="index" bindtap='selectFontFamily' data-index="{{index}}" class="line {{itemText.css.fontFamily==item?'checked':''}}">
+                <text style="font-family:{{item}};white-space:nowrap;overflow:hidden;">{{item}}</text>
+              </view>
+            </block>
+            <block wx:else>
+              <view wx:for="{{menu.fontFamilySelect}}" wx:key="index" bindtap='selectFontFamily' data-index="{{index}}" class="line {{menu.fontFamilyIndex==index?'checked':''}}">
+                <text style="font-family:{{item}};white-space:nowrap;overflow:hidden;">{{item}}</text>
+              </view>
+            </block>
           </view>
         </view>
         <view class="eidt-font-size">
@@ -374,7 +389,7 @@
           <text class="iconfont icon-bianji">编辑</text>
         </view>
         <view class="item {{menu.secondMenu=='txt.color'?'select':''}}" bindtap="editText" data-type="txt.color">
-          <text class="iconfont icon-yanse" style="color:{{menu.colorData.color}}">颜色</text>
+          <text class="iconfont icon-yanse" style="color:{{menu.txtEditType=='update' ? itemText.css.color : menu.colorData.color}}">颜色</text>
         </view>
         <view class="item {{menu.secondMenu=='txt.css'?'select':''}}" bindtap="editText" data-type="txt.css">
           <text class="iconfont icon--zitiyangshi">样式</text>
@@ -387,7 +402,7 @@
         </view>
       </view>
       <view class="btn">
-        <text class="icon-item iconfont icon-queren1" bindtap="editTxtOk"></text>
+        <text class="icon-item iconfont icon-queren1" bindtap="{{menu.txtEditType=='update' ? 'editTxtUpdate' : 'editTxtAdd'}}" ></text>
         <text class="icon-item iconfont icon-quxiao1" bindtap="editTxtCancel"></text>
       </view>
     </view>
@@ -416,7 +431,7 @@
   </view>
   <!--涂鸦编辑层-->
   <view wx:if="{{menu.menuShow=='doodle'}}">
-    <doodle id="myDoodleCpt" bind:goBack="goBackFromDoodle"></doodle>
+    <doodle id="myDoodleCpt" bind:goBack="goBackFromDoodle" bind:saveImg2Canvas="saveImg2Canvas"></doodle>
   </view>
   <!--二级菜单照相功能-->
   <view class="popbg" wx:if="{{menu.carema.showCamera}}" style="z-index: 99999;background: rgba(0, 0, 0, 0.9);">

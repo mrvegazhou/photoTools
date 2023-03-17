@@ -73,7 +73,6 @@ Component({
       this.ctx.exec((res) => {
         const codeCanvas = res[0].node
         const codeCtx = codeCanvas.getContext('2d')
-        // console.log( wx.getSystemInfoSync().pixelRatio, '----dpr-----');
         that.codeCanvas = codeCanvas;
         that.codeCtx = codeCtx;
         
@@ -306,7 +305,7 @@ Component({
 
       data.css.left = (!item.css.left || item.css.left==0) ? 50 : item.css.left;
       data.css.top = (!item.css.top || item.css.top==0) ? 50 : item.css.top;
-      
+
       data.scale = 1;
       item.scale = item.scale ? item.scale : 1;
 
@@ -360,7 +359,8 @@ Component({
         data.styles += `color:${item.css.color};`
       }
       if(item.css.fontFamily!='系统默认字体'){
-        data.styles += `font-family:${item.css.fontFamily};`
+        data.styles += `font-family:${item.css.fontFamily};`;
+        data.css.fontFamily = item.css.fontFamily;
       }
       if(item.css.fontWeight){
         data.styles += `font-weight:${item.css.fontWeight};`
@@ -389,8 +389,6 @@ Component({
       
       data.angle = item.angle ? item.angle : 0;
       data.active = false;
-      data.css.left = item.css.left;
-      data.css.top = item.css.top;
       data.css.display = 'block';
       
       if(op=='add') {
@@ -506,6 +504,7 @@ Component({
       let yDis = list[index]._ly - list[index].ly;
       list[index].css.left += xDis;
       list[index].css.top += yDis;
+
       list[index].x += xDis;
       list[index].y += yDis;
       // 边界移动阻止
@@ -866,10 +865,10 @@ Component({
 
           if(temp[i].css.fontFamily=='系统默认字体') delete temp[i].css.fontFamily;
           temp[i].css.textDecoration = temp[i].css.textDecoration.trim();
-          // temp[i].css.padding /= 2;
+
           temp[i].css.padding *= scale;
           temp[i].css.padding += "px";
-          temp[i].css.fontSize *= (scale+0.25);
+          temp[i].css.fontSize *= scale;//(scale+0.25);
           temp[i].css.fontSize += "px";
           if(temp[i].css.shadow==''){
             delete temp[i].css.shadow;
@@ -880,7 +879,7 @@ Component({
           if(platform=='devtools') {
             delete temp[i].css.textStyle;
           }
-          console.log(temp[i], '----temp[i]---')
+
           if(temp[i].css.textVertical) {
             let contentArr = (temp[i].text).split("\n");
             let nums = contentArr.map((ele) => { return ele.length; });

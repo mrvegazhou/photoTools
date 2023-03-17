@@ -465,6 +465,7 @@ function canvasHandleImg(that, url, success) {
                     height: that.canvas.height,
                     destWidth: that.canvas.width,
                     destHeight: that.canvas.height,
+                    quality: 1,
                     fail: err => {
                       console.log(err);
                     },
