@@ -22,7 +22,7 @@
 
       <view class="footer">
         <view class="finish" catchtap="onSavePoster">
-          <text class="btn-finish">下载</text>
+          <text class="btn-finish">分享</text>
         </view>
         <view class="cancel" catchtap="onHandelCancel">
           <text class="btn-cancel">取消</text>

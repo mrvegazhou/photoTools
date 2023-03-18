@@ -174,6 +174,7 @@ Component({
         optionList[i].id = len;
         len--;
       }
+
       this.triggerEvent('flushItemSort', {optionList: optionList});
       this.setData({optionList: optionList});
     },

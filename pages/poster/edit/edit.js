@@ -166,11 +166,28 @@ Page({
    */
   onLoad(options) {
     this.getFontFamilySelect();
+  },
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady() {
+    wx.createSelectorQuery().select('#canvas').node((res) => {
+      this.canvas = res.node;
+      this.canvas.width = canvasWidth
+      this.canvas.height = canvasHeight
+      this.ctx = this.canvas.getContext("2d")
+    }).exec();
+    this.getFonts();
+  },
+
+  onShow() {
+  },
+
+  getFonts() {
     for(let i=0; i<families.length; i++) {
       let obj = families[i];
-      
       if(obj.family!='系统默认字体' && obj.url!='') {
-        console.log(obj.family, '---obj.family---')
         wx.loadFontFace({
           global:true,
           scopes: ['webview', 'native'],
@@ -182,21 +199,6 @@ Page({
         });
       }
     }
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-  },
-
-  onShow() {
-    wx.createSelectorQuery().select('#canvas').node((res) => {
-      this.canvas = res.node;
-      this.canvas.width = canvasWidth
-      this.canvas.height = canvasHeight
-      this.ctx = this.canvas.getContext("2d")
-    }).exec();
   },
 
   onHandelCancel() {

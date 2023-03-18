@@ -799,6 +799,8 @@ Component({
     // 清理元素无用属性
     async filterItemsAttr(){
       let temp = JSON.parse(JSON.stringify(this.data.itemList));
+      temp.reverse();
+      
       let newTemp = []
       
       for (let i = 0; i < temp.length; i++) {
@@ -935,7 +937,6 @@ Component({
           newTemp.push(temp[i]);
         }
       }
-      console.log(newTemp, '---n----')
       return newTemp;
     },
 
