@@ -3,14 +3,18 @@ import MyDoodleCpt from '../../../component/doodle/doodle';
 import CanvasDrag from '../../../component/canvas-drag/canvas-drag';
 import AlloyImage from "../../../component/alloyimage/alloyImage.js"
 const util = require("../../../utils/util");
-const families =
-  [ "系统默认字体",
-    "Courier New", "Courier", "monospace", "Franklin Gothic Medium", "Arial Narrow", "Arial", "Gill Sans", "Gill Sans MT",
-    "Calibri", "Trebuchet MS", "Lucida Sans", "Lucida Sans Regular", "Lucida Sans Unicode", "Lucida Grande", "Geneva",
-    "Verdana", "sans-serif", "Segoe UI", "Tahoma", "Times", "Times New Roman", "serif", "-apple-system", "BlinkMacSystemFont", 
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica", "Helvetica Neue", "Cambria", "Cochin", "Georgia", "cursive", 
-    "fantasy", "Impact", "Haettenschweiler"
-]
+var apiRequest = require('../../../utils/api.js') 
+// const families =
+//   [ "系统默认字体",
+//     "Courier New", "Courier", "monospace", "Franklin Gothic Medium", "Arial Narrow", "Arial", "Gill Sans", "Gill Sans MT",
+//     "Calibri", "Trebuchet MS", "Lucida Sans", "Lucida Sans Regular", "Lucida Sans Unicode", "Lucida Grande", "Geneva",
+//     "Verdana", "sans-serif", "Segoe UI", "Tahoma", "Times", "Times New Roman", "serif", "-apple-system", "BlinkMacSystemFont", 
+//     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica", "Helvetica Neue", "Cambria", "Cochin", "Georgia", "cursive", 
+//     "fantasy", "Impact", "Haettenschweiler"
+// ];
+var appInstance = getApp();
+const families = appInstance.globalData.fontFaceList;
+
 var openStatus = true;
 const OFFSET = 10;
 let canvasWidth = 1239;
@@ -161,8 +165,23 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    // this.setRpxRatio()
-    this.getFontFamilySelect()
+    this.getFontFamilySelect();
+    for(let i=0; i<families.length; i++) {
+      let obj = families[i];
+      
+      if(obj.family!='系统默认字体' && obj.url!='') {
+        console.log(obj.family, '---obj.family---')
+        wx.loadFontFace({
+          global:true,
+          scopes: ['webview', 'native'],
+          family: `${obj.family}`,
+          source: `url("${obj.url}")`,
+          success(res) {
+            console.log(res.status)
+          }
+        });
+      }
+    }
   },
 
   /**
@@ -689,7 +708,7 @@ Page({
         item.css.top = oldItem.css.top;
         item.active = oldItem.active;
         item.css.color = this.data.menu.colorData.done==false ? oldItem.css.color : this.data.menu.colorData.color;
-        item.css.fontFamily = this.data.menu.fontFamilyDone==false ? oldItem.css.fontFamily : this.data.menu.menu.fontFamilyShowVal;
+        item.css.fontFamily = this.data.menu.fontFamilyDone==false ? oldItem.css.fontFamily : this.data.menu.fontFamilyShowVal;
         CanvasDrag.replaceItem(item);
       }
       
@@ -795,7 +814,7 @@ Page({
   selectFontFamily(e) {
     let index = e.currentTarget.dataset['index'];
     this.setData({
-      'menu.fontFamilyShowVal': families[index],
+      'menu.fontFamilyShowVal': families[index]['family'],
       'menu.fontFamilyIndex': index,
       'menu.fontFamilyDone': true,
     });
@@ -809,9 +828,8 @@ Page({
     let menu = this.data.menu
     let fontFamilySelect = menu.fontFamilySelect
     let fontFamilyIndex = menu.fontFamilyIndex
-    menu.fontFamilyShowVal = fontFamilySelect[fontFamilyIndex]
     this.setData({
-      menu:menu
+      'menu.fontFamilyShowVal': fontFamilySelect[fontFamilyIndex]['family']
     })
   },
   // 显示下拉框
@@ -1390,9 +1408,17 @@ Page({
         'menu.showColorPicker': true,
         'itemText': itemText
       });
+    } else if(editType=='txt.background') {
+      this.setData({
+        'menu.txtPopHeight':'795rpx',
+        'menu.menuShow': 'txt',
+        'menu.secondMenu': editType,
+        'itemText': itemText,
+        'menu.txtEditType': 'update'
+      });
     } else {
       this.setData({
-        'menu.txtPopHeight': '480rpx',
+        'menu.txtPopHeight': '550rpx',
         'menu.menuShow': 'txt',
         'menu.secondMenu': editType,
         'itemText': itemText,

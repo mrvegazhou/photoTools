@@ -451,7 +451,7 @@ Component({
       wx.showLoading({
         title: '生成图片中',
         mask: true
-      })
+      });
       if(this.data.detectBorder) {
         this.autoDetectBorder(1)
       } else {
@@ -576,7 +576,7 @@ Component({
                 wx.saveImageToPhotosAlbum({
                   filePath: imgPath,
                   success: (res) => {
-                    wx.hideLoading()
+                    wx.hideLoading();
                     wx.showToast({
                       title: '已保存到相册和海报中',
                       icon: 'success',

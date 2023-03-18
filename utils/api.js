@@ -181,6 +181,66 @@ function scanImg(filePath, datas = {}, timeout=60000, successFn = () => {}, fail
   return uploadFile(CONFIG.API_URL.WHCHAT_SCAN_IMG, jwt, datas, filePath, timeout, successFn, failFn);
 }
 
+// 下载字体
+function _downloadFont(fontFamily, filePath) {
+  let urlArr = filePath.split("/");
+  let lastName = urlArr[urlArr.length-1];
+  wx.downloadFile({
+    url: filePath,
+    success (res) {
+      if (res.statusCode === 200) {
+        wx.getFileSystemManager().saveFile({ // 下载成功后保存到本地
+          tempFilePath: res.tempFilePath,
+          filePath:`${wx.env.USER_DATA_PATH}/${lastName}`,
+          success: res => {
+            // 加载字体
+            _loadFontFace(fontFamily, res.savedFilePath)
+          }
+        });
+      }
+    },
+    fail (error) {
+      console.log(error)
+    }
+  });
+}
+// 加载文件字体转 base64，load
+function _loadFontFace (fontFamily, filePath) {
+  wx.getFileSystemManager().readFile({ //读文件
+    filePath, // 本地文件地址
+    encoding: 'base64',
+    success: res => {
+      wx.loadFontFace({
+        global: true, // 是否全局生效
+        scopes: ['webview', 'native'],
+        family: fontFamily, // 字体名称
+        source: `url("data:font/woff2;charset=utf-8;base64,${res.data}")`,
+        success(res) {
+          console.log('succ', res.status)
+        },
+        fail: function(res) {
+          console.log('err', res)
+        },
+        complete: function(res) {
+          console.log('com', res.status)
+        }
+      });
+    }
+  })
+}
+
+function setFontFace(fontFamily, filePath) {
+  wx.getFileSystemManager().access({
+    path: filePath,
+    success: () => {
+      _loadFontFace(fontFamily, filePath);
+    },
+    fail: () => {
+      _downloadFont(fontFamily, filePath);
+    }
+  })
+}
+
 module.exports = {
   easyRequest: easyRequest,
   easyRequestJwt: easyRequestJwt,
@@ -191,5 +251,6 @@ module.exports = {
   imageCompose: imageCompose,
   downloadImg: downloadImg,
   fixImg: fixImg,
-  scanImg: scanImg
+  scanImg: scanImg,
+  setFontFace: setFontFace
 }

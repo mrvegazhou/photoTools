@@ -1,18 +1,18 @@
 <!-- 横向 -->
-<view class='wrapper horizontal-box' id='scale-wrapper' style='background:{{styles.bgoutside}}'>
-  <view class='scroll-view'>
+<view class='g-css wrapper horizontal-box' id='scale-wrapper' style='background:{{styles.bgoutside}}'>
+  <view class='g-css scroll-view'>
     
-    <view class='scroll-wrapper'>
+    <view class='g-css scroll-wrapper'>
 
       <!-- 标尺容器 -->
-      <view  class='scale-container'>
-        <view class='scale-wrapper'>
-            <view class='scale-grip'
+      <view class='g-css scale-container'>
+        <view class='g-css scale-wrapper'>
+            <view class='g-css scale-grip'
               wx:for="{{grid}}"
               wx:key="index"
               style='height:{{h}}px;border-color:{{styles.line}};'>
 
-              <view class='scale-grip-item' 
+              <view class='g-css scale-grip-item' 
               wx:for-item="it"
               wx:for-index="idx"
               wx:for="{{5}}" 
@@ -24,9 +24,9 @@
           </view>
         </view>
         <!-- 标尺数显示，长度：每格长度*个数 -->
-        <view class='scale-vaule-wrapper' style='width:{{single*10*grid}}px;color:{{styles.fontColor}};font-size:{{styles.fontSize}}px;'>
-          <view class='scale-value first-scale-value' style='width:{{single*5}}px'>{{min}}</view>
-          <view class='scale-vaule' 
+        <view class='g-css scale-vaule-wrapper' style='width:{{single*10*grid}}px;color:{{styles.fontColor}};font-size:{{styles.fontSize}}px;'>
+          <view class='g-css scale-value first-scale-value' style='width:{{single*5}}px'>{{min}}</view>
+          <view class='g-css scale-vaule' 
           wx:for="{{grid}}" 
           wx:key="index" 
           style='width:{{single*5}}px;'>{{min+5*(index+1)}}</view>
@@ -39,19 +39,19 @@
 
 
 <!-- 竖向 -->
-<view class='wrapper vertical-box' id='scale-wrapper' style='background:{{styles.bgoutside}}'>
-  <view class='scroll-view'>
+<view class='g-css wrapper vertical-box' id='scale-wrapper' style='background:{{styles.bgoutside}}'>
+  <view class='g-css scroll-view'>
     
-    <view class='scroll-wrapper'>
+    <view class='g-css scroll-wrapper'>
 
       <!-- 标尺容器 -->
-      <view  class='scale-container'>
-        <view class='scale-wrapper' style='height:{{single*5*grid}}px;margin-top: 10rpx;'>
-          <view class='scale-grip'
+      <view class='g-css scale-container'>
+        <view class='g-css scale-wrapper' style='height:{{single*5*grid}}px;margin-top: 10rpx;'>
+          <view class='g-css scale-grip'
               wx:for="{{grid}}"
               wx:key="index">
               
-              <view class='scale-grip-item' 
+              <view class='g-css scale-grip-item' 
               wx:for-item="it"
               wx:for-index="idx"
               wx:for="{{5}}" 
@@ -63,9 +63,9 @@
           </view>
         </view>
         <!-- 标尺数显示，长度：每格长度*个数 -->
-        <view class='scale-vaule-wrapper' style='height:{{single*5*(grid+1)}}px;color:{{styles.fontColor}};font-size:{{styles.fontSize}}px;'>
-          <view class='scale-value'>{{min}}</view>
-          <view class='scale-vaule' 
+        <view class='g-css scale-vaule-wrapper' style='height:{{single*5*(grid+1)}}px;color:{{styles.fontColor}};font-size:{{styles.fontSize}}px;'>
+          <view class='g-css scale-value'>{{min}}</view>
+          <view class='g-css scale-vaule' 
           wx:for="{{grid}}" 
           wx:key="index" 
           style='height:{{single*5}}px;line-height:{{single*5}}px;'>{{min+5*(index+1)}}</view>

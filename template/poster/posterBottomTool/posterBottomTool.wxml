@@ -301,23 +301,23 @@
             <text class="label">字体:</text>
             <view class="edit-css-content" bindtap="showFontFamilySelect">
               <block wx:if="{{menu.fontFamilyShowVal=='系统默认字体'}}">
-                <text>样例 ABC 123</text>
+                <text>{{menu.fontFamilyShowVal}}</text>
               </block>
               <block wx:else>
-                <text style="font-family:{{menu.fontFamilyShowVal}};">样例 ABC 123</text>
+                <text style="font-family:'{{menu.fontFamilyShowVal}}';text-align: left;">{{menu.fontFamilyShowVal}}</text>
               </block>
               <text class="iconfont {{menu.fontFamilyShow?'icon-shangla':'icon-xiala1'}}" style="color:#5e616d;"></text>
             </view>
           </view>
           <view class="edit-css {{menu.fontFamilyShow ? 'show':'disappear'}}">
             <block wx:if="{{menu.txtEditType=='update'}}">
-              <view wx:for="{{menu.fontFamilySelect}}" wx:key="index" bindtap='selectFontFamily' data-index="{{index}}" class="line {{itemText.css.fontFamily==item?'checked':''}}">
-                <text style="font-family:{{item}};white-space:nowrap;overflow:hidden;">{{item}}</text>
+              <view wx:for="{{menu.fontFamilySelect}}" wx:key="index" bindtap='selectFontFamily' data-index="{{index}}" class="line {{itemText.css.fontFamily==item['family']?'checked':''}}">
+                <text style="font-family:{{item['family']}};white-space:nowrap;overflow:hidden;">{{item['family']}}</text>
               </view>
             </block>
             <block wx:else>
               <view wx:for="{{menu.fontFamilySelect}}" wx:key="index" bindtap='selectFontFamily' data-index="{{index}}" class="line {{menu.fontFamilyIndex==index?'checked':''}}">
-                <text style="font-family:{{item}};white-space:nowrap;overflow:hidden;">{{item}}</text>
+                <text style="font-family:{{item['family']}};white-space:nowrap;overflow:hidden;">{{item['family']}}</text>
               </view>
             </block>
           </view>

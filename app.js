@@ -1,5 +1,6 @@
 //app.js
 import { checkLogin, doLogin } from './utils/loginAuth'
+import { CONFIG } from './utils/config'
 
 App({
   onLaunch: function () {
@@ -10,21 +11,7 @@ App({
       console.log(err, "登录失败 next")
       doLogin()
     });
-    // wx.loadFontFace({
-    //   global: true,
-    //   family: 'Bitstream Vera Serif Bold',
-    //   source: 'url("https://sungd.github.io/Pacifico.ttf")',
-    //   scopes: ["webview", "native"],
-    //   success: function (res) {
-    //     console.log("字体加载完成")
-    //   },
-    //   fail: function (res) {
-    //       console.log("字体加载失败")
-    //   },
-    //   complete: function (res) {
-    //       console.log(res.status);
-    //   }
-    // })
+
   },
 
   globalData: {
@@ -150,6 +137,34 @@ App({
         width: 295,
         height: 413,
         discription: '健康证'
+      }
+    ],
+
+    // 字体资源
+    fontFaceList: [
+      {
+        family:'系统默认字体',
+        url:''
+      },
+      {
+        family:'思源宋体',
+        url: CONFIG.API_URL.WECHAT_STATIC_FONT+'Source_Han_Serif_SC_Light_Light.otf'
+      },
+      {
+        family:'思源黑体 ExtraLight',
+        url: CONFIG.API_URL.WECHAT_STATIC_FONT+'Source_Han_Sans_SC_ExtraLight_ExtraLight.otf'
+      },
+      {
+        family:'阿里妈妈东方大楷 Regular',
+        url: CONFIG.API_URL.WECHAT_STATIC_FONT+'/Alimama_DongFangDaKai_Regular.woff2'
+      },
+      {
+        family:'得意黑 斜体',
+        url: CONFIG.API_URL.WECHAT_STATIC_FONT+'/Smiley_Sans_Oblique_斜体.woff2'
+      },
+      {
+        family:'阿里妈妈数黑体 Bold',
+        url: CONFIG.API_URL.WECHAT_STATIC_FONT+'Alimama_ShuHeiTi_Bold.woff2'
       }
     ]
   }

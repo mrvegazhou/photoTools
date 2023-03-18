@@ -1,5 +1,6 @@
 <view>
 
-  <canvas type="2d" id="myCanvas1" style="width: {{width}}px;height: {{height}}px; "></canvas>
+  <!-- <canvas type="2d" id="myCanvas1" style="width: {{width}}px;height: {{height}}px; "></canvas> -->
+  <painter  palette="{{template}}" bind:imgOK="onImgOK" use2D="{{true}}"/>
 
 </view>

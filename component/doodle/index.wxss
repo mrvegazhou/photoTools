@@ -370,7 +370,7 @@ page{
   margin-top:0;
 }
 .doodle-paint .canvas-left{position:fixed;left:-100%;}
-.doodle-paint canvas{background: #ffffff; width: 750rpx; height: 1090rpx;}
+.doodle-paint .doodle-canvas{background: #ffffff; width: 750rpx; height: 1090rpx;}
 .circle-switch {
   display: inline-flex;
   justify-items: center;

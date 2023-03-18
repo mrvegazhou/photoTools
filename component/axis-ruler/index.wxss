@@ -1,4 +1,4 @@
-view,text{
+.g-css{
   box-sizing: border-box;
 }
 .wrapper{

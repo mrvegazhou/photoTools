@@ -94,6 +94,7 @@ Component({
         }
       });
       this.initBg(this.bgImg, this.bgColor);
+      
     }
   },
 
@@ -768,6 +769,10 @@ Component({
 
     // painter保存图片
     onImgSave(e){
+      wx.showLoading({
+        title: '正在保存...',
+        mask: true
+      });
       let path = e.detail.path;
       let tempItemList = this.data.itemList;
       for (let i = 0; i < tempItemList.length; i++) {
@@ -776,8 +781,8 @@ Component({
           break
         }
       }
-      this.setData({itemList: tempItemList})
-      this.saveCanvasImg(path)
+      this.setData({itemList: tempItemList});
+      this.saveCanvasImg(path);
     },
     onImgErr(err) {
       wx.hideLoading();
@@ -930,6 +935,7 @@ Component({
           newTemp.push(temp[i]);
         }
       }
+      console.log(newTemp, '---n----')
       return newTemp;
     },
 
@@ -949,6 +955,7 @@ Component({
                         icon: 'success',
                         duration: 2000
                       });
+                      wx.hideLoading();
                     }
                 }
             })

@@ -3,7 +3,8 @@
     <!--画板-->
     <view class="doodle-paint" style="height:{{windowHeight}}px;">
       <view class="{{canvasHidden?'canvas-left':''}}">
-        <canvas type="2d" 
+        <canvas type="2d"
+                class="doodle-canvas"
                 id="doodle-canvas"
                 disable-scroll="false"
                 bindtouchstart="doodleTouchStart"

@@ -262,7 +262,7 @@
 .text-edit-pop .label{
   text-align: left;
   margin-right: 50rpx;
-  width: 30%;
+  width: 10%;
   font-size: 30rpx;
   color: var(--primary-dark-gray-color);
 }
