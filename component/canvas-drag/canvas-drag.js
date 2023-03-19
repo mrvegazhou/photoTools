@@ -123,4 +123,14 @@ CanvasDrag.getCanvasSize = () => {
   }
 };
 
+//恢复文本
+CanvasDrag.recoverText = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().recoverText();
+  }
+};
+
 export default CanvasDrag;

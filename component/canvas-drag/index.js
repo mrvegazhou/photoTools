@@ -1058,6 +1058,31 @@ Component({
         }
       })
     },
+
+    //恢复文本
+    async recoverText() {
+      let item = list[index];
+      let that = this;
+      await that.getRectInfo('#txt-'+item.id).then(rect => {
+        let rectTop = rect.top;
+        let rectLeft = rect.left;
+        if(rectTop<0) {
+          rectTop = 10;
+        }
+        if(rectLeft<0) {
+          rectLeft = 10;
+        }
+        item.css.top = rectTop;
+        item.css.left = rectLeft;
+      });
+      item.scale = 1;
+      item.angle = 0;
+      item.oScale = 1 / item.scale;
+      item.x = item.css.width / 2;
+      item.y = item.css.height / 2;
+      list[index] = item;
+      this.setData({itemList: list});
+    },
     //------------------------------------单击item编辑 end------------------------------------//
   },
 });
