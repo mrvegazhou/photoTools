@@ -1,4 +1,5 @@
-const brushStroke = require('../../vendor/brush.js')
+const brushStroke = require('../../vendor/brush.js');
+const util = require("../../utils/util");
 Component({
   properties: {
     navHeight: {
@@ -88,12 +89,12 @@ Component({
       query.select('#doodle-canvas')
         .fields({ node: true, size: true })
         .exec((res) => {
-          const canvas = res[0].node
-          this.context = canvas.getContext('2d')
+          const canvas = res[0].node;
+          this.context = canvas.getContext('2d');
           const dpr = wx.getSystemInfoSync().pixelRatio;
-          canvas.width = res[0].width * dpr
-          canvas.height = res[0].height * dpr
-          this.context.scale(dpr, dpr)
+          canvas.width = res[0].width * dpr;
+          canvas.height = res[0].height * dpr;
+          this.context.scale(dpr, dpr);
           this.canvas = canvas
         });
     },
@@ -169,7 +170,7 @@ Component({
           success: (res) => {
             let img = res.tempFilePath
             this.setData({ imgCanvas: img });
-            resolve()
+            resolve(img);
           },
           fail: (err) => {
             console.error('error', err);
@@ -452,31 +453,39 @@ Component({
         title: '生成图片中',
         mask: true
       });
-      if(this.data.detectBorder) {
+      if(that.data.detectBorder) {
         this.autoDetectBorder(1)
       } else {
-        this.saveCanvas().then(()=>{
+        that.saveCanvas().then((imgPath)=>{
           //保存到海报画布
-          let imgPath = this.data.imgCanvas;
           that.triggerEvent('saveImg2Canvas', {imgPath: imgPath});
-          wx.saveImageToPhotosAlbum({
-            filePath: imgPath,
-            success: (res) => {
-              wx.hideLoading()
-              wx.showToast({
-                title: '已保存到相册和海报中',
-                icon: 'success',
-                duration: 1500
-              })
-            },
-            fail: (err) => {
-              wx.hideLoading()
-              console.error(err)
-            }
-          })
-        })
+          that.saveCanvas().then((imgPath)=>{
+            util.userPermission('scope.writePhotosAlbum', '检测到您没打开保存图片到相册功能权限，是否去设置打开？').then(()=>{
+              that.saveImgInfo(imgPath);
+            });
+          });
+        });
       }
     },
+
+    saveImgInfo(imgPath) {
+      wx.saveImageToPhotosAlbum({
+        filePath: imgPath,
+        success: (res) => {
+          wx.hideLoading()
+          wx.showToast({
+            title: '已保存',
+            icon: 'success',
+            duration: 1500
+          })
+        },
+        fail: (err) => {
+          wx.hideLoading();
+          console.error(err);
+        }
+      });
+    },
+
     // 移动到海报窗口
     move2Post() {
       return this.data.imgCanvas;
@@ -572,23 +581,13 @@ Component({
               that.setData({ imgCanvas: imgPath });
               //保存到海报画布
               that.triggerEvent('saveImg2Canvas', {imgPath: imgPath});
-              that.saveCanvas().then(()=>{
-                wx.saveImageToPhotosAlbum({
-                  filePath: imgPath,
-                  success: (res) => {
-                    wx.hideLoading();
-                    wx.showToast({
-                      title: '已保存到相册和海报中',
-                      icon: 'success',
-                      duration: 1500
-                    })
-                  },
-                  fail: (err) => {
-                    wx.hideLoading()
-                    console.error(err)
-                  }
-                })
-              })
+              that.saveCanvas().then((imgPath)=>{
+                util.userPermission('scope.writePhotosAlbum', '检测到您没打开保存图片到相册功能权限，是否去设置打开？').then(()=>{
+                  that.saveImgInfo(imgPath);
+                }).catch(()=>{
+                  // 拒绝、取消授权的操作
+                });
+              });
             },
             fail: (err) => {
               console.error('error', err);

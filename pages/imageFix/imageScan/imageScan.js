@@ -1,7 +1,7 @@
 import { checkLogin, doLogin } from '../../../utils/loginAuth'
 var apiRequest = require('../../../utils/api.js')
 import { CONFIG } from '../../../utils/config'
-
+const util = require("../../../utils/util");
 Page({
 
   /**
@@ -293,39 +293,11 @@ Page({
   saveImg() {
     const url = this.data.after
     let that = this
-    wx.getSetting({
-      success(res) {
-        if (!res.authSetting['scope.writePhotosAlbum']) {
-          wx.authorize({
-            scope: 'scope.writePhotosAlbum',
-            success(res) {
-              that.saveImgInfo(url)  
-            },
-            fail(res) {
-              errMsg: 'authorize:fail auth deny'
-              wx.showModal({
-                title: '提示',
-                content: '检测到您没打开保存图片到相册功能权限，是否去设置打开？',
-                success(res) {
-                  if (res.confirm) {
-                    console.log('用户点击确定')
-                    wx.openSetting({
-                      success: (res) => {
-                        console.log(res)
-                      },
-                    })
-                  } else if (res.cancel) {
-
-                  }
-                },
-              })
-            },
-          })
-        } else {
-          that.saveImgInfo(url)
-        }
-      }
-    })
+    util.userPermission('scope.writePhotosAlbum', '检测到您没打开保存图片到相册功能权限，是否去设置打开？').then(()=>{
+      that.saveImgInfo(url)  
+    }).catch(()=>{
+      // 拒绝、取消授权的操作
+    });
   },
 
   // 保存图片

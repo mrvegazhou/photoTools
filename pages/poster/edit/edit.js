@@ -3,15 +3,6 @@ import MyDoodleCpt from '../../../component/doodle/doodle';
 import CanvasDrag from '../../../component/canvas-drag/canvas-drag';
 import AlloyImage from "../../../component/alloyimage/alloyImage.js"
 const util = require("../../../utils/util");
-var apiRequest = require('../../../utils/api.js') 
-// const families =
-//   [ "系统默认字体",
-//     "Courier New", "Courier", "monospace", "Franklin Gothic Medium", "Arial Narrow", "Arial", "Gill Sans", "Gill Sans MT",
-//     "Calibri", "Trebuchet MS", "Lucida Sans", "Lucida Sans Regular", "Lucida Sans Unicode", "Lucida Grande", "Geneva",
-//     "Verdana", "sans-serif", "Segoe UI", "Tahoma", "Times", "Times New Roman", "serif", "-apple-system", "BlinkMacSystemFont", 
-//     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica", "Helvetica Neue", "Cambria", "Cochin", "Georgia", "cursive", 
-//     "fantasy", "Impact", "Haettenschweiler"
-// ];
 var appInstance = getApp();
 const families = appInstance.globalData.fontFaceList;
 
@@ -225,35 +216,22 @@ Page({
         complete: () => {}
       });
     } else {
-      wx.getSetting({
-        success(res) {
-          // 如果没有则获取授权
-          if (!res.authSetting['scope.writePhotosAlbum']) {
-            wx.authorize({
-              scope: 'scope.writePhotosAlbum',
-              success() {
-                openStatus = true;
-                that.onSaveImageToPhotosAlbum(that.data.imageUrl);
-              },
-              fail() {
-                // 如果用户拒绝过或没有授权，则再次打开授权窗口
-                openStatus = false
-                wx.showToast({
-                  title: '请设置允许访问相册',
-                  icon: 'none'
-                })
-              }
-            })
-          } else {
-            // 有则直接保存
-            openStatus = true
-            that.onSaveImageToPhotosAlbum(that.data.imageUrl);
-          }
-        },
-        fail(err) {
-          console.log(err)
+      util.userPermission('scope.writePhotosAlbum', '检测到您没打开保存图片到相册功能权限，是否去设置打开？').then(
+        ()=>{
+          openStatus = true;
+          that.onSaveImageToPhotosAlbum(that.data.imageUrl);
+        }, 
+        ()=>{
+          // 如果用户拒绝过或没有授权，则再次打开授权窗口
+          openStatus = false
+          wx.showToast({
+            title: '请设置允许访问相册',
+            icon: 'none'
+          });
         }
-      })
+      ).catch(()=>{
+        // 拒绝、取消授权的操作
+      });
     }
   },
 

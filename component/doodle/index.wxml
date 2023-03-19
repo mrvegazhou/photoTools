@@ -126,6 +126,7 @@
     </view>
   </view>
 </view>
+<view style="z-index:999;">
 <modal hidden="{{name=='save' ? false : true}}" title="提示" confirm-text="保存" cancel-text="取消" bindcancel="cancelSave" bindconfirm="confirmSave" no-cancel="{{nocancel}}">
 是否保存当前图片？
 <checkbox-group style="margin-top: 30rpx;" bindchange="checkDetectBorder">
@@ -137,4 +138,5 @@
 <modal hidden="{{name=='clear' ? false : true}}" title="提示" confirm-text="清空" cancel-text="取消" bindcancel="cancelClear" bindconfirm="confirmClear" no-cancel="{{nocancel}}">
 是否清空当前画布？{{name}}
 </modal>
+</view>
 <canvas type="2d" id="otherCanvas" style="position: absolute; left: -9999rpx;"></canvas>

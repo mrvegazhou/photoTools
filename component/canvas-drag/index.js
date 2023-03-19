@@ -1,3 +1,4 @@
+const util = require("../../utils/util");
 var list = new Array();
 var index = 0, itemId = 0;
 var MIN_WIDTH = 20;
@@ -228,7 +229,7 @@ Component({
             data.css.height = size[1];
             //scale缩放
             item.scale = 1;
-            data.scale = flag ? item.scale * that.data.syncScale : that.data.syncScale;
+            data.scale = item.scale;
             data.angle = 0;
           } else {
             if(item.css.width && item.css.height) {
@@ -307,8 +308,8 @@ Component({
       data.css.left = (!item.css.left || item.css.left==0) ? 50 : item.css.left;
       data.css.top = (!item.css.top || item.css.top==0) ? 50 : item.css.top;
 
-      data.scale = 1;
       item.scale = item.scale ? item.scale : 1;
+      data.scale = item.scale;
 
       data.styles = ''
       if(item.css.textVertical){
@@ -348,10 +349,13 @@ Component({
       data.y = y;
 
       if(item.css.fontSize) {
-        let fontSize = item.css.fontSize*data.scale;
-        fontSize = Number(fontSize.toFixed(2));
-        data.css.fontSize = fontSize;
-        // data.styles += `font-size:${fontSize}px !important;`
+        if(op=='add') {
+          let fontSize = item.css.fontSize*data.scale;
+          fontSize = Number(fontSize.toFixed(2));
+          data.css.fontSize = fontSize;
+        } else {
+          data.css.fontSize = item.css.fontSize;
+        }
       }
       if(item.css.background && item.css.background!='rgba(NaN,NaN,NaN,1)'){
         data.styles += `background-color:${item.css.background};`
@@ -800,7 +804,7 @@ Component({
     async filterItemsAttr(){
       let temp = JSON.parse(JSON.stringify(this.data.itemList));
       temp.reverse();
-      
+
       let newTemp = []
       
       for (let i = 0; i < temp.length; i++) {
@@ -945,23 +949,24 @@ Component({
       this.setData({
         canvasTemImg: imgurl
       });
-      wx.getSetting({
-        success: (set) => {
-            wx.saveImageToPhotosAlbum({
-                filePath: imgurl,
-                success: (res) => {
-                    if(res.errMsg == "saveImageToPhotosAlbum:ok") {
-                      wx.showToast({
-                        title: '保存成功',
-                        icon: 'success',
-                        duration: 2000
-                      });
-                      wx.hideLoading();
-                    }
-                }
-            })
-            if(set.authSetting['scope.writePhotosAlbum'] == false) {
-                wx.openSetting()
+      util.userPermission('scope.writePhotosAlbum', '检测到您没打开保存图片到相册功能权限，是否去设置打开？').then(()=>{
+        that.saveImageToPhotosAlbum(imgurl);
+      }).catch(()=>{
+        // 拒绝、取消授权的操作
+      });
+    },
+
+    saveImageToPhotosAlbum(imgurl) {
+      wx.saveImageToPhotosAlbum({
+        filePath: imgurl,
+        success: (res) => {
+            if(res.errMsg == "saveImageToPhotosAlbum:ok") {
+              wx.showToast({
+                title: '保存成功',
+                icon: 'success',
+                duration: 2000
+              });
+              wx.hideLoading();
             }
         }
       })

@@ -499,7 +499,43 @@ function drawStar(ctx, R, r, rotate, x, y){
   ctx.closePath();
   ctx.fillStyle = 'RGBA(0,0,0,1)';
   ctx.fill();
-  // ctx.stroke();
+}
+
+function userPermission(permissionName, content){
+  return new Promise((resolve, reject)=>{
+    wx.getSetting({
+      success: (res)=>{
+        if(res.authSetting[permissionName] == undefined){
+          wx.authorize({
+            scope: permissionName,
+            success(){
+              resolve();
+            },
+            fail(){
+              reject();
+            }
+          })
+        } else if(res.authSetting[permissionName] == false){
+          wx.showModal({
+            title: "提示", content: content,success(resModal){
+              if(resModal.confirm){
+                wx.openSetting({success: function(e){
+                  resolve();
+                }})
+              } else if(res.cancel){
+                reject();
+              }
+            }
+          })
+        } else {
+          resolve();
+        }
+      },
+      fail: (res)=>{
+        reject();
+      }
+    })
+  })
 }
 
 module.exports = {
@@ -527,5 +563,6 @@ module.exports = {
   createCanvasContext: createCanvasContext,
   createImage: createImage,
   canvasHandleImg: canvasHandleImg,
-  drawStar: drawStar
+  drawStar: drawStar,
+  userPermission: userPermission
 }
