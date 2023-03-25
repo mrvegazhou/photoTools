@@ -1,10 +1,8 @@
 <wxs src="../../../utils/tools.wxs" module="tools" />
 <import src="../camera/camera.wxml" />
+<import src="../searchImg/searchImg.wxml" />
 <template name="posterBottomTool">>
   <scroll-view scroll-x="true" class="toolbar-bottom" wx:if="{{menu.mainPageShow==='mainPage'}}">
-    <view bindtap='showSecondMenu' data-type="bg" class="item-btn">
-      <text class="icon-item iconfont icon-beijingyanse {{menu.menuShow=='bg'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='bg'?'menu-select':''}}">背景</text>
-    </view>
     <view bindtap='showSecondMenu' data-type="img" class="item-btn {{menu.menuShow=='img'?'menu-select':''}}">
       <text class="icon-item iconfont icon-tianjiatupian_huaban"></text>
       <text class="text">加图</text>
@@ -12,6 +10,13 @@
     <view bindtap='showSecondMenu' data-type="txt" class="item-btn {{menu.menuShow=='txt'?'menu-select':''}}">
       <text class="icon-item iconfont icon-wenzi "></text>
       <text class="text">加字</text>
+    </view>
+    <view bindtap='showSecondMenu' data-type="bg" class="item-btn">
+      <text class="icon-item iconfont icon-beijingyanse {{menu.menuShow=='bg'?'menu-select':''}}"></text><text class="text {{menu.menuShow=='bg'?'menu-select':''}}">背景</text>
+    </view>
+    <view bindtap='showSecondMenu' data-type="bgOpacity" class="item-btn {{menu.menuShow=='bgOpacity'?'menu-select':''}}">
+      <text class="icon-item iconfont icon-touming"></text>
+      <text class="text">背景透明</text>
     </view>
     <view bindtap='showSecondMenu' data-type="doodle" class="item-btn {{menu.menuShow=='doodle'?'menu-select':''}}">
       <text class="icon-item iconfont icon-huabi"></text>
@@ -253,13 +258,14 @@
   <!--加图二级菜单-->
   <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='img'}}">
     <view class="popbg" bindtap="closePopEdit" data-type="txt"></view>
-    <view class="popup" style="height:55vh;">
+    <view class="popup" style="height:{{menu.secondMenuImgH}};">
       <view class="tab-wapper">
         <view class="tab-item {{menu.addImg=='img.img'?'select':''}}" bindtap="changeTab" data-type="img.img">本地图片</view>
         <view class="tab-item {{menu.addImg=='img.netImgs'?'select':''}}" bindtap="changeTab" data-type="img.netImgs">网络图库</view>
       </view>
       <view class="text-background" wx:if="{{menu.addImg=='img.netImgs'}}">
-        尽情期待
+        <!--搜索界面-->
+        <template is="searchView" data="{{menu, searchImgs}}" />
       </view>
       <view class='text-background' style="margin:20rpx 0 0 calc(100%/3);" wx:elif="{{menu.addImg=='img.img'}}">
         <view class="item-menu {{menu.secondMenu=='img.album' ? 'select' : ''}}" bindtap="getPhotos" data-type="img.album">
@@ -453,4 +459,14 @@
       </view>
     </view>
   </view>
+
+  <modal hidden="{{menu.menuShow=='sysSave' ? false : true}}" title="提示" confirm-text="保存" cancel-text="取消" bindcancel="cancelCanvasSave" bindconfirm="confirmCanvasSave" no-cancel="{{false}}">
+  是否保存？
+  <checkbox-group style="margin-top: 30rpx;" bindchange="setBroadwise">
+    <label>
+      <checkbox value="true" checked="{{menu.broadwise}}" />横向展示
+    </label>
+  </checkbox-group>
+  </modal>
+
 </template>

@@ -10,7 +10,7 @@
   </view>
 
   <!-- 主页面-底部 -->
-  <template is="posterBottomTool" data="{{menu, itemText, itemImg, bg, scaleStyles, optSortList}}" />
+  <template is="posterBottomTool" data="{{menu, itemText, itemImg, bg, scaleStyles, optSortList, searchImgs}}" />
 
   <!-- 图片生成弹出页面-->
   <template is="posterImgCard" data="{{imgCardShow, imageUrl}}" />

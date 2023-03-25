@@ -59,8 +59,9 @@ Component({
     bgCenter: false,
     isScale: true,  // 是否支持缩放
     syncScale: 1,   // 同步缩放比例（同步场地与车辆图片的缩放）
-    tmpLeft:0,
-    tmpTop:0
+    // tmpLeft:0,
+    // tmpTop:0,
+    overturn: false,
   },
 
   lifetimes: {
@@ -86,7 +87,7 @@ Component({
           canvasHeight: res.height * canvasPre,
           canvasWidth: res.width * canvasPre
         });
-      }).exec()
+      }).exec();
       // 获取系统信息计算画布宽高
       wx.getSystemInfo({
         success: sysData => {
@@ -946,14 +947,20 @@ Component({
 
     // 下载画板图片
     saveCanvasImg(imgurl) {
-      this.setData({
-        canvasTemImg: imgurl
-      });
+      let that = this;
+      if(this.data.overturn) {
+        this.rotateCanvasImg(imgurl);
+      } else {
+        this.setData({
+          canvasTemImg: imgurl
+        });
+      }
       util.userPermission('scope.writePhotosAlbum', '检测到您没打开保存图片到相册功能权限，是否去设置打开？').then(()=>{
-        that.saveImageToPhotosAlbum(imgurl);
+        that.saveImageToPhotosAlbum(that.data.canvasTemImg);
       }).catch(()=>{
         // 拒绝、取消授权的操作
       });
+      this.setData({overturn: false});
     },
 
     saveImageToPhotosAlbum(imgurl) {
@@ -991,6 +998,124 @@ Component({
 
     getCanvasSize() {
       return {width: this.data.canvasWidth, height:this.data.canvasHeight};
+    },
+
+    //背景图透明度
+    setBgOpacity(alpha) {
+      let that = this;
+      if(this.data.bgImg!='') {
+        let bgImg = this.data.bgImg;
+        wx.getImageInfo({
+          src: bgImg,
+          success: resInfo => {
+            wx.showLoading({
+              title: '处理中',
+              mask: true
+            });
+            let canvasWidth = resInfo.width; //宽度
+            let canvasHeight = resInfo.height; //高度
+            that.codeCanvas.width = canvasWidth;
+            that.codeCanvas.height = canvasHeight;
+            that.codeCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+            const image = that.codeCanvas.createImage();
+            image.src = bgImg;
+            image.onload = () => {
+              that.codeCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+              that.codeCtx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+              var imgData = that.codeCtx.getImageData(0, 0, canvasWidth, canvasHeight);
+              for(var i = 0 , len = imgData.data.length ; i < len ; i += 4 ) {
+                // 改变每个像素的透明度
+                imgData.data[i + 3] = imgData.data[i + 3] * alpha;
+              }
+              that.codeCtx.putImageData(imgData, 0, 0);
+              wx.canvasToTempFilePath({
+                canvas: that.codeCanvas,
+                x: 0,
+                y: 0,
+                width: canvasWidth,
+                height: canvasHeight,
+                destWidth: canvasWidth,
+                destHeight: canvasHeight,
+                fail: err => {
+                },
+                success: function (res) {
+                  that.setData({
+                    'bgImg': res.tempFilePath,
+                  });
+                }
+              }, that);
+              wx.hideLoading();
+            };
+          }
+        });
+      }
+    },
+
+    //翻转画板生成的图片
+    async rotateCanvasImg(imgUrl) {
+      let that = this;
+      if(!imgUrl) return; 
+      wx.showLoading({
+        title: '处理中',
+        mask: true
+      });
+      let codeCanvas2;
+      let codeCtx2;
+      await wx.createSelectorQuery().in(this).select('#myCanvas2').fields({
+        node: true,
+        size: true
+      }).exec((res) => {
+        codeCanvas2 = res[0].node;
+        codeCtx2 = codeCanvas2.getContext('2d');
+      });
+
+      const image = that.codeCanvas.createImage();
+      image.src = imgUrl;
+      image.onload = () => {
+        let width = image.width;
+        let height = image.height;
+
+        that.codeCanvas.width = width;
+        that.codeCanvas.height = height;
+        codeCanvas2.width = height;
+        codeCanvas2.height = width;
+        that.codeCtx.drawImage(image, 0, 0);
+        /**
+         *  先将ctx坐标移至canvas中心
+         *  旋转ctx90度，改变坐标系位置
+         *  将图片在坐标系的负1/2处渲染出来
+         *  将ctx坐标恢复默认
+         */
+        codeCtx2.translate(codeCanvas2.width / 2, codeCanvas2.height / 2)
+        codeCtx2.rotate(Math.PI * 270 / 180);
+        codeCtx2.drawImage(image, -codeCanvas2.height/2, -codeCanvas2.width/2);
+        codeCtx2.rotate(-Math.PI * 270 / 180)
+        codeCtx2.translate(-codeCanvas2.width / 2, -codeCanvas2.height / 2)
+
+        wx.canvasToTempFilePath({
+          canvas: codeCanvas2,
+          x: 0,
+          y: 0,
+          width: that.data.canvasHeight,
+          height: that.data.canvasWidth,
+          destWidth: that.data.canvasHeight,
+          destHeight: that.data.canvasWidth,
+          fail: err => {
+          },
+          success: function (res) {
+            that.setData({
+              'canvasTemImg': res.tempFilePath,
+            });
+          }
+        }, that);
+        wx.hideLoading();
+      };
+    },
+
+    setOverturn() {
+      this.setData({
+        overturn: true
+      });
     },
 
     //------------------------------------单击item编辑 begin------------------------------------//

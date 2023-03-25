@@ -169,7 +169,7 @@ function fixImg(filePath, datas = {}, timeout=60000, successFn = () => {}, failF
   if (jwt == void 0 || jwt == null || jwt == "") {
     return false;
   }
-  return uploadFile(CONFIG.API_URL.WHCHAT_FIX_IMG, jwt, datas, filePath, timeout, successFn, failFn);
+  return uploadFile(CONFIG.API_URL.WECHAT_FIX_IMG, jwt, datas, filePath, timeout, successFn, failFn);
 }
 
 // 输出打印图片
@@ -178,7 +178,7 @@ function scanImg(filePath, datas = {}, timeout=60000, successFn = () => {}, fail
   if (jwt == void 0 || jwt == null || jwt == "") {
     return false;
   }
-  return uploadFile(CONFIG.API_URL.WHCHAT_SCAN_IMG, jwt, datas, filePath, timeout, successFn, failFn);
+  return uploadFile(CONFIG.API_URL.WECHAT_SCAN_IMG, jwt, datas, filePath, timeout, successFn, failFn);
 }
 
 // 下载字体

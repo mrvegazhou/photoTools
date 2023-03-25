@@ -3,3 +3,4 @@
 @import "../../../template/poster/posterBottomTool/posterBottomTool.wxss";
 @import "../../../template/poster/posterImgCard/posterImgCard.wxss";
 @import "../../../template/poster/camera/camera.wxss";
+@import "../../../template/poster/searchImg/searchImg.wxss";

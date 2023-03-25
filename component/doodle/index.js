@@ -457,13 +457,13 @@ Component({
         this.autoDetectBorder(1)
       } else {
         that.saveCanvas().then((imgPath)=>{
-          //保存到海报画布
-          that.triggerEvent('saveImg2Canvas', {imgPath: imgPath});
           that.saveCanvas().then((imgPath)=>{
             util.userPermission('scope.writePhotosAlbum', '检测到您没打开保存图片到相册功能权限，是否去设置打开？').then(()=>{
               that.saveImgInfo(imgPath);
             });
           });
+          //保存到海报画布
+          that.triggerEvent('saveImg2Canvas', {imgPath: imgPath});
         });
       }
     },
@@ -477,7 +477,7 @@ Component({
             title: '已保存',
             icon: 'success',
             duration: 1500
-          })
+          });
         },
         fail: (err) => {
           wx.hideLoading();

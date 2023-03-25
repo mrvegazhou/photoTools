@@ -9,8 +9,9 @@ const CONFIG = {
     WECHAT_IMAGE_COMPOSE: API_BASE_URL + "/idCardPhoto/photo/imageCompose",
     WECHAT_STATIC_IMG: API_BASE_URL + '/static/page/img',
     WECHAT_STATIC_FONT: API_BASE_URL + '/static/page/font',
-    WHCHAT_FIX_IMG: API_BASE_URL + '/fixImage/fix/restore',
-    WHCHAT_SCAN_IMG: API_BASE_URL+ '/fixImage/fix/scan'
+    WECHAT_FIX_IMG: API_BASE_URL + '/fixImage/fix/restore',
+    WECHAT_SCAN_IMG: API_BASE_URL+ '/fixImage/fix/scan',
+    WECHAT_SEARCH_IMGS: API_BASE_URL+ '/search/img/list',
   },
   MSG: {
   },

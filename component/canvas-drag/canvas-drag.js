@@ -133,4 +133,23 @@ CanvasDrag.recoverText = () => {
   }
 };
 
+//改变背景色透明度
+CanvasDrag.setBgOpacity = (alpha) => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().setBgOpacity(alpha);
+  }
+};
+
+CanvasDrag.setOverturn = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+      return CanvasDrag().setOverturn();
+  }
+};
+
 export default CanvasDrag;

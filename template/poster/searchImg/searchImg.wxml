@@ -1,0 +1,48 @@
+<template name="searchView">
+  <view class="search-container">
+    <view class="search-op">
+      <view class="search-left">
+        <text class="icon-item iconfont icon-sousuo"></text>
+        <input maxlength='20' class="search-input" type='text' placeholder='搜索图片' placeholder-class="search-place" confirm-type='search' bindconfirm="searchImg"></input>
+      </view>
+      <view class="search-right">搜索</view>
+    </view>
+    <scroll-view class="search-imgs" style="height: {{searchImgs.height}};" scroll-y bindscrolltolower='searchMoreImgs' lower-threshold='30' >
+      <view style="display: flex;flex-direction: row;justify-content: space-between;">
+        <view class="col">
+          <view wx:for="{{searchImgs.colLeft}}" class="item-container"> 
+            <view>
+              <image id="left" src="https://img.zcool.cn/community/01f82e5c07bba7a80120925212cc0c.jpg?x-oss-process=image/auto-orient,1/resize,m_lfit,w_1280,limit_1/sharpen,100/format,webp/quality,q_100" class="img" bindtap='showVideoInfo' 
+                data-arrindex='{{index}}' mode="widthFix"></image>
+            </view> 
+            <view class="desc">
+              <view class="faceName">
+                nickname
+              </view>
+              <view class="mylikecount">11</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="col"> 
+          <view wx:for="{{searchImgs.colRight}}" class="item-container"> 
+            <view> 
+              <image id="right" src="https://img.zcool.cn/community/01f82e5c07bba7a80120925212cc0c.jpg?x-oss-process=image/auto-orient,1/resize,m_lfit,w_1280,limit_1/sharpen,100/format,webp/quality,q_100" class="img" bindtap='showVideoInfo' 
+                data-arrindex='{{index}}' mode="widthFix"></image>
+            </view>
+            <view class="desc">
+              <view class="faceName">
+                nickname
+              </view>
+              <view class="mylikecount">22</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+    <view class="float-btn" bindtap="searchFullScreen">
+      <block wx:if="{{searchImgs.fullScreen==true}}"><text class="iconfont icon-xiala1"></text></block>
+      <block wx:else>全屏</block>
+    </view>
+  </view>
+</template>
