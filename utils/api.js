@@ -142,6 +142,11 @@ function imageCompose(datas, {successFn=() => {}, failFn=() => {}, completeFn=()
   request(CONFIG.API_URL.WECHAT_IMAGE_COMPOSE, "POST", datas, header, successFn, failFn, completeFn);
 }
 
+// 搜索网络图片
+function searchImgs(datas, {successFn=() => {}, failFn=() => {}, completeFn=()=> {}, header=null}) {
+  request(CONFIG.API_URL.WECHAT_SEARCH_IMGS, "POST", datas, header, successFn, failFn, completeFn);
+}
+
 // 将远端图片，下载到本地
 function downloadImg(url) {
   return new Promise((resolve, reject) => {
@@ -252,5 +257,6 @@ module.exports = {
   downloadImg: downloadImg,
   fixImg: fixImg,
   scanImg: scanImg,
-  setFontFace: setFontFace
+  setFontFace: setFontFace,
+  searchImgs: searchImgs
 }

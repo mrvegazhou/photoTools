@@ -11,7 +11,7 @@ const CONFIG = {
     WECHAT_STATIC_FONT: API_BASE_URL + '/static/page/font',
     WECHAT_FIX_IMG: API_BASE_URL + '/fixImage/fix/restore',
     WECHAT_SCAN_IMG: API_BASE_URL+ '/fixImage/fix/scan',
-    WECHAT_SEARCH_IMGS: API_BASE_URL+ '/search/img/list',
+    WECHAT_SEARCH_IMGS: API_BASE_URL+ '/appImgs/search/list',
   },
   MSG: {
   },

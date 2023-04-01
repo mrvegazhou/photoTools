@@ -148,11 +148,11 @@ App({
       },
       {
         family:'思源宋体',
-        url: CONFIG.API_URL.WECHAT_STATIC_FONT+'Source_Han_Serif_SC_Light_Light.otf'
+        url: CONFIG.API_URL.WECHAT_STATIC_FONT+'/Source_Han_Serif_SC_Light_Light.otf'
       },
       {
         family:'思源黑体 ExtraLight',
-        url: CONFIG.API_URL.WECHAT_STATIC_FONT+'Source_Han_Sans_SC_ExtraLight_ExtraLight.otf'
+        url: CONFIG.API_URL.WECHAT_STATIC_FONT+'/Source_Han_Sans_SC_ExtraLight_ExtraLight.otf'
       },
       {
         family:'阿里妈妈东方大楷 Regular',
@@ -164,7 +164,7 @@ App({
       },
       {
         family:'阿里妈妈数黑体 Bold',
-        url: CONFIG.API_URL.WECHAT_STATIC_FONT+'Alimama_ShuHeiTi_Bold.woff2'
+        url: CONFIG.API_URL.WECHAT_STATIC_FONT+'/Alimama_ShuHeiTi_Bold.woff2'
       }
     ]
   }

@@ -86,6 +86,11 @@
   margin-right: 20rpx;
   color: gray;
 }
+.search-container .more-info {
+  font-size: var(--primary-font-size);
+  color: gray;
+  margin: 12rpx;
+}
 .mylikecount {
   display: flex;
   flex-direction: row;

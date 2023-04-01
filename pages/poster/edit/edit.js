@@ -2,8 +2,10 @@ import ImageCropper from '../../../component/image-cropper/cropper';
 import MyDoodleCpt from '../../../component/doodle/doodle';
 import CanvasDrag from '../../../component/canvas-drag/canvas-drag';
 import AlloyImage from "../../../component/alloyimage/alloyImage.js"
-const util = require("../../../utils/util");
 import { CONFIG } from '../../../utils/config'
+const util = require("../../../utils/util");
+var apiRequest = require('../../../utils/api.js')
+var screenWidth;
 var appInstance = getApp();
 const families = appInstance.globalData.fontFaceList;
 
@@ -91,9 +93,10 @@ Page({
       secondMenuImgH: '55vh', //加图弹层的高度设置
     },
     searchImgs: {
+      imgList: [],
       //分列
-      colLeft: [1, 2, 3],
-      colRight: [1, 2, 3],
+      colLeft: [],
+      colRight: [],
       //两列高度
       colHeightLeft :0,
       colHeightRight :0,
@@ -103,7 +106,10 @@ Page({
       hidden: true,
       height: '450rpx',
       //数据是否正在加载中，避免用户瞬间多次下滑到底部
-      loadingData: false
+      loadingData: false,
+      page: 1,
+      inputVal: '',
+      info: '加载数据中...'
     },
     //画布标尺
     scaleStyles: {
@@ -177,7 +183,7 @@ Page({
    */
   onLoad(options) {
     this.getFontFamilySelect();
-    this.screenWidth = wx.getSystemInfoSync().screenWidth;
+    screenWidth = wx.getSystemInfoSync().screenWidth;
     this.setData({
       'searchImgs.imgWidth': 0.495 * screenWidth
     });
@@ -1486,9 +1492,6 @@ Page({
   },
   //-----------------------------------点击文字操作 end------------------------------------------------//
   //-----------------------------------图片搜索功能 begin----------------------------------------------//
-  searchImg() {
-
-  },
   searchFullScreen() {
     if(this.data.searchImgs.fullScreen) {
       this.setData({
@@ -1498,93 +1501,88 @@ Page({
     } else {
       this.setData({
         'menu.secondMenuImgH': '90%',
-        'searchImgs.fullScreen': true
+        'searchImgs.fullScreen': true,
+        'searchImgs.height': '90%'
       });
     }
   },
-  imageLoad(imgInfo) {
-    let colHeightLeft = this.data.searchImgs.colHeightLeft;
-    let colHeightRight = this.data.searchImgs.colHeightRight;
-    let imgWidth = this.data.imgWidth;  //图片设置的宽度
-    let oImgW = imgInfo.width; //图片原始宽度
-    let oImgH = imgInfo.height; //图片原始高度
-    let scale = imgWidth / oImgW;
-    let imgHeight = oImgH * scale; //自适应高度
-    if(colHeightLeft <= colHeightRight) {
-      //放左列
-      colHeightLeft = colHeightLeft + imgHeight;
-      this.setData({
-        'searchImgs.colHeightLeft': colHeightLeft
-      })
-      return true;
-    } else {
-      //放右列
-      colHeightRight = colHeightRight + imgHeight;
-      this.setData({
-        'searchImgs.colHeightRight': colHeightRight
-      })
-      return false;
-    }
+  //获取input内容
+  getSearchTags(e) {
+    this.setData({
+      'searchImgs.inputVal': e.detail.value
+    });
   },
-  getAllImgList: function (page) {
+  searchImgs() {
+    this.setData({
+      'searchImgs.page': 1
+    });
+    this.searchList(1);
+  },
+  //搜索动作
+  searchList(page) {
     let that = this;
+    this.setData({
+      'searchImgs.loadingData': true
+    });
     //加载提示
     wx.showLoading({
       title: '正在加载...',
     });
     if(page === 1){
-      this.setData({
+      that.setData({
+        //设置加载时间
         'searchImgs.loadTime': new Date().getTime()
       });
     }
-    //请求后端
-    wx.request({
-      url: CONFIG.API_URL.WECHAT_SEARCH_IMGS+'page=' + page + '&time=' + that.data.searchImgs.loadTime,
-      method: "POST",
-      header: {
-        'content-type': 'application/json' //默认值
-      },
-      //回调
-      success: function (res) {
+    let datas = {
+      tags: that.data.searchImgs.inputVal,
+      page: page,
+      time: that.data.searchImgs.loadTime
+    };
+    apiRequest.searchImgs(datas, {
+      successFn: (res)=>{
         //隐藏加载提示
         wx.hideLoading();
-        wx.hideNavigationBarLoading();
-        wx.stopPullDownRefresh();
-        //状态判断 200-成功 500-错误 502-被拦截
-        var status = res.data.status;
-        if (status == 200){
-          //判断当前页page是否是第一页，如果是第一页，那么设置videoList为空
-          if (page === 1) {
-            me.setData({
-              videoList: [],
-              colLeft: [],
-              colRight: []
+        var status = res.data.code;
+        if(status == 200) {
+          //判断当前页page是否是第一页，如果是第一页，那么设置List为空
+          if(page === 1) {
+            that.setData({
+              'searchImgs.colLeft': [],
+              'searchImgs.colRight': [],
+              'searchImgs.imgList': []
             });
           }
-          var videoList = res.data.data
-          var newVideoList = me.data.videoList;
-          var allvideoList = newVideoList.concat(videoList)
+          var imgList = res.data.data.list;
+          var info = '加载数据中...';
+          if() {
+            info = '没有数据'; 
+          }
+          var newImgList = that.data.searchImgs.imgList;
+          var allImgList = newImgList.concat(imgList)
           //判断视频放在哪一列
-          var colLeft = me.data.colLeft;
-          var colRight = me.data.colRight;
-          for (var i = 0; i < videoList.length; i++) {
+          var colLeft = that.data.searchImgs.colLeft;
+          var colRight = that.data.searchImgs.colRight;
+          for (var i = 0; i < imgList.length; i++) {
             //返回1放左列,0放右列
-            var result = me.imageLoad(videoList[i])
-            if (!result){
-              colRight.push(videoList[i]);
-            }
-            else{
-              colLeft.push(videoList[i]);
+            var result = that.imageLoad(imgList[i])
+            imgList[i].url = CONFIG.API_URL.WECHAT_STATIC_IMG+'/'+imgList[i].url;
+            if(1==result) {
+              colRight.push(imgList[i]);
+            } else {
+              colLeft.push(imgList[i]);
             }
           }
-          me.setData({
-            videoList: allvideoList,
-            colLeft: colLeft,
-            colRight: colRight,
-            page: page,
+          that.setData({
+            'searchImgs.imgList': allImgList,
+            'searchImgs.colLeft': colLeft,
+            'searchImgs.colRight': colRight,
+            'searchImgs.page': page,
+            'searchImgs.loadingData': false,
+            'searchImgs.hidden': true,
+            'searchImgs.info': info
           })
-        }
-        else if (status == 500){
+        } else {
           wx.showToast({
             title: res.data.msg,
             icon: 'none',
@@ -1592,18 +1590,44 @@ Page({
           })
         }
       },
-      fail: function () {
+      failFn: (res)=>{
         wx.showToast({
           title: '连接超时...',
           icon: "none"
-        })
+        });
+        that.setData({
+          'searchImgs.hidden': true,
+          'searchImgs.loadingData': false
+        });
       }
-    })
+    });
   },
+
+  imageLoad(imgInfo) {
+    let colHeightLeft = this.data.searchImgs.colHeightLeft;
+    let colHeightRight = this.data.searchImgs.colHeightRight;
+    let imgHeight = imgInfo.height ? imgInfo.height : 0; //图片原始高度
+    if(colHeightLeft <= colHeightRight) {
+      //放左列
+      colHeightLeft = colHeightLeft + imgHeight;
+      this.setData({
+        'searchImgs.colHeightLeft': colHeightLeft
+      });
+      return 1;
+    } else {
+      //放右列
+      colHeightRight = colHeightRight + imgHeight;
+      this.setData({
+        'searchImgs.colHeightRight': colHeightRight
+      });
+      return 2;
+    }
+  },
+  
   searchMoreImgs(e) {
-    var hidden = this.data.searchImgs.hidden,
+    let that = this;
+    let hidden = this.data.searchImgs.hidden,
     loadingData = this.data.searchImgs.loadingData;
-    console.info('scrollToLower', e);
     if(hidden) {
       this.setData({
         'searchImgs.hidden': false
@@ -1619,15 +1643,13 @@ Page({
       title: '数据加载中...',
     });
     setTimeout(function() {
-      that.loadData(true, () => {
-        that.setData({
-          hidden: true,
-          loadingData: false
-        });
-        wx.hideLoading();
+      let page = that.data.searchImgs.page + 1;
+      that.setData({
+        'searchImgs.page':  page
       });
-      console.info('上拉数据加载完成.');
-    }, 2000);
+      that.searchList(page);
+      wx.hideLoading();
+    }, 1000);
   },
   //-----------------------------------图片搜索功能 end------------------------------------------------//
 })
