@@ -1,0 +1,131 @@
+@import "../../../template/iconfont/iconfont.wxss";
+@import "../../../template/theme.wxss";
+page{
+  overflow: hidden;
+}
+.setting{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  height: 35rpx;
+  width: 130rpx;
+  position: absolute;
+  left: 0;
+  right:0;
+  margin: 0 auto;
+  bottom: 20rpx;
+}
+.setting .iconfont{
+  color: var(--primary-color);
+  font-size: var(--primary-font-size-2);
+  margin-left: 30rpx;
+  height: 40rpx;
+  line-height:40rpx;
+}
+.setting-panel {
+  display: flex;
+  flex-direction: column;
+  height: 260rpx;
+  width: 470rpx;
+  position: absolute;
+  left: 0;
+  right:0;
+  bottom: 60rpx;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 6rpx;
+  align-items:flex-start;
+  border: 1rpx solid var(--primary-border-color);
+}
+.setting-label{
+  display: flex;
+  flex-direction: row;
+  height: 30rpx;
+  line-height: 30rpx;
+  font-size: 15rpx;
+  margin: 20rpx 0 0 20rpx;
+}
+.setting-label .input{
+  height: 30rpx;
+  width: 350rpx;
+  border: 1rpx solid var(--primary-border-color);
+  border-radius: 3rpx;
+  padding-left: 10rpx;
+}
+.setting-label .label {
+  margin-right: 20rpx;
+}
+.color-block{
+  height: 25rpx;
+  width: 60rpx;
+  margin: auto 0;
+  border: 1rpx solid var(--primary-border-color);
+}
+.slider{
+  margin: auto 0;
+  width: 300rpx;
+  size: 20rpx;
+}
+.color-picker{
+  z-index: 5;
+  position: relative;
+  left:10rpx;
+  bottom: 150rpx;
+  background:#ffffff;
+  width: 250rpx;
+  height: 450rpx;
+  padding: 6rpx;
+  border-radius: 3rpx;
+  border: 1px solid var(--primary-border-color);
+  text-align: center;
+  transform: scale(0.6); 
+  transform-origin: 0 0;
+}
+.picker-content {
+  height: 150rpx !important;
+}
+.select-box {
+  background-color: #eee;
+  padding: 0 10rpx;
+  width: 230rpx;
+  height: 200rpx;
+  position: absolute;
+  z-index: 3;
+  border-radius: 3rpx;
+  bottom: 0;
+  left: 150rpx;
+  background:#ffffff;
+  border: 1px solid var(--primary-border-color);
+}
+@keyframes myfirst {
+  from {
+      height: 0rpx;
+  }
+
+  to {
+      height: 210rpx;
+  }
+}
+.select-one {
+  height: 40rpx;
+  line-height: 40rpx;
+  border-bottom: 1px solid var(--primary-border-color);
+}
+.font-sel{
+  height: 30rpx;
+  width: auto;
+  min-width: 120rpx;
+  display: flex;
+  align-items: center;
+  border-radius: 3rpx;
+  justify-content: space-between;
+  border: 1px solid var(--primary-border-color);
+  padding: 0 10rpx;
+  white-space: nowrap;
+  display: inline-block;
+}
+.cancel-color{
+  margin-left:20rpx;
+  color: var(--primary-color);
+}

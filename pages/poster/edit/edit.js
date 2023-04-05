@@ -1555,7 +1555,7 @@ Page({
           }
           var imgList = res.data.data.list;
           var info = '加载数据中...';
-          if() {
+          if(imgList.length==0) {
             info = '没有数据'; 
           }
           var newImgList = that.data.searchImgs.imgList;

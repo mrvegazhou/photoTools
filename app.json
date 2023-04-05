@@ -16,6 +16,9 @@
     "pages/poster/edit/edit",
     "pages/poster/test/test",
 
+    "pages/marquee/index/index",
+    "pages/marquee/show/show",
+
     "pages/me/me",
 
     "pages/logs/logs"

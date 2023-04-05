@@ -1,0 +1,46 @@
+<view style="background:{{background}};width:100%;height:{{windowHeight}}rpx;line-height:{{windowHeight}}rpx;" catchtap="showSetting">
+  <view class='text' style='position:absolute;left:{{offsetLeft}}px;font-size:{{fontSize}}rpx;white-space:nowrap;'>
+    {{text}}
+  </view>
+  <block wx:if="{{showSetting==true}}">
+    <view class="setting">
+      <text class="iconfont {{lock==true ? 'icon-suoding' : 'icon-jiesuo'}}" catchtap="lock"></text>
+      <text wx:if="{{lock==false}}" class="iconfont icon-shezhi" catchtap="setting"></text>
+      <text wx:if="{{lock==false}}" class="iconfont icon-home-fill" catchtap="goHome"></text>
+    </view>
+  </block>
+</view>
+
+<view class="setting-panel" wx:if="{{showSettingPanel==true}}">
+  <view class="setting-label">
+    <view class="label">内容:</view>
+    <input class="input" maxlength="50" value="{{text}}" bindinput="getTxtValue" />
+  </view>
+  <view class="setting-label">
+    <view class="label">字体大小:</view>
+    <slider class="slider" block-size="1" activeColor="#69a794" bindchange="changeFontSize" min="1" max="500" value="{{fontSize}}" show-value />
+  </view>
+  <view class="setting-label">
+    <view class="label">字体样式:</view>
+    <view class='font-sel' bindtap='showFontSel'>
+      {{fontVal}}
+    </view>
+    <scroll-view scroll-y="true" class="select-box" wx:if="{{fontSelect}}">
+      <block wx:for="{{families}}" wx:key="index">
+        <view class="select-one" bindtap="setSel" data-name="{{item.family}}" style="{{item.family=='系统默认字体' ? '' : 'font-family:'+item.family+';'}}">{{item.family}}</view>
+      </block>
+    </scroll-view>
+  </view>
+  <view class="setting-label">
+    <view class="label">背景色:</view>
+    <view class="color-block" style="background-color:{{background}} !important;" catchtap="showColorPicker"></view>
+    <view class="color-picker" wx:if="{{showColorPicker==true}}">
+      <color-picker2 colorData="{{background}}" bindchangecolor="onChangeBackColor"></color-picker2>
+    </view>
+    <view catchtap="cancelColor" class="cancel-color">取消</view>
+  </view>
+  <view class="setting-label">
+    <view class="label">滚动速度:</view>
+    <slider class="slider" block-size="1" activeColor="#69a794" bindchange="changePace" min="0" max="100" value="{{slide}}" show-value />
+  </view>
+</view>
