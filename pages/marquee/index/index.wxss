@@ -1,1 +1,19 @@
-/* pages/marquee/index/index.wxss */
+.container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.twinkle{
+  border-radius: 6rpx;
+  width: 90%;
+  height: 250rpx;
+  line-height: 250rpx;
+  text-align: center;
+  font-size: 200%;
+  background: #fbb929;
+  margin: 10rpx;
+}
+.roll-font{
+  position: absolute;
+  white-space:nowrap;
+}

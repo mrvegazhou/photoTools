@@ -8,13 +8,13 @@ Page({
    */
   data: {
     isLandscape: true,
-    text: '测试实弹发射',
+    text: '点击屏幕显示设置按钮',
     background: '',
     fontSize: 25,
     interval: null,
     sec: 20, //时间间隔
     offsetLeft: 0,
-    pace: 0.5, //滚动速度
+    pace: 1, //滚动速度
     slide: 20,
     fontLen: 0, //字体宽度
     windowWidth: 0,
@@ -25,13 +25,28 @@ Page({
     lock: false,
     families: families,
     fontSelect: false,
-    fontVal: ''
+    fontVal: '',
+    type: '',  //flickering、roll
+    fontColor: 'black',
+    showFontColorPicker: false,
+    opacity: 1
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    let that = this;
+    wx.onAccelerometerChange(function(e){
+      //当监听到大于1可执行方法
+      if(e.x> 1){
+        that.resetFont();
+      }
+    });
+
+    this.setData({
+      'type': options.type 
+    });
   },
 
   /**
@@ -39,7 +54,6 @@ Page({
    */
   onReady() {
     wx.setPageOrientation({ orientation: 'landscape' });
-
   },
 
   /**
@@ -77,7 +91,7 @@ Page({
       }
     });
     //加载字体
-    // this.getFonts();
+    this.getFonts();
 
     this.startMarquee();
   },
@@ -151,11 +165,39 @@ Page({
   startMarquee: function() {
     var that = this;
     that.stopMarquee();
-    //初始化数据
-    that.queryViewWidth('text').then(function(resolve) {
-      that.data.fontLen = resolve;
-      that.excuseAnimation();
-    });
+    let type = this.data.type;
+    let flag = 1;
+    switch(type) {
+      case 'flickering':
+        let slide = that.data.slide;
+        let sec = 18000/slide;
+        sec = Number(sec.toFixed(2));
+        that.setData({'sec': sec});
+        let interval = setInterval(function() {
+          if(!flag) {
+            that.setData({
+              opacity: '0'
+            });
+            flag = 1;
+          } else {
+            that.setData({
+              opacity: '1'
+            });
+            flag = 0;
+          }
+        }, that.data.sec);
+        that.setData({
+          interval: interval
+        });
+        break;
+      case 'roll':
+        that.queryViewWidth('text').then(function(resolve) {
+          that.data.fontLen = resolve;
+          that.excuseAnimation();
+        });
+        break;
+    }
+    
   },
 
   showSetting() {
@@ -188,17 +230,31 @@ Page({
 
   onChangeBackColor(e) {
     let rgba = e.detail.rgba;
-    console.log(rgba)
     this.setData({
       'background': rgba,
       'fontSelect': false,
+      'showFontColorPicker': false
+    });
+  },
+
+  onChangeFontColor(e) {
+    let rgba = e.detail.rgba;
+    this.setData({
+      'fontColor': rgba,
+      'fontSelect': false,
+      'showColorPicker': false
     });
   },
 
   showColorPicker() {
-    let that = this;
     this.setData({
-      'showColorPicker': !that.data.showColorPicker
+      'showColorPicker': !this.data.showColorPicker
+    });
+  },
+
+  showFontColorPicker() {
+    this.setData({
+      'showFontColorPicker': !this.data.showFontColorPicker
     });
   },
 
@@ -207,6 +263,7 @@ Page({
     this.setData({
       'fontSelect': !that.data.fontSelect,
       'showColorPicker': false,
+      'showFontColorPicker': false
     });
   },
 
@@ -225,18 +282,43 @@ Page({
     });
   },
 
+  cancelFontColor() {
+    this.setData({
+      fontColor: 'black'
+    });
+  },
+
   changePace(e) {
     let pace = e.detail.value;
-    let newPace = 0.5;
-    if(pace==100) {
-      newPace = 2;
-    } else if(pace==0) {
-      newPace = 0;
+    if(this.data.type=='flickering') {
+      let sec = pace==0 ? 0 : 18000/pace;
+      sec = Number(sec.toFixed(2));
+      this.setData({'slide': pace, 'sec': sec});
+      if(sec!=0) {
+        this.stopMarquee();
+        this.startMarquee();
+      } else {
+        this.setData({'opacity':1});
+        this.stopMarquee();
+      }
     } else {
-      newPace += pace/100;
+      let newPace = 0.5;
+      if(pace==100) {
+        newPace = 2;
+      } else if(pace==0) {
+        newPace = 0;
+      } else {
+        newPace += pace/100;
+      }
+      newPace = Number(newPace.toFixed(2));
+      this.setData({'slide': pace, 'pace': newPace});
+      if(newPace!=0) {
+        this.stopMarquee();
+        this.startMarquee();
+      } else {
+        this.stopMarquee();
+      }
     }
-    newPace = Number(newPace.toFixed(2));
-    this.setData({'slide': pace, 'pace': newPace});
   },
 
   changeFontSize(e) {
@@ -246,5 +328,28 @@ Page({
     that.queryViewWidth('text').then(function(resolve) {
       that.setData({fontLen: resolve});
     });
-  }
+  },
+
+  resetFont() {
+    let that = this;
+    that.setData({'offsetLeft': 0});
+    let bgColor = that.data.background;
+    for(let i = 0; i<5; i++) {
+      let tmp = '#ffffff';
+      that.setData({'background': tmp});
+      setTimeout(() => {
+        that.setData({'background': bgColor});
+      }, 200);
+    }
+    that.setData({'background': bgColor});
+    this.stopMarquee();
+    that.startMarquee();
+  },
+
+  goHome() {
+    this.stopMarquee();
+    wx.navigateTo({
+      url: '/pages/marquee/index/index'
+    });
+  },
 })

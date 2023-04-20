@@ -16,6 +16,7 @@ let canvasHeight = 696;
 let dictShapes = {
   'circle':'圆形', 'star':'五角星', 'triangle': '三角形'
 };
+let total = 1;
 Page({
   canvas: null, // 画布
   ctx: null,
@@ -1502,7 +1503,7 @@ Page({
       this.setData({
         'menu.secondMenuImgH': '90%',
         'searchImgs.fullScreen': true,
-        'searchImgs.height': '90%'
+        'searchImgs.height': '73vh'
       });
     }
   },
@@ -1650,6 +1651,35 @@ Page({
       that.searchList(page);
       wx.hideLoading();
     }, 1000);
+  },
+
+  showImgInfo(e) {
+    var img = e.currentTarget.dataset['img'];
+    wx.previewImage({
+      current: img, // 当前显示图片的http链接
+      urls: [img] // 需要预览的图片http链接列表
+    });
+  },
+  addSearchImg(e) {
+    let img = e.currentTarget.dataset['img'];
+    console.log(img);
+    if(typeof(img) == "undefined" || !img) {
+      return;
+    }
+    var that = this;
+    wx.getImageInfo({
+      src: img,
+      success: resInfo => {
+        let newItem = this.data.itemImg;
+        newItem.css.width = resInfo.width;
+        newItem.css.height = resInfo.height;
+        newItem.css.left = 10*total;
+        newItem.css.top = 10*total;
+        newItem.url = resInfo.path;
+        total++;
+        that.setData({items: [newItem]});
+      }
+    });
   },
   //-----------------------------------图片搜索功能 end------------------------------------------------//
 })

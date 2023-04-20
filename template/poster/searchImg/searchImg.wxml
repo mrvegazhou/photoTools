@@ -12,14 +12,16 @@
         <view class="col">
           <view wx:for="{{searchImgs.colLeft}}" class="item-container" wx:for-item="item" wx:key="index"> 
             <view>
-              <image id="left" src="{{item.url}}" class="img" bindtap='showImgInfo' 
+              <image id="left" src="{{item.url}}" class="img" bindtap='showImgInfo' data-img="{{item.url}}"
                 data-index='{{index}}' mode="widthFix"></image>
             </view> 
             <view class="desc">
-              <view class="faceName">
-                nickname
+              <view class="tagName">
+                {{item.tags}}
               </view>
-              <view class="mylikecount">11</view>
+              <view class="mylike" bindtap="addSearchImg" data-img="{{item.url}}">
+                <text class="iconfont icon-tianjia"></text>
+              </view>
             </view>
           </view>
         </view>
@@ -27,14 +29,16 @@
         <view class="col"> 
           <view wx:for="{{searchImgs.colRight}}" class="item-container" wx:for-item="item" wx:key="index"> 
             <view> 
-              <image id="right" src="{{item.url}}" class="img" bindtap='showImgInfo'
+              <image id="right" src="{{item.url}}" class="img" bindtap='showImgInfo' data-img="{{item.url}}"
                 data-index='{{index}}' mode="widthFix"></image>
             </view>
             <view class="desc">
-              <view class="faceName">
-                nickname
+              <view class="tagName">
+                {{item.tags}}
               </view>
-              <view class="mylikecount">22</view>
+              <view class="mylike" bindtap="addSearchImg" data-img="{{item.url}}">
+                <text class="iconfont icon-tianjia"></text>
+              </view>
             </view>
           </view>
         </view>

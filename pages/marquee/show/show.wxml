@@ -1,5 +1,5 @@
 <view style="background:{{background}};width:100%;height:{{windowHeight}}rpx;line-height:{{windowHeight}}rpx;" catchtap="showSetting">
-  <view class='text' style='position:absolute;left:{{offsetLeft}}px;font-size:{{fontSize}}rpx;white-space:nowrap;'>
+  <view class='text' style="{{type=='flickering' ? 'width:100%;text-align:center;opacity:'+opacity+';' : 'opacity:1;white-space:nowrap;'}}color:{{fontColor}};font-family:'{{fontVal}}';position:absolute;left:{{offsetLeft}}px;font-size:{{fontSize}}rpx;">
     {{text}}
   </view>
   <block wx:if="{{showSetting==true}}">
@@ -30,6 +30,14 @@
         <view class="select-one" bindtap="setSel" data-name="{{item.family}}" style="{{item.family=='系统默认字体' ? '' : 'font-family:'+item.family+';'}}">{{item.family}}</view>
       </block>
     </scroll-view>
+  </view>
+  <view class="setting-label">
+    <view class="label">字体颜色:</view>
+    <view class="color-block" style="background-color:{{fontColor}} !important;" catchtap="showFontColorPicker"></view>
+    <view class="color-picker" wx:if="{{showFontColorPicker==true}}">
+      <color-picker2 colorData="{{fontColor}}" bindchangecolor="onChangeFontColor"></color-picker2>
+    </view>
+    <view catchtap="cancelFontColor" class="cancel-color">取消</view>
   </view>
   <view class="setting-label">
     <view class="label">背景色:</view>

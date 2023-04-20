@@ -538,6 +538,18 @@ function userPermission(permissionName, content){
   })
 }
 
+//查询view的宽度
+function queryViewWidth(viewId) {
+  //创建节点选择器
+  return new Promise(function(resolve) {
+    var query = wx.createSelectorQuery();
+    //选择id
+    query.select('.' + viewId).boundingClientRect(function(rect) {
+      resolve(rect.width);
+    }).exec();
+  });
+}
+
 module.exports = {
   formatTime: formatTime,
   tools: tools,
@@ -564,5 +576,6 @@ module.exports = {
   createImage: createImage,
   canvasHandleImg: canvasHandleImg,
   drawStar: drawStar,
-  userPermission: userPermission
+  userPermission: userPermission,
+  queryViewWidth: queryViewWidth
 }
