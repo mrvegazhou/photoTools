@@ -550,6 +550,21 @@ function queryViewWidth(viewId) {
   });
 }
 
+function urlTobase64(imgPath) {
+  if(!imgPath) {
+    return;
+  }
+  return new Promise(function(resolve) {
+    wx.getFileSystemManager().readFile({
+        filePath: imgPath,
+        encoding: 'base64',
+        success: res => {
+          resolve(res.data);
+        }
+    });
+  });
+}
+
 module.exports = {
   formatTime: formatTime,
   tools: tools,
@@ -577,5 +592,6 @@ module.exports = {
   canvasHandleImg: canvasHandleImg,
   drawStar: drawStar,
   userPermission: userPermission,
-  queryViewWidth: queryViewWidth
+  queryViewWidth: queryViewWidth,
+  urlTobase64: urlTobase64
 }

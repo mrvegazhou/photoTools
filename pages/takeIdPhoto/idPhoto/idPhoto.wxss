@@ -1,4 +1,5 @@
-/* pages/idPhoto/idPhoto.wxss */
+@import "../../../template/theme.wxss";
+@import "../../../template/iconfont/iconfont.wxss";
 .container {
   height: 100vh;
 	padding: 10rpx 30rpx;
@@ -15,14 +16,26 @@
 }
 .content-photo-demo .demo-text {
   margin-left: 36rpx;
-  font-size: 28rpx;
+  font-size: 25rpx;
+  color: var(--primary-dark-gray-color);
 }
 .content-photo-demo .demo-text .demo-item-text {
   margin: 5rpx;
 }
-.content-photo-demo image {
+.content-photo-demo .img{
   width: 150rpx;
   height: 200rpx;
+  text-align: center;
+  position: relative;
+}
+.content-photo-demo .icon{
+  font-size: 130rpx;
+  position: absolute;
+  bottom: 0;
+  color: gray;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }
 /* 颜色选择 */
 .colors {
@@ -77,15 +90,17 @@
   margin: 6rpx 10rpx 10rpx 6rpx;
   padding: 20rpx;
   border-radius: 10rpx;
-  background-color: rgb(233, 233, 233);
+  border: 1rpx solid var(--primary-border-color);
   display: flex;
   flex-direction: column;
 }
 .size-content .size-content-item .title {
-  font-size: 35rpx;
+  font-size: 30rpx;
   padding-left: 20rpx;
+  margin-bottom: 10rpx;
 }
 .size-content .size-content-item .px, .size-content .size-content-item .size{
-  font-size: 28rpx;
+  font-size: 24rpx;
   padding-left: 20rpx;
+  color: var(--primary-dark-gray-color);
 }

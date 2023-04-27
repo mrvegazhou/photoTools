@@ -17,6 +17,7 @@ let dictShapes = {
   'circle':'圆形', 'star':'五角星', 'triangle': '三角形'
 };
 let total = 1;
+let timeOUtAliWx = null;
 Page({
   canvas: null, // 画布
   ctx: null,
@@ -87,6 +88,8 @@ Page({
         '原图', '美肤', '素描', '自然增强', '紫调', '柔焦', '黑白', 'lomo', '暖秋', '木雕'
       ],
       imgTrans: 100, //图片透明化
+      bgOpacity: 100,
+
       txtEditType: 'add',
       
       broadwise:false, //是否图片横向生成
@@ -375,6 +378,9 @@ Page({
           }
         });
         break;
+      case 'bgOpacity':
+
+        break;
       default:
         menu.secondMenu = ''
     }
@@ -562,6 +568,25 @@ Page({
           that.setData({'menu.menuShow': '', 'menu.secondMenu':type});
           break;
       }
+    });
+  },
+  changeBgOpacity(e) {
+    let alpha = e.detail.value;
+    this.setData({
+      'menu.bgOpacity': alpha
+    });
+  },
+  bgOpacityOk() {
+    if(this.data.bg.img=='') {
+      return;
+    }
+    let alpha = this.data.menu.bgOpacity;
+    this.transImg(alpha/100, 'bg');
+  },
+  bgOpacityCancel() {
+    this.setData({
+      'menu.menuShow': '',
+      'menu.bgOpacity': 100,
     });
   },
   //-----------------------------------背景设置 end----------------------------------------------------//
@@ -1094,7 +1119,7 @@ Page({
         this.flip('inverse');
         break;
       case "transparent":
-        this.transImg(0.3);
+        //this.transImg(0.3);
         break;
       case "adjust":
         break;
@@ -1187,10 +1212,10 @@ Page({
   },
 
   //图片透明化
-  transImg(alpha) {
+  transImg(alpha, type) {
     let that = this;
     let itemImg = CanvasDrag.getItem();
-    let url = itemImg.url;
+    let url = type=='bg' ? this.data.bg.img : itemImg.url;
     wx.showLoading({
       title: '处理中',
       mask: true
@@ -1229,11 +1254,18 @@ Page({
             fail: err => {
             },
             success: function (res) {
-              that.setData({
-                'itemImg.url': res.tempFilePath,
-              });
-              itemImg.url = res.tempFilePath;
-              CanvasDrag.replaceItem(itemImg);
+              if(type=='bg') {
+                that.setData({
+                  'bg.img': res.tempFilePath,
+                });
+                CanvasDrag.replaceBgImg(res.tempFilePath);
+              } else {
+                that.setData({
+                  'itemImg.url': res.tempFilePath,
+                });
+                itemImg.url = res.tempFilePath;
+                CanvasDrag.replaceItem(itemImg);
+              }
             }
           }, that);
           wx.hideLoading();
@@ -1246,12 +1278,13 @@ Page({
     let alpha = e.detail.value;
     this.setData({
       'menu.imgTrans': alpha
-    })
+    });
   },
+  
   //确定透明化图片
   imgTransOk() {
     let alpha = this.data.menu.imgTrans;
-    this.transImg(alpha/100);
+    this.transImg(alpha/100, 'img');
   },
   imgTransCancel() {
     this.setData({
@@ -1517,7 +1550,11 @@ Page({
     this.setData({
       'searchImgs.page': 1
     });
-    this.searchList(1);
+    if(timeOUtAliWx ==null){
+      timeOUtAliWx = setTimeout(function () {
+        this.searchList(1);
+      }, 1500);
+    }
   },
   //搜索动作
   searchList(page) {
@@ -1593,8 +1630,8 @@ Page({
       },
       failFn: (res)=>{
         wx.showToast({
-          title: '连接超时...',
-          icon: "none"
+          title: '查询失败...',
+          icon: "error"
         });
         that.setData({
           'searchImgs.hidden': true,
@@ -1602,6 +1639,7 @@ Page({
         });
       }
     });
+    timeOUtAliWx = null;
   },
 
   imageLoad(imgInfo) {
@@ -1678,6 +1716,7 @@ Page({
         newItem.url = resInfo.path;
         total++;
         that.setData({items: [newItem]});
+        wx.showToast({ title: '添加图片成功', icon: 'none', duration: 2000 });
       }
     });
   },

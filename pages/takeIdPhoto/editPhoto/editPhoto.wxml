@@ -1,6 +1,6 @@
 <!--pages/editPhoto/editPhoto.wxml-->
 <view class="container">
-  <view class="photo-edit-content">
+  <view class="photo-edit-content" bindtap="closeColorPicker">
     <view class="canvas-view" style="background-color: {{photoBg}};width: {{imageData.width * showScale}}rpx;height: {{imageData.height * showScale}}rpx; border: 1rpx dashed gray;">
       <image style="width: {{width * showScale}}rpx; height: {{height * showScale}}rpx; left: {{left * showScale}}rpx; top: {{top * showScale}}rpx; transform: translate(-50%, -50%) scale({{ scale }}) rotate({{ rotate }}deg);" class="people-photo" src="{{filePath}}" 
       bindload="bindload"
@@ -13,7 +13,7 @@
   <!--拾色器-->
   <view class="color-picker-view">
     <view wx:if="{{showColorPicker}}" class="color-picker-content">
-      <color-picker class="color-picker" colorData="{{colorData}}" rpxRatio="{{rpxRatio}}" bindchangecolor="onChangeColor"></color-picker>
+      <color-picker2  colorData="{{colorData.color}}" bindchangecolor="onChangeColor"></color-picker2>
       <button bindtap="closeColorPicker" size="mini" type="default">确定</button>
     </view>
   </view>
@@ -36,8 +36,8 @@
         <view wx:if="{{bgc === 'blue2'}}" class="iconfont icon_select"></view>
       </view>
       <!--自定义-->
-      <view bindtap="toggleBg" data-color="custom" class="color custom {{bgc === 'custom' ? 'active' : ''}}" style="display: flex; align-items: center; justify-content: center;">
-        <view class="custom-bg" style="background-color: {{colorData.pickerData.hex}};width: 100%;height: 100%;font-size: 12px;color: #fff; margin:0 auto;text-align: center;">自定义</view>
+      <view bindtap="toggleBg" data-color="custom" class="color custom {{bgc === 'custom' ? 'active' : ''}}">
+        <view class="custom-bg" style="background-color: {{colorData.pickerData.hex}};">自定义</view>
       </view>
     </view>
 

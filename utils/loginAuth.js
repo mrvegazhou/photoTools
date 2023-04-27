@@ -112,7 +112,6 @@ function doMobile(e) {
           },
           method: 'POST',
         }).then(res2 => {
-          console.log(res2, "----session key-----");
         })
       })
     }).catch((err)=>{

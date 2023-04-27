@@ -133,7 +133,6 @@ Page({
 				success: (res) => {
 					doLogin(res.userInfo).then(login_res => {
             that.chooseImage(sourceType)
-            
           }, err => {
             that.setData({
               canClick: true

@@ -139,7 +139,7 @@ CanvasDrag.setBgOpacity = (alpha) => {
   if (!canvasDrag) {
     console.error('请设置组件的id="canvas-drag"!!!');
   } else {
-      return CanvasDrag().setBgOpacity(alpha);
+    return CanvasDrag().setBgOpacity(alpha);
   }
 };
 
@@ -148,7 +148,16 @@ CanvasDrag.setOverturn = () => {
   if (!canvasDrag) {
     console.error('请设置组件的id="canvas-drag"!!!');
   } else {
-      return CanvasDrag().setOverturn();
+    return CanvasDrag().setOverturn();
+  }
+};
+
+CanvasDrag.replaceBgImg = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+    return CanvasDrag().replaceBgImg();
   }
 };
 

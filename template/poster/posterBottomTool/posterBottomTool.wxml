@@ -157,18 +157,24 @@
     </view>
   </view>
 
-  <!--透明化二级菜单-->
-  <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='transparent'}}">
+  <!--透明化二级菜单 背景图透明度-->
+  <view class="text-edit-pop edit-pop" wx:if="{{menu.menuShow=='transparent' || menu.menuShow=='bgOpacity'}}">
     <view class="popbg" bindtap="closePopEdit"></view>
     <view class="popup" style="height:280rpx;">
       <view class="tab-wapper">
-      <view class="tab-item">透明度</view>
+      <view class="tab-item"  wx:if="{{menu.menuShow=='transparent'}}">透明度</view>
+      <view class="tab-item"  wx:if="{{menu.menuShow=='bgOpacity'}}">背景透明度</view>
       </view>
       <view style="text-align:center;width:70%;margin-left: auto;margin-right: auto;">
-        <slider class="slider" block-size="1" activeColor="#69a794" bindchange="changeImgTrans" min="10" max="100" value="{{menu.imgTrans}}" show-value/>
+        <block wx:if="{{menu.menuShow=='transparent'}}">
+          <slider class="slider" block-size="1" activeColor="#69a794" bindchange="changeImgTrans" min="10" max="100" value="{{menu.imgTrans}}" show-value/>
+        </block>
+        <block wx:if="{{menu.menuShow=='bgOpacity'}}">
+          <slider class="slider" block-size="1" activeColor="#69a794" bindchange="changeBgOpacity" min="10" max="100" value="{{menu.bgOpacity}}" show-value/>
+        </block>
         <view class="btn">
-          <text class="icon-item iconfont icon-queren1" bindtap="imgTransOk"></text>
-          <text class="icon-item iconfont icon-quxiao1" bindtap="imgTransCancel"></text>
+          <text class="icon-item iconfont icon-queren1" bindtap="{{menu.menuShow=='transparent' ? 'imgTransOk' : 'bgOpacityOk'}}"></text>
+          <text class="icon-item iconfont icon-quxiao1" bindtap="{{menu.menuShow=='transparent' ? 'imgTransCancel' : 'bgOpacityCancel'}}"></text>
         </view>
       </view>
     </view>

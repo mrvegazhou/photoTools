@@ -12,12 +12,13 @@
     "pages/imageFix/complete/complete",
     "pages/imageFix/imageScan/imageScan",
 
-    "pages/poster/index/index",
     "pages/poster/edit/edit",
     "pages/poster/test/test",
 
     "pages/marquee/index/index",
     "pages/marquee/show/show",
+
+    "pages/message/index/index",
 
     "pages/me/me",
 

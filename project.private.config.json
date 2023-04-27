@@ -158,6 +158,13 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/message/index/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

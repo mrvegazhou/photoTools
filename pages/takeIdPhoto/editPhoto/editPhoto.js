@@ -37,7 +37,7 @@ Page({
     
 		bgc: '#ffffff',
 		photoBg: '#ffffff',
-		rpxRatio: 1, //此值为你的屏幕CSS像素宽度/750，单位rpx实际像素
+
     array: sizeNameList,
     
 		index: 0,
@@ -55,23 +55,8 @@ Page({
     
     showColorPicker: false,
     colorData: {
-      //基础色相，即左侧色盘右上顶点的颜色，由右侧的色相条控制
-      hueData: {
-        colorStopRed: 255,
-        colorStopGreen: 0,
-        colorStopBlue: 0,
-      },
-      //选择点的信息（左侧色盘上的小圆点，即你选择的颜色）
-      pickerData: {
-        x: 0, //选择点x轴偏移量
-        y: 480, //选择点y轴偏移量
-        red: 0,
-        green: 0,
-        blue: 0,
-        hex: '#000000'
-      },
-      //色相控制条的位置
-      barY: 0
+      transparency: 1,
+      color: '#ffffff'
     }
   },
 
@@ -82,7 +67,6 @@ Page({
     wx.setNavigationBarTitle({ title: '生成照片' })
     wx.showLoading({ title: '图片加载中' })
     this.getImageData()
-    this.setRpxRatio()
   },
 
   // 接受参数
@@ -104,22 +88,11 @@ Page({
     })
   },
 
-  // 设置屏幕宽度比例
-	setRpxRatio () {
-		const _this = this
-		wx.getSystemInfo({
-			success(res) {
-				_this.setData({ rpxRatio: res.screenWidth / 750 })
-			}
-		})
-	},
-
-
   // 切换背景
 	toggleBg(e) {
     const bgc = e.currentTarget.dataset.color;
     const showColorPicker = bgc === 'custom';
-		const photoBg = showColorPicker ? this.data.colorData.pickerData.hex : {
+		const photoBg = showColorPicker ? this.data.colorData.color : {
 			red: '#ff0000',
 			blue: '#438edb',
 			blue2: '#00bff3',
@@ -142,10 +115,11 @@ Page({
 
   //选择改色时触发（在左侧色盘触摸或者切换右侧色相条）
   onChangeColor(e) {
-    //返回的信息在e.detail.colorData中
+    console.log(e.detail.rgba, '--e.detail.rgba--')
     this.setData({
-      colorData: e.detail.colorData,
-      photoBg: e.detail.colorData.pickerData.hex
+      'photoBg': e.detail.rgba,
+      'colorData.color':  e.detail.rgba,
+      'colorData.transparency': e.detail.alpha || 1
     })
   },
   

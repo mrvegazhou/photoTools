@@ -1,0 +1,38 @@
+<view class="container">
+  <view class="panel">
+    <view class='label'>留言类型:</view>
+    <view class="content">
+      <view class="btn {{msgType=='suggest' ? 'selected' : ''}}" bindtap="setMsgType" data-type="suggest">建议</view>
+      <view class="btn {{msgType=='bug' ? 'selected' : ''}}" bindtap="setMsgType" data-type="bug">BUG</view>
+    </view>
+  </view>
+  <view class="panel">
+    <view class='label'>留言内容:</view>
+    <view>
+      <textarea class="input" placeholder="请输入文字" placeholder-class="place-holder" maxlength='2000' value="{{msgContent}}" bindinput='textAreaInput'/>
+    </view>
+    <view style="margin-bottom: 20rpx;">
+      <view class="{{uploaderList.length === 0 ? 'uploader-cell':'uploader-cell-other'}}">
+        <!-- 根据已选择的图片临时路径数组展示图片-->
+        <view class='uploader-item' wx:for="{{uploaderList}}" wx:key="index">
+          <!-- 删除-->
+          <text class="uploader-del iconfont icon-quxiao1" bindtap='clearImg' data-index="{{index}}" ></text>
+          <!-- 图片-->
+          <image bindtap='showImg' mode="aspectFit" style="width:120rpx;height:120rpx;" data-index="{{index}}" src='{{item}}'></image>
+          <view class="uploader-tag">图{{index+1}}</view>
+        </view>
+        <!-- 上传按钮+框 -->
+        <view class='uploader' bindtap='upload' wx:if="{{showUpload}}">
+          <text class="uploader-icon iconfont icon-tianjiatupian_huaban"></text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="panel">
+    <view class='label'>联系方式:</view>
+    <input value="{{msgContact}}"  class="contact-input" bindinput='textInputContact' placeholder="微信号/QQ/Email/电话" />
+  </view>
+  <view class="panel">
+    <view class="submit" bindtap="submit">提交</view>
+  </view>
+</view>

@@ -1,6 +1,0 @@
-<canvas canvas-id='canvas-label' 
-disable-scroll="true"
-bindtouchstart="start"
-bindtouchmove="move"
-bindtouchend="end"
- style='width: {{width}}rpx; height: {{height}}rpx;'></canvas>

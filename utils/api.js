@@ -147,6 +147,11 @@ function searchImgs(datas, {successFn=() => {}, failFn=() => {}, completeFn=()=>
   request(CONFIG.API_URL.WECHAT_SEARCH_IMGS, "POST", datas, header, successFn, failFn, completeFn);
 }
 
+// 留言板
+function saveFeedbackMsg(datas, {successFn=() => {}, failFn=() => {}, completeFn=()=> {}, header=null}) {
+  request(CONFIG.API_URL.WECHAT_FEEDBACK_MSG, "POST", datas, header, successFn, failFn, completeFn);
+}
+
 // 将远端图片，下载到本地
 function downloadImg(url) {
   return new Promise((resolve, reject) => {
@@ -258,5 +263,6 @@ module.exports = {
   fixImg: fixImg,
   scanImg: scanImg,
   setFontFace: setFontFace,
-  searchImgs: searchImgs
+  searchImgs: searchImgs,
+  saveFeedbackMsg: saveFeedbackMsg,
 }

@@ -10,7 +10,6 @@
 .disable_cls:before {
   content: "⊖"  !important;
   margin-right: 10rpx  !important;
-  /* font-size: 50rpx !important; */
 }
 
 .disable_cls_2 {

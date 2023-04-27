@@ -1,0 +1,121 @@
+@import "../../../template/iconfont/iconfont.wxss";
+@import "../../../template/theme.wxss";
+.container{
+  padding: 20rpx;
+}
+.panel{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15rpx;
+}
+.label{
+  font-size: var(--primary-font-size-2);
+  font-weight: 440;
+  margin-bottom: 20rpx;
+}
+.content{
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 30rpx;
+  margin-left: 30rpx;
+}
+.btn{
+  border: 1rpx solid var(--primary-dark-gray-color);
+  border-radius: 30rpx;
+  margin-right: 30rpx;
+  font-size: var(--primary-font-size);
+  width: 110rpx;
+  height: 45rpx;
+  line-height: 45rpx;
+  text-align: center;
+}
+.selected{
+  background-color: var(--primary-select-bg);
+  color:#fff;
+  border: none !important;
+}
+.input{
+  font-size: var(--primary-font-size);
+  border:1px solid var(--primary-light-gray-color);
+  border-radius: 10rpx;
+  padding: 10rpx;
+  width: 96%;
+  height: 300rpx;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30rpx;
+}
+.uploader-cell {
+  width: 96%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+.uploader-cell-other {
+  width: 96%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+.uploader-item {
+  width: 130rpx;
+  height: 130rpx;
+  margin-right: 20rpx;
+  position: relative;
+  margin-left: 15rpx;
+  margin-bottom: 15rpx;
+}
+.uploader {
+  width: 130rpx;
+  height: 130rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0rpx 8rpx 0 rgba(0, 0, 0, 0.3);
+  margin: 0 15rpx 15rpx 15rpx;
+}
+.uploader-icon{
+  font-size: 60rpx;
+  color: var(--primary-light-gray-color);
+  opacity: 0.7;
+}
+.uploader-del{
+  position:absolute;
+  right: -6rpx;
+  padding: 3rpx 0 3rpx 3rpx;
+  font-size: 40rpx;
+  top: -6rpx;
+}
+.uploader-tag{
+  font-size: 25rpx;
+  color: var(--primary-light-gray-color);
+  width: 130rpx;
+  text-align: center;
+  margin: 0 auto;
+  bottom: -10rpx;
+  position: absolute;
+}
+.contact-input{
+  font-size: var(--primary-font-size);
+  border:1px solid var(--primary-light-gray-color);
+  border-radius: 10rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  width: 500rpx;
+  padding-left: 10rpx;
+}
+.submit{
+  width: 300rpx;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 10rpx;
+  background-color: var(--primary-color);
+  text-align: center;
+  color: #fff;
+  
+}

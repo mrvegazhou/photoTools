@@ -10,8 +10,7 @@ Page({
     photoSizeList: app.globalData.photoSizeList,
     photoBg: '#ffffff',
     bgc: '#ffffff',
-    showScale: 1,
-    demoImg: '../../'
+    showScale: 1
   },
 
   /**

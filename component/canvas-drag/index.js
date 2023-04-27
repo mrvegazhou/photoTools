@@ -1133,6 +1133,12 @@ Component({
         this._setTextItem(item, 'update');
       }
     },
+    //更换背景图
+    replaceBgImg(url) {
+      this.setData({
+        'bgImg': url
+      });
+    },
     //恢复尺寸
     recoverSize() {
       let item = list[index];
