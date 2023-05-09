@@ -181,6 +181,10 @@ function fixImg(filePath, datas = {}, timeout=60000, successFn = () => {}, failF
   }
   return uploadFile(CONFIG.API_URL.WECHAT_FIX_IMG, jwt, datas, filePath, timeout, successFn, failFn);
 }
+// 修复后的照片列表
+function fixImgList(datas, {successFn=() => {}, failFn=() => {}, completeFn=()=> {}, header=null}) {
+  request(CONFIG.API_URL.WECHAT_FIX_IMG_LIST, "POST", datas, header, successFn, failFn, completeFn);
+}
 
 // 输出打印图片
 function scanImg(filePath, datas = {}, timeout=60000, successFn = () => {}, failFn = () => {}) {
@@ -265,4 +269,5 @@ module.exports = {
   setFontFace: setFontFace,
   searchImgs: searchImgs,
   saveFeedbackMsg: saveFeedbackMsg,
+  fixImgList: fixImgList
 }

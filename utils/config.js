@@ -10,9 +10,10 @@ const CONFIG = {
     WECHAT_STATIC_IMG: API_BASE_URL + '/static/page/img',
     WECHAT_STATIC_FONT: API_BASE_URL + '/static/page/font',
     WECHAT_FIX_IMG: API_BASE_URL + '/fixImage/fix/restore',
+    WECHAT_FIX_IMG_LIST: API_BASE_URL + '/fixImage/fix/list',
     WECHAT_SCAN_IMG: API_BASE_URL+ '/fixImage/fix/scan',
     WECHAT_SEARCH_IMGS: API_BASE_URL+ '/appImgs/search/list',
-    WECHAT_FEEDBACK_MSG: API_BASE_URL+ '/feedback/msg/add'
+    WECHAT_FEEDBACK_MSG: API_BASE_URL+ '/feedback/msg/add',
   },
   MSG: {
   },

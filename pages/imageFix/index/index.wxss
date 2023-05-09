@@ -1,9 +1,10 @@
 @import "../../../template/theme.wxss";
+@import "../../../template/iconfont/iconfont.wxss";
 wx-slider .wx-slider-handle-wrapper{
   height:0rpx;
 }
 .container {
-	padding-bottom: 100rpx;
+	padding-bottom: 50rpx;
 	overflow: visible;
 	box-sizing: border-box;
   background:#fff;
@@ -38,6 +39,7 @@ wx-slider .wx-slider-handle-wrapper{
   background-attachment: fixed;
   /* 让背景图基于容器大小伸缩 */
   background-size: cover;
+  background-color: var(--primary-border-color);
   /* background-position: center center; */
 }
 .foreground-img {
@@ -46,6 +48,7 @@ wx-slider .wx-slider-handle-wrapper{
   background-attachment: fixed;
   /* 让背景图基于容器大小伸缩 */
   background-size: cover;
+  background-color: var(--primary-border-color);
   /* background-position: center center; */
 }
 /* 选中区线 */
@@ -110,11 +113,11 @@ slider{
 	justify-content: space-between;
   align-items: center;
   padding: 10rpx 30rpx;
+  margin-top: 35rpx;
 }
 .container-btn{
 	width: 45%;
 	height: 90rpx;
-	margin-top:80rpx;
 	border-radius: 10rpx;
 	color: #fff;
 	text-align: center;
@@ -124,10 +127,10 @@ slider{
 .tips {
   width: 100%;
 	text-align: center;
-	color: var(--primary-light-gray-color);
+  font-size: var(--primary-font-size);
+  color: #74787a;
 	line-height: 1;
 	height: 1em;
-  font-size: 30rpx;
   padding-top: 20rpx;
 }
 .action-sheet-main {
@@ -157,10 +160,13 @@ slider{
   justify-content: left;
   margin-top: 20rpx;
 }
+.sheet-text .sheet-text-1 {
+  font-size: 30rpx;
+}
 .sheet-text .sheet-text-2 {
   margin-top: 5rpx;
-  font-size: 26rpx;
-  color: var(--primary-light-gray-color);
+  font-size: 25rpx;
+  color: #74787a;
 }
 .action-sheet-item .sheet-icon {
   margin-top: 20rpx;
@@ -170,12 +176,59 @@ slider{
   width: 50rpx;
 	height: 50rpx;
 }
+.sheet-icon .iconfont {
+  font-size: var(--primary-icon-size);
+}
 
 .marking {
   margin: 30rpx 10rpx 10rpx 10rpx;
-  font-size: 30rpx;
-  color: var(--primary-light-gray-color);
+  font-size: var(--primary-font-size);
+  color: #74787a;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.list-img{
+  margin-top: 15rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.list-img .header{
+  height: 30rpx;
+  line-height: 30rpx;
+  background-color: #ccc;
+  display: flex;
+  flex-direction: row;
+  font-size: var(--primary-font-size);
+  padding: 8rpx;
+  width: 100%;
+  align-items: center;
+  justify-content:center;
+  margin-bottom: 5rpx;
+}
+.list-img .header view{
+  text-align: center;
+  width: 50%;
+}
+.list-img .item-img{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content:space-around;
+  width: 100%;
+}
+.list-img .item-img .item{
+  width: calc(100%/3);
+  text-align: center;
+  font-size: 22rpx;
+}
+.list-img .item-img image{
+  width: 120rpx;
+  max-height: 150rpx;
+  padding: 5rpx;
 }

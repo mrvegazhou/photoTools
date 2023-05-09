@@ -83,6 +83,8 @@
 }
 .uploader-del{
   position:absolute;
+  color: red;
+  font-weight: bold;
   right: -6rpx;
   padding: 3rpx 0 3rpx 3rpx;
   font-size: 40rpx;

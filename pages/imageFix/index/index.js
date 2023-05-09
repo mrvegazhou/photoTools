@@ -12,18 +12,23 @@ Page({
     max: 100,   // 最大限制
     value:50, // 当前value
     canClick: true,
+    canHandleClick: false,
     actionShow: false,
-    before: '../../../images/bgcolor.png',
-    // before: 'wxfile://tmp_5d32990c04a9db7fa6b7d09f99e35b7c5daa0029bd0a1bc0.jpg',
-    after: '../../../images/bgcolor.png'
-    // after: 'http://192.168.3.3:5000/static/page/img/8289146e65d44b678a48ad8828bbc136_fixed.png'
+    before: '',
+    after: '',
+    imgList:[],
+    staticUrl: CONFIG.API_URL.WECHAT_STATIC_IMG+"/"
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.getPhotoData()
+    this.getPhotoData();
+  },
+
+  onShow() {
+    this.getHistoryFixImgs();
   },
 
 
@@ -42,7 +47,8 @@ Page({
     const that = this
     this.setData({
       actionShow: true,
-      canClick: false
+      canClick: false,
+      canHandleClick: false,
     })
     if(sourceType==='camera') {
       wx.getSetting({
@@ -58,20 +64,24 @@ Page({
 							scope: 'scope.camera',
 							success () {
                 that.setData({
-                  canClick: true
+                  canClick: true,
+                  canHandleClick: true
                 })
 							},
 							fail(){
                 that.openConfirm()	
                 that.setData({
-                  canClick: true
+                  canClick: true,
+                  canHandleClick: true
                 })
 							}
             })
           }
         },
 				fail () {
-					
+					that.setData({
+            canHandleClick: false
+          });
 				}
       })
     } else if(sourceType==='album') {
@@ -83,11 +93,11 @@ Page({
           sizeType: 'original',
           camera: 'back',
           success:(res)=> {
-            console.log(res.tempFiles[0].tempFilePath)
             that.setData({
               "before": res.tempFiles[0].tempFilePath,
               "actionShow": false,
-              "canClick": true
+              "canClick": true,
+              "canHandleClick": true
             })
             
           },
@@ -95,6 +105,7 @@ Page({
             wx.showToast({ title: '取消选择', icon: 'none', duration: 2000 })
             that.setData({
               "canClick": true,
+              "canHandleClick": false,
               "actionShow": false
             })
           }
@@ -108,6 +119,7 @@ Page({
           const tempFilePaths = res.tempFiles
           that.setData({
             "canClick": true,
+            "canHandleClick": true,
             "actionShow": false,
             "before": tempFilePaths[0].path
           })
@@ -115,7 +127,9 @@ Page({
       })
     } else {
       this.setData({
-        canClick: true
+        canClick: true,
+        canHandleClick: false,
+        before: ''
       })
     }
   },
@@ -189,21 +203,21 @@ Page({
     const that = this
     const beforeImgUrl = this.data.before
     if(beforeImgUrl.startsWith('http://tmp') || beforeImgUrl.startsWith('wxfile://tmp')) {
-      wx.showLoading({ title: '正在修复图像中' })
+      wx.showLoading({ title: '正在处理图像中...' })
       apiRequest.fixImg(beforeImgUrl, {'openid':openid}, 360000).then(res => {
         const resData = JSON.parse(res.data)
         if(resData.code==200) {
-          const beforeImg = CONFIG.API_URL.WECHAT_STATIC_IMG+"/"+resData.data.oldImg
-          const afterImg = CONFIG.API_URL.WECHAT_STATIC_IMG+"/"+resData.data.fixedImg
-          that.setData({
-            'before': beforeImg,
-            'after': afterImg
-          })
-          wx.hideLoading()
+          // const beforeImg = CONFIG.API_URL.WECHAT_STATIC_IMG+"/"+resData.data.oldImg
+          // const afterImg = CONFIG.API_URL.WECHAT_STATIC_IMG+"/"+resData.data.fixedImg
+          // that.setData({
+          //   'before': beforeImg,
+          //   'after': afterImg
+          // })
+          wx.showToast({ title: resData.data, icon: 'none', duration: 2500 });
           this.setData({
             canClick: true
           })
-          that.showSaveWindows()
+          // that.showSaveWindows()
         } else {
           wx.hideLoading()
           wx.showToast({
@@ -254,6 +268,9 @@ Page({
   // 预览图片
   showImg(e) {
     const imgUrl = e.target.dataset.url
+    if(imgUrl=='') {
+      return;
+    }
     wx.previewImage({
       urls: [imgUrl]
     })
@@ -261,15 +278,19 @@ Page({
 
   // 接受参数
   getPhotoData() {
-    const eventChannel = this.getOpenerEventChannel && this.getOpenerEventChannel()
-    eventChannel && eventChannel.on('sendFixedImageData', (data) => {
-      const {
-        photoSrc
-      } = data
-      this.setData({
-        before: photoSrc
+    try {
+      const eventChannel = this.getOpenerEventChannel && this.getOpenerEventChannel()
+      eventChannel && eventChannel.on('sendFixedImageData', (data) => {
+        const {
+          photoSrc
+        } = data
+        this.setData({
+          before: photoSrc
+        })
       })
-    })
+    }catch(err){
+      console.log(err);
+    }
   },
 
   // 是否保存修复照片
@@ -341,5 +362,44 @@ Page({
         })
       }
     })
-  }
+  },
+
+  // 获取历史修复图片列表
+  getHistoryFixImgs() {
+    let that = this;
+    const openid = wx.getStorageSync('openid')
+    let datas = {
+      openid: openid
+    };
+    apiRequest.fixImgList(datas, {
+      successFn: (res)=>{
+        var status = res.data.code;
+        if(status == 200) {
+          let imgList = res.data.data;
+          that.setData({
+            imgList: imgList
+          });
+        }
+      },
+      failFn: (res)=>{
+        console.log(res);
+      }
+    });
+  },
+
+  // 点击列表查看修复图片
+  showOldNewImg(e) {
+    let id = e.currentTarget.dataset.id;
+    let imgList = this.data.imgList;
+    let staticUrl = this.data.staticUrl;
+    let before = staticUrl + imgList[id]['old_img'];
+    let after = staticUrl + imgList[id]['new_img'];
+    if(imgList[id]['status']==3) {
+      after = "";
+    }
+    this.setData({
+      before: before,
+      after: after,
+    });
+  },
 })
