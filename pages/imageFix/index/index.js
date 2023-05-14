@@ -24,11 +24,12 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    this.getHistoryFixImgs();
     this.getPhotoData();
   },
 
   onShow() {
-    this.getHistoryFixImgs();
+   
   },
 
 
@@ -267,7 +268,7 @@ Page({
 
   // 预览图片
   showImg(e) {
-    const imgUrl = e.target.dataset.url
+    const imgUrl = e.target.dataset.url;
     if(imgUrl=='') {
       return;
     }

@@ -565,6 +565,27 @@ function urlTobase64(imgPath) {
   });
 }
 
+function formatDateWeekTime() {
+	const date = new Date();
+	const year = date.getFullYear()
+	const month = date.getMonth() + 1
+	const day = date.getDate()
+	const weekDay = ['日', '一', '二', '三', '四', '五', '六'][date.getDay()]
+	const hour = date.getHours()
+	const minute = date.getMinutes()
+	const second = date.getSeconds()
+	return {
+		date: [year, month, day].map(_formatNumber).join('-'),
+		time:[hour, minute, second].map(_formatNumber).join(':'),
+		week: '星期'+weekDay
+	}
+}
+
+function _formatNumber(n) {
+	const s = n.toString()
+	return s[1] ? s : '0' + s
+}
+
 module.exports = {
   formatTime: formatTime,
   tools: tools,
@@ -593,5 +614,6 @@ module.exports = {
   drawStar: drawStar,
   userPermission: userPermission,
   queryViewWidth: queryViewWidth,
-  urlTobase64: urlTobase64
+	urlTobase64: urlTobase64,
+	formatDateWeekTime: formatDateWeekTime
 }

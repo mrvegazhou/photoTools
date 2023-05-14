@@ -1,5 +1,6 @@
 <!--pages/main/main.wxml-->
 <import src="../../template/contentBox/contentBox.wxml"/>
+<view class="add-tips" wx:if="{{hasShowAddTips == false}}" bindtap="hideTips">点击「添加到我的小程序」，下次访问更便捷</view>
 <view class="container">
   <view class="container-head">
     <advSwiperShow imgListVals="{{topAdvs}}" indicatorDots='true' autoplay='true' interval='5000' duration='1000' bind:_navigateDetail="navigateAdvDetail"></advSwiperShow>

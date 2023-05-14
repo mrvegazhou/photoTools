@@ -1,6 +1,0 @@
-<template name="pullUpRefresh">
-  <view hidden='{{loadmoreHidden}}' class='my-scroll-msgModule my-scroll-loadmoreModule'>
-    <image wx:if="{{!(upRefreshLoaded&&!isEmpty)}}" class='my-scroll-msgModule-icon my-scroll-msgModule-icon-loading' src='../../images/loading.png'></image>
-    <text class='my-scroll-msgModule-text'>{{loadmoreText}}</text>
-  </view>
-</template>

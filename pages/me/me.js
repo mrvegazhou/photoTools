@@ -5,14 +5,16 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    camera: false,
+		userLocation: false,
+		writePhotosAlbum: false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.getAuth();
   },
 
   /**
@@ -22,45 +24,47 @@ Page({
 
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
+  getAuth: function () {
+		wx.getSetting({
+			success: res => {
+				console.log(res.authSetting)
+				this.setData({
+					camera: res.authSetting['scope.camera'],
+					writePhotosAlbum: res.authSetting['scope.writePhotosAlbum'],
+					userLocation: res.authSetting['scope.userLocation']
+				})
+			}
+		})
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
 
-  },
+  getCamera: function () {
+		wx.authorize({
+			scope: 'scope.camera',
+			success: () => {
+				this.getAuth();
+			}
+		})
+	},
+  
+	getUserLocation: function () {
+		wx.authorize({
+			scope: 'scope.userLocation',
+			success: () => {
+				this.getAuth()
+			}
+		})
+	},
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
+	getWritePhotosAlbum: function () {
+		wx.authorize({
+			scope: 'scope.writePhotosAlbum',
+			success: () => {
+				this.getAuth()
+			}
+		})
+	},
 
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  }
+  
+  
 })

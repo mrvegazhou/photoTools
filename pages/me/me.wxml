@@ -12,42 +12,62 @@
   <view class="my">
     <view class="my-item">
       <view class="myitem-icon">
-        <image src="../../images/me/profile.png"></image>
-      </view>
-      <view class="myitem-name">
-        <text>个人资料</text>
-      </view>
-      <view class='arrow'></view>
-    </view>
-    <view class="my-item">
-      <view class="myitem-icon">
-        <image src="../../images/me/activity.png"></image>
-      </view>
-      <view class="myitem-name">
-        <text>我的活动</text>
-      </view>
-      <view class='arrow'></view>
-    </view>
-    <view class="my-item">
-      <view class="myitem-icon">
-        <image src="../../images/me/online.png"></image>
+        <text class="iconfont icon-liuyanfill icon"></text>
       </view>
       <view class="myitem-name">
         <text>在线服务</text>
       </view>
-      <view class='arrow'></view>
     </view>
+
+		<view class="my-item">
+      <view class="myitem-name myitem-left">
+        <text>留言反馈</text>
+      </view>
+      <view class="arrow"></view>
+    </view>
+
+		<view class="my-item">
+      <view class="myitem-name myitem-left">
+        <text>微信留言</text>
+      </view>
+      <view class="arrow"></view>
+    </view>
+
   </view>
 
   <view class="my">
     <view class="my-item">
       <view class="myitem-icon">
-        <image src="../../images/me/setting.png"></image>
+        <text class="iconfont icon-shezhi icon"></text>
       </view>
       <view class="myitem-name">
-        <text>个人设置</text>
+        <text>权限设置</text>
       </view>
-      <view class='arrow'></view>
     </view>
+
+    <view class="my-item">
+      <view class="myitem-name myitem-left">
+        <text>添加相册</text>
+      </view>
+      <view class="my-auth" wx:if="{{writePhotosAlbum}}">已授权</view>
+			<view class="my-auth my-no-auth" bindtap="getWritePhotosAlbum" wx:else>未授权</view>
+    </view>
+
+    <view class="my-item">
+      <view class="myitem-name myitem-left">
+        <text>摄像头</text>
+      </view>
+      <view class="my-auth" wx:if="{{camera}}">已授权</view>
+			<view class="my-auth my-no-auth" bindtap="getCamera" wx:else>未授权</view>
+    </view>
+
+    <view class="my-item">
+      <view class="myitem-name myitem-left">
+        <text>位置使用</text>
+      </view>
+      <view class="my-auth" wx:if="{{userLocation}}">已授权</view>
+			<view class="my-auth my-no-auth" bindtap="getUserLocation" wx:else>未授权</view>
+    </view>
+
   </view>
 </view>

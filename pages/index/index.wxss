@@ -1,6 +1,27 @@
 /* pages/main/main.wxss */
 @import "../../template/theme.wxss";
 @import "../../template/contentBox/contentBox.wxss";
+.add-tips{
+  position: absolute;
+  z-index: 10;
+  top: 20rpx;
+  right: 10rpx;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10rpx;
+  font-size: 24rpx;
+  border-radius: 15rpx;
+  color: #fff;
+}
+.add-tips::after{
+  content: '';
+  position: absolute;
+  z-index: 15;
+  top: -40rpx;
+  right: 100rpx;
+  border-style: solid;
+  border-width: 20rpx;
+  border-color: transparent transparent rgba(0, 0, 0, 0.5) transparent;
+}
 .container {
   height: 100%;
   margin: 0;

@@ -1,0 +1,168 @@
+@import "../../../template/theme.wxss";
+@import "../../../template/iconfont/iconfont.wxss";
+.bgWord {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 80rpx 0 0;
+  width: 100%;
+  height: 300rpx;
+  text-align: center;
+  color: #979797;
+  z-index: 1;
+  cursor: pointer;
+  font-size: 100rpx;
+}
+.bgWord .iconfont-size{
+  font-size: 80rpx !important;
+}
+.section {
+  height: 100rpx;
+  line-height: 100rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.section1 {
+  border-bottom: 1px solid #f7f7f7;
+}
+.section .left {
+  padding-left: 10rpx;
+  float: left;
+  width: 100rpx;
+  height: 100%;
+  color: #888;
+  text-align: left;
+  font-size: 28rpx;
+}
+.section .clear{
+  float: right;
+  width: 20rpx;
+  height: 100rpx;
+  line-height: 100rpx;
+  padding: 0 10rpx;
+  border: none;
+  margin-left: 20rpx;
+  font-size: 38rpx;
+  color: #888;
+}
+.section .right{
+  float: right;
+  width: 500rpx;
+  color: #888;
+  font-size: 28rpx;
+  text-align: left;
+	overflow: hidden;
+}
+.section .height{
+  height: 100rpx;
+  line-height: 100rpx;
+}
+.section .input{
+  float: right;
+  width: 500rpx;
+  color: #b2b2b2;
+  font-size: 28rpx;
+  text-align: left;
+  overflow: hidden;
+}
+.primary{
+  color: #fff;
+  background: var(--primary-color);
+  margin-top: 30rpx;
+  width: 230rpx;
+  border-radius: 10rpx;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 15rpx;
+}
+.gray{
+  background: #979797;
+}
+.circle {
+  display: inline-block;
+  margin: 20rpx 20rpx 0 0;
+  width: 58rpx;
+  height: 58rpx;
+  border-radius: 50%;
+  border: 1rpx solid #979797;
+  background: #000;
+}
+.active {
+  color: #000 !important;
+}
+.section-btn{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-bottom: 35rpx;
+}
+.circle.active {
+  border: 5rpx solid #000;
+}
+.bgImg{
+	position:absolute;
+	top: 0;
+	left: 0;
+}
+.chk{
+	display: flex;
+  flex-direction: row;
+  height: 100rpx;
+  line-height: 100rpx;
+  justify-content:space-around;
+  align-items: center;
+}
+.chk-1{
+  min-width: 100rpx;
+}
+.notice{
+	text-decoration: none !important;
+	color: #b2b2b2 !important;
+	margin-left: 10rpx !important;
+}
+.set{
+  text-decoration: underline;
+  color: var(--primary-color) !important;
+	margin-left: 35rpx;
+}
+.time-picker-bg{
+	position: fixed;
+	z-index:2;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-items: center;
+	align-items: center;
+	background: rgba(0,0,0,0.2);
+}
+.time-picker-title{
+	text-align: center;
+	font-size: var(--primary-font-size-2);
+}
+.time-picker-box{
+	width: 620rpx;
+	background: #ffffff;
+	padding: 20rpx 30rpx;
+	font-size: var(--primary-font-size);
+	line-height: 80rpx;
+	border-radius: 10rpx;
+	margin-left: 35rpx;
+}
+.time-picker-btn{
+	color: #fff;
+  background: var(--primary-color);
+  margin-top: 20rpx;
+  width: 230rpx;
+  border-radius: 10rpx;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+.picker{
+	display: flex;
+	flex-direction: row;
+}

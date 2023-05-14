@@ -1,9 +1,13 @@
 <!--pages/imageFix/index/index.wxml-->
 <view class="container">
-  <view class="marking">
-    <view class="left">处理前</view>
-    <view class="right">处理后</view>
+  <view bindtap='chooseImg' class="page_hd">
+    <canvas canvasId="myCanvas" class="canvas" style="width:100%;height:{{canvasH}}px;"></canvas>
+    <view class="bgWord" wx:if="{{!draw}}">
+        <text class="iconfont icon-tianjiatupian_huaban iconfont-size"></text>
+    </view>
   </view>
+
+
   <view class="component-slider">
     <!-- 覆盖slider组件盒子 -->
     <view class="slider-box">

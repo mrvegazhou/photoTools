@@ -12,6 +12,8 @@
     "pages/imageFix/complete/complete",
     "pages/imageFix/imageScan/imageScan",
 
+    "pages/imageStitching/index/index",
+
     "pages/poster/edit/edit",
     "pages/poster/test/test",
 
@@ -20,9 +22,9 @@
 
     "pages/message/index/index",
 
-    "pages/me/me",
+    "pages/watermark/index/index",
 
-    "pages/logs/logs"
+    "pages/me/me"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -49,7 +51,16 @@
         "selectedIconPath": "images/tabs/me_sel.png"
       }
     ]
-  },
+	},
+	"permission": {
+		"scope.userLocation": {
+			"desc": "用于提供位置信息水印拍摄"
+		}
+	},
+	"requiredPrivateInfos": [
+		"chooseLocation",
+		"getLocation"
+	],
   "debug": true,
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"

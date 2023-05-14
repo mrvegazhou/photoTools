@@ -1,0 +1,96 @@
+<view class="container">
+  <view bindtap='chooseImg'>
+    <canvas type="2d" id="myCanvas" class="canvas" style="width:100%;height:{{canvasH}}px;"></canvas>
+    <view class="bgWord" wx:if="{{!draw}}">
+        <text class="iconfont icon-tianjiatupian_huaban iconfont-size"></text>
+    </view>
+  </view>
+
+  <view style="margin-top:35rpx;">
+    <view class="section section1">
+      <view class="left">功能:</view>
+      <view class="right">
+        <checkbox-group bindchange="checkboxChange">
+          <view class="chk">
+            <view class="chk-1"><checkbox value="1" checked="{{fontWaterFlag}}" />文字水印</view>
+            <view class="chk-1"><checkbox value="2" checked="{{timeAndLocFlag}}" />时间和定位</view>
+          </view>
+        </checkbox-group>
+      </view>
+    </view>
+    <view class="section section1" wx:if="{{timeAndLocFlag}}">
+      <view class="left">时间:</view>
+      <view class="right" bindtap="setTime" style="display: flex;flex-direction: row;">
+        <view class="set">设置</view>
+				<view class="notice">(默认当前时间)</view>
+      </view>
+    </view>
+    <view class="section section1" wx:if="{{timeAndLocFlag}}">
+      <view class="left">定位:</view>
+      <view class="right" bindtap="chooseLocation" style="display: flex;flex-direction: row;">
+        <view class="set">设置</view>
+				<view class="notice">(默认当前定位)</view>
+      </view>
+    </view>
+    <view class="section section1" wx:if="{{fontWaterFlag}}">
+      <view class="left">文字:</view>
+      <view class="middle">
+        <input bindblur="handleTextBlur" bindfocus="handleTextFocus" bindinput="handleTextChange" class="{{inputFocus?'input active':'input'}}" value="{{text}}" selection-start='0' selection-end='-1' focus='{{inputFocus}}'></input>
+      </view>
+      <view class='clear' bindtap='clearText'>
+        ×
+      </view>
+    </view>
+    <view class="section section1">
+      <view class="left">尺寸:</view>
+      <view class="right">
+        <slider class="slider" activeColor="#69a794" show-value block-size="28" bindchange="handelSizeClick" step="1" min="20" max="80" value="{{size}}"/>
+      </view>
+    </view>
+    <view class="section section1" wx:if="{{fontWaterFlag}}">
+      <view class="left">密度:</view>
+      <view class="right">
+        <slider class="slider" activeColor="#69a794" show-value block-size="28" bindchange="handelDensityClick" step="1" min="20" max="200" value="{{density}}"/>
+      </view>
+    </view>
+    <view class="section section1">
+      <view class="left">透明度:</view>
+      <view class="right">
+        <slider class="slider" activeColor="#69a794" show-value block-size="28" bindchange="handelOpacityClick" step="1" min="1" max="100" value="{{opacity*100}}"/>
+      </view>
+    </view>
+    <view class="section">
+      <view class="left">颜色:</view>
+      <view bindtap="handleColorClick" class="right height">
+        <view class="{{currentColorIndex==item[0]?'circle active':'circle'}}" id="{{item[0]}}" style="{{'background:'+item[1]}}" wx:for="{{colorMap}}" wx:key="*this"></view>
+      </view>
+    </view>
+    <view class="section-btn">
+      <view bindtap="saveImg" class="primary">保存</view>
+      <view bindtap="reset" class="primary gray">重置</view>
+    </view>
+  </view>
+</view>
+
+<view class="time-picker-bg" wx:if="{{showPicker}}">
+	<view class="time-picker-box">
+		<view class="time-picker-title">设置水印日期</view>
+		<view class="">
+			<picker mode="date" value="{{date}}" start="2015-09-01" end="2017-09-01" bindchange="bindDateChange">
+				<view class="picker">
+					设定日期:<view class="set"> {{date}}</view>
+				</view>
+			</picker>
+		</view>
+		<view class="">
+			<picker mode="time" value="{{time}}" start="00:00" end="23:59" bindchange="bindTimeChange">
+				<view class="picker">
+					设定时间:<view class="set">{{time}}</view>
+				</view>
+			</picker>
+		</view>
+		<view class="time-picker-btn" bindtap="closePicker">完成</view>
+	</view>
+</view>
+
+<canvas type="2d" id="myCanvas2" style="position: fixed; top: -10000px; left: -10000px;width:{{imgW}}px;height:{{imgH}}px;"></canvas>

@@ -1,3 +1,4 @@
+@import "../../template/iconfont/iconfont.wxss";
 .container {
   height: 100%;
   margin: 40rpx 0 40rpx 0;
@@ -10,7 +11,6 @@
   display: flex;
   background: #fff;
   padding: 30rpx 25rpx 30rpx 0;
-  border-bottom: 1px solid #dcdcdc;
   box-shadow: 0 10px 0 #eee;
 }
 
@@ -51,49 +51,70 @@
   margin: 15rpx 0 0 0;
   border-top: solid 1px #ebebeb;
   box-shadow: 0 10px 0 #eee;
-  border-bottom: solid 2px #ebebeb;
+  display: flex;
+	flex-direction: column;
+	width: 100%;
 }
 
 .my .my-item {
   display: flex;
+  flex-grow: 1;
   background: #fff;
   padding: 0;
+  height: 100rpx;
+	line-height: 100rpx;
+	font-size: 28rpx;
+	border-bottom: solid 1px #ebebeb;
 }
 
 .my .my-item .myitem-icon {
-  flex: 1;
-  flex-grow: 1;
   text-align: center;
+  color: #818a8f;
+  height: 100rpx;
+	line-height: 100rpx;
+	margin-left: 50rpx;
 }
 
-.my .my-item .myitem-icon image {
-  width: 40rpx;
-  height: 40rpx;
-  padding: 37rpx 0;
+.my .my-item .myitem-icon .icon {
+  font-size: 38rpx !important;
 }
 
 .my .my-item .myitem-name {
-  flex: 5;
+  margin-left: 35rpx;
   text-align: left;
-  font-size: 28rpx;
-  color: #6d6d6d;
-  line-height: 60rpx;
-  padding: 30rpx 0;
+  color: #818a8f;
   border-bottom: solid 1px #ebebeb;
+  font-size: 28rpx;
+  height: 100rpx;
+  line-height: 100rpx;
 }
-
+.my .myitem-left{
+	margin-left: 50rpx !important;
+	width: 50%;
+}
 .my .my-item:last-child .myitem-name {
   border-bottom: none;
 }
 
 .arrow {
-  width: 10px;
-  height: 10px;
+  width: 20rpx;
+  height: 20rpx;
   border-top: 2px solid #bababa;
   border-right: 2px solid #bababa;
   position: absolute;
   right: 20rpx;
   transform: rotate(45deg);
-  margin-top: 50rpx;
-  margin-right: 40rpx;
+  margin-top: 40rpx;
+  margin-right: 60rpx;
+}
+.my .my-no-auth{
+  text-decoration: underline;
+}
+.my .my-auth{
+	width: 50%;
+	float: right;
+	text-align: right;
+	margin-right: 80rpx;
+	font-size: 28rpx;
+	color: #818a8f;
 }

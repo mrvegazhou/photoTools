@@ -10,15 +10,23 @@ Page({
    */
   data: {
     //广告
-    topAdvs: []
-
+    topAdvs: [],
+    hasShowAddTips: true
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.getTopAdvs()
+    this.getTopAdvs();
+    try {
+      const hasShowAddTips = wx.getStorageSync('addMyMiniprogram')
+      this.setData({
+        hasShowAddTips
+      })
+    } catch (e) {
+      console.error(e)
+    }
   },
 
   /**
@@ -35,39 +43,15 @@ Page({
 
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
+  hideTips() {
+    this.setData({
+      hasShowAddTips: true
+    });
+    try {
+      wx.setStorageSync('addMyMiniprogram', 1)
+    } catch (e) {
+      console.error(e)
+    }
   },
 
   //广告展示
