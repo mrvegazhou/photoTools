@@ -3,9 +3,10 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/dynamicState/dynamicState",
-          "pathName": "pages/dynamicState/dynamicState",
+          "name": "pages/imageStitching/index/index",
+          "pathName": "pages/imageStitching/index/index",
           "query": "",
+          "launchMode": "default",
           "scene": null
         },
         {
@@ -154,7 +155,7 @@
         },
         {
           "name": "",
-          "pathName": "pages/marquee/index/index",
+          "pathName": "pages/imageFix/imageScan/imageScan",
           "query": "",
           "launchMode": "default",
           "scene": null

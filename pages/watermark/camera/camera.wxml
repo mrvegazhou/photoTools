@@ -1,0 +1,20 @@
+<template name="cameraView">
+  <view class="camera-container">
+    <camera wx:if="{{!camera.imgUrl}}" device-position="{{camera.cameraPos}}" flash="{{camera.flush}}" binderror="error" style="width: 100%; height: 100%;"></camera>
+    <view wx:else class="container-photo">
+      <image src="{{camera.imgUrl}}"></image>
+    </view>
+
+    <view wx:if="{{camera.cameraHasImg}}">
+      <text class="icon_back iconfont icon-repeat" bindtap="goCameraRepeat"></text>
+      <text class="icon_confirm iconfont icon-queding" bindtap="closeCamera"></text>
+    </view>
+    <view wx:else>
+      <text class="icon_cameraC iconfont icon-paizhao" bindtap="takeCameraImg"></text>
+      <text class="icon_cameraT iconfont icon-fanzhuanjingtou" bindtap="changeCameraPos"></text>
+      <text class="icon_cameraR iconfont icon-fanhui" bindtap="closeCamera"></text>
+      <text wx:if="{{camera.flush=='off'}}" class="icon_cameraL iconfont icon-shanguangdengdakai" bindtap="turnCameraFlush" data-flush="torch"></text>
+      <text wx:else class="icon_cameraL iconfont icon-shanguangdengguanbi" bindtap="turnCameraFlush" data-flush="off"></text>
+    </view>
+  </view>
+</template>

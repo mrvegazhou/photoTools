@@ -455,7 +455,7 @@ Page({
     this.baseGetPhoto(type).then((url)=>{
       switch(type){
         case 'camera':
-          that.setData({'menu.carema.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':''});
+          that.setData({'menu.camera.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':''});
           break;
         case 'album':
           that.addItemImg(url);
@@ -557,7 +557,7 @@ Page({
     this.baseGetPhoto(typeName).then((url)=>{
       switch(typeName){
         case 'camera':
-          that.setData({'menu.carema.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':type});
+          that.setData({'menu.camera.showCamera': true, 'menu.menuShow': '', 'menu.secondMenu':type});
           break;
         case 'album':
           that.setData({'bg.img': url});
@@ -669,7 +669,7 @@ Page({
   //关闭相机
   closeCamera() {
     this.setData({
-      'menu.carema.showCamera': false,
+      'menu.camera.showCamera': false,
     })
   },
   // 照相
@@ -1052,7 +1052,7 @@ Page({
     this.baseGetPhoto(typeName).then((url)=>{
       switch(typeName){
         case 'camera':
-          that.setData({'menu.carema.showCamera':true, 'menu.menuShow':'', 'menu.secondMenu':type});
+          that.setData({'menu.camera.showCamera':true, 'menu.menuShow':'', 'menu.secondMenu':type});
           break;
         case 'album':
           that.replaceItem(url);

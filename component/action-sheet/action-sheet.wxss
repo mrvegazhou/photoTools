@@ -57,6 +57,7 @@
   animation-duration: 0.25s;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
+  z-index: 999;
 }
 
 .hide-mask-animation {

@@ -44,6 +44,20 @@ Page({
       this.setData({ value: value })
   },
 
+  showChooseImage() {
+    this.setData({
+      actionShow: true,
+      canClick: false,
+      canHandleClick: false,
+    })
+  },
+
+  cancelAction() {
+    this.setData({
+      canClick: true,
+    })
+  },
+
   chooseImage(sourceType) {
     const that = this
     this.setData({
@@ -92,7 +106,6 @@ Page({
           mediaType: 'image',
           sourceType: [sourceType],
           sizeType: 'original',
-          camera: 'back',
           success:(res)=> {
             that.setData({
               "before": res.tempFiles[0].tempFilePath,
@@ -285,9 +298,11 @@ Page({
         const {
           photoSrc
         } = data
-        this.setData({
-          before: photoSrc
-        })
+        if(typeof(photoSrc)=='string' && photoSrc!="") {
+          this.setData({
+            before: photoSrc
+          })
+        }
       })
     }catch(err){
       console.log(err);

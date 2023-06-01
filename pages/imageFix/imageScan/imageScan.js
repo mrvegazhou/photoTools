@@ -14,9 +14,7 @@ Page({
     canClick: true,
     actionShow: false,
     before: '../../../images/bgcolor.png',
-    // before: 'http://192.168.3.3:5000/static/page/img/b1be63b3a251413a980ed1cb7cb27c3b_fixed.png',
     after: '../../../images/bgcolor.png'
-    // after: 'http://192.168.3.3:5000/static/page/img/8289146e65d44b678a48ad8828bbc136_fixed.png'
   },
 
   /**

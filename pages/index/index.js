@@ -105,6 +105,26 @@ Page({
           url: '/pages/poster/edit/edit'
         })
         break;
+      case "watermark":
+        wx.navigateTo({
+          url: '/pages/watermark/index/index',
+        })
+        break;
+      case "marquee":
+        wx.navigateTo({
+          url: '/pages/marquee/index/index',
+        })
+        break;
+      case "imageScan":
+        wx.navigateTo({
+          url: '/pages/imageFix/imageScan/imageScan',
+        })
+        break;
+      case "imageStitching":
+        wx.navigateTo({
+          url: '/pages/imageStitching/index/index',
+        })
+        break;
     }
 	},
 })

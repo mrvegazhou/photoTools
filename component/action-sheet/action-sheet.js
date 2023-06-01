@@ -40,6 +40,8 @@ Component({
           show: false
         })
       }, 300);
+
+      this.triggerEvent('cancel');
     },
 
     initData: function() {

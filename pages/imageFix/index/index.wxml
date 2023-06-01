@@ -22,7 +22,7 @@
   </view>
   <view class="tips">左右滑动查看效果</view>
   <view class="container-opt-btn">
-    <view bindtap="chooseImage" class="container-btn {{canClick==false ? 'disable_cls' : ''}}">选择图片</view>
+    <view bindtap="showChooseImage" class="container-btn {{canClick==false ? 'disable_cls' : ''}}">选择图片</view>
     <view bindtap="handleImage" class="container-btn {{canHandleClick==false ? 'disable_cls' : ''}}">处理图片</view>
   </view>
 </view>
@@ -51,7 +51,7 @@
   </block>
 </view>
 
-<custom-action-sheet actionShow="{{actionShow}}" sheetHeight="auto">
+<custom-action-sheet actionShow="{{actionShow}}" sheetHeight="auto" bind:cancel="cancelAction">
   <view class="action-sheet-main">
     <view class="action-sheet-item" bindtap="doChooseImage" data-type="camera">
       <view class="sheet-text">

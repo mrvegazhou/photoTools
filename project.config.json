@@ -30,7 +30,8 @@
     "useStaticServer": true,
     "showES6CompileOption": false,
     "useCompilerPlugins": false,
-    "enhance": true
+    "enhance": true,
+    "condition": false
   },
   "compileType": "miniprogram",
   "libVersion": "2.9.1",

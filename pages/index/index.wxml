@@ -34,6 +34,34 @@
         <image src="/images/main/scan-photo.png"></image>
       </view>
     </view>
+    <view class="container-content">
+      <view class="container-content-item" bindtap="goPages" data-name="watermark">
+        <view class="title">水印</view>
+        <view class="description">描述</view>
+        <image src="/images/main/scan-photo.png"></image>
+      </view>
+    </view>
+    <view class="container-content">
+      <view class="container-content-item" bindtap="goPages" data-name="marquee">
+        <view class="title">提示灯</view>
+        <view class="description">描述</view>
+        <image src="/images/main/scan-photo.png"></image>
+      </view>
+    </view>
+    <view class="container-content">
+      <view class="container-content-item" bindtap="goPages" data-name="imageScan">
+        <view class="title">生成扫描图片</view>
+        <view class="description">描述</view>
+        <image src="/images/main/scan-photo.png"></image>
+      </view>
+    </view>
+    <view class="container-content">
+      <view class="container-content-item" bindtap="goPages" data-name="imageStitching">
+        <view class="title">拼长图</view>
+        <view class="description">描述</view>
+        <image src="/images/main/scan-photo.png"></image>
+      </view>
+    </view>
     <!-- <view class="container-content">
       <view class="container-content-item-half">
         <view class="title">名称</view>

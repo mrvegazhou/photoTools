@@ -59,14 +59,15 @@ Page({
 
   takePhoto() {
     if(this.data.photoSrc){
-      this.goEditPage(this.data.photoSrc)
+      this.goEditPage()
     }
   },
 
   /**
 	 * 返回首页面
 	 */
-	goEditPage (photoSrc) {
+	goEditPage () {
+    var photoSrc = this.data.photoSrc;
     var url;
     if(this.data.type=="index") {
       url = '/pages/imageFix/index/index'
@@ -80,6 +81,9 @@ Page({
           photoSrc: photoSrc
 				})
 			}
-		})
+    });
+    this.setData({
+      'photoSrc': true
+    });
   },
 })

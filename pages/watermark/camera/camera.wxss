@@ -1,13 +1,8 @@
-@import "../../../template/iconfont/iconfont.wxss";
-page{
-  overflow: hidden;
-  height: 100%;
-}
-.container {
+.camera-container {
   position: relative;
 	box-sizing: border-box;
 	width: 100vw;
-	height: 100vh;
+  height: 100vh;
 }
 .container-photo {
   width: 100%;
@@ -16,15 +11,6 @@ page{
 image{
   width: 100%;
   height: 100%;
-}
-.icon_cameraR{
-  width: 100rpx;
-  height: 100rpx;
-  position: absolute;
-  font-size: 100rpx;
-  left: 30rpx;
-  top: 50rpx;
-  color: #fff;
 }
 .icon_cameraC{
   width: 150rpx;
@@ -45,6 +31,24 @@ image{
   top: 50rpx;
   color: #fff;
 }
+.icon_cameraR{
+  width: 100rpx;
+  height: 100rpx;
+  position: absolute;
+  font-size: 100rpx;
+  left: 30rpx;
+  top: 50rpx;
+  color: #fff;
+}
+.icon_cameraL{
+  width: 100rpx;
+  height: 100rpx;
+  position: absolute;
+  font-size: 100rpx;
+  left: 30rpx;
+  bottom: 50rpx;
+  color: #fff;
+}
 .icon_back{
   position: absolute;
   font-size: 100rpx;
@@ -58,4 +62,8 @@ image{
   right: 70rpx;
   bottom: 50rpx;
   color: #fff;
+}
+.icon{
+  color: #fff;
+  font-size: 32rpx;
 }

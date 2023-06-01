@@ -1,4 +1,5 @@
 const util = require("../../../utils/util");
+import { checkLogin, doLogin } from '../../../utils/loginAuth'
 var timer;
 var QQMapWX = require('../../../vendor/qqmap-wx-jssdk.js');
 var qqmapsdk = new QQMapWX({
@@ -38,7 +39,15 @@ Page({
 		time: '',
 		week: '',
 		address: '',
-		showPicker: false
+    showPicker: false,
+    actionShow: false,
+    camera: {
+      showCamera: false,
+      cameraPos: 'back',
+      cameraHasImg: false,
+      imgUrl: '',
+      flush: 'off', //torch
+    }
   },
 
   /**
@@ -68,40 +77,198 @@ Page({
       });
   },
 
-  chooseImg() {
-    var that = this;
-    wx.chooseMedia({
-      count: 1,
-      mediaType: ['image'],
-      sourceType: ['album'],
-      sizeType: ['original'],
-      success: function(e) {
-        var imgUrl = e.tempFiles[0].tempFilePath;
-        wx.getImageInfo({
-          src: imgUrl,
-          success: function(e) {
-						var imgW = e.width,
-              imgH = e.height,
-              canvasW = wx.getSystemInfoSync().windowWidth,
-              canvasH = canvasW * imgH / imgW;
+  chooseImg(sourceType) {
+    this.setData({
+      actionShow: true
+    });
+  },
 
+  chooseImage(sourceType) {
+    const that = this
+    this.setData({
+      actionShow: true,
+    });
+    if(sourceType==='camera') {
+      wx.getSetting({
+        success(res) {
+          if (res.authSetting['scope.camera']) {
             that.setData({
-              canvasW: canvasW,
-              canvasH: canvasH,
-              imgW: imgW,
-              imgH: imgH,
-							imgUrl: imgUrl
+              'camera.showCamera': true,
+              'camera.imgUrl': '',
+              'camera.cameraHasImg': false,
+              actionShow: false,
             });
-
-            let config = that.getConfig();
-            that.makeWater(config);
+          } else {
+            wx.authorize({
+							scope: 'scope.camera',
+							success () {
+							},
+							fail(){
+                that.openConfirm();
+							}
+            })
+          }
+        },
+				fail () {
+				}
+      })
+    } else if(sourceType==='album') {
+        //选择打开相册
+        wx.chooseMedia({
+          count: 1,
+          mediaType: 'image',
+          sourceType: ['album'],
+          sizeType: 'original',
+          success:(res)=> {
+            that.getImgInfo(res.tempFiles[0].tempFilePath);
+          },
+          fail () {
+            wx.showToast({ title: '取消选择', icon: 'none', duration: 2000 })
             that.setData({
-              draw: true,
-            });
+              "actionShow": false
+            })
           }
         })
+    } else if(sourceType==='talk') {
+      wx.chooseMessageFile({
+        count: 1,
+        type: 'image',
+        success (res) {
+          // tempFilePath可以作为 img 标签的 src 属性显示图片
+          const tempFilePaths = res.tempFiles;
+          that.getImgInfo(tempFilePaths[0].path);
+          that.setData({
+            "actionShow": false,
+          })
+        }
+      })
+    }
+  },
+
+  getImgInfo(imgUrl) {
+    let that = this;
+    wx.getImageInfo({
+      src: imgUrl,
+      success: function(e) {
+        var imgW = e.width,
+          imgH = e.height,
+          canvasW = wx.getSystemInfoSync().windowWidth,
+          canvasH = canvasW * imgH / imgW;
+
+        that.setData({
+          canvasW: canvasW,
+          canvasH: canvasH,
+          imgW: imgW,
+          imgH: imgH,
+          imgUrl: imgUrl
+        });
+
+        let config = that.getConfig();
+        that.makeWater(config);
+        that.setData({
+          "draw": true,
+          "actionShow": false,
+        });
       }
+    })
+  },
+
+  openConfirm() {
+		wx.showModal({
+		  content: '检测到您没打开访问摄像头权限，是否打开？',
+		  confirmText: "确认",
+		  cancelText: "取消",
+		  success: function (res) {
+			//点击“确认”时打开设置页面
+			if (res.confirm) {
+			  console.log('用户点击确认')
+			  wx.openSetting({
+				  success: (res) => { }
+			  })
+			} else {
+			  console.log('用户点击取消')
+			}
+		  }
+		});
+  },
+  // 拍照
+  takeCameraImg() {
+    var that = this;
+    var context = wx.createCameraContext();
+    // 照相功能
+    context.takePhoto({
+      quality: "high",
+      success: res => {
+        that.setData({
+          'camera.imgUrl': res.tempImagePath,
+          'camera.cameraHasImg': true
+        });
+      },
+      fail: () => {
+        wx.showToast({
+          title: '出现错误',
+        })
+      }
+    })
+  },
+
+  //控制拍照的闪光灯
+  turnCameraFlush(e) {
+    let flush = e.target.dataset.flush;
+    this.setData({
+      'camera.flush': flush
     });
+  },
+
+  //相机前后镜头转换
+  changeCameraPos() {
+    this.setData({
+      'camera.cameraPos': this.data.camera.cameraPos == "back" ? "front" : "back"
+    })
+  },
+
+  //关闭相机
+  closeCamera() {
+    this.setData({
+      'camera.showCamera': false,
+    });
+    let imgUrl = this.data.camera.imgUrl;
+    if(imgUrl!='') {
+      this.getImgInfo(imgUrl);
+    }
+  },
+
+  goCameraRepeat(){
+    this.setData({
+      'camera.cameraHasImg':false,
+      'camera.imgUrl':'',
+    });
+  },
+
+  doChooseImage(e) {
+    const that = this
+    const sourceType = e.target.dataset.type
+    that.chooseImage(sourceType)
+    return;
+    checkLogin().then(res => {
+      that.chooseImage(sourceType);
+    }, err => {
+      wx.getUserProfile({
+				desc: '用于完善会员资料',
+				success: (res) => {
+					doLogin(res.userInfo).then(login_res => {
+            that.chooseImage(sourceType)
+          }, err => {
+          }).catch((err) => {
+          });
+						
+				},
+				fail(){
+          wx.showToast({ title: '请授权后继续', icon: 'none', duration: 2000 });
+				}
+			})
+    })
+    
   },
 
   getConfig() {
@@ -149,14 +316,20 @@ Page({
     ctx.drawImage(image, 0, 0, config.width, config.height)
     ctx.fillStyle = config.color;
     ctx.font = `normal ${config.size}px sans-serif`;
-    ctx.rotate(Math.PI / 180 * config.rotate);
     ctx.globalAlpha = config.opacity;
     config.scale < 1 && ctx.scale(config.scale, config.scale);
-    this.writeText(ctx, config);
+
+    if(this.data.fontWaterFlag) {
+      this.writeText(ctx, config);
+    }
+    if(this.data.timeAndLocFlag) {
+      this.writeTimeAndLoc(ctx);
+    }
     ctx.restore();
   },
 
   writeText(canvasContext, canvasConfig) {
+    canvasContext.rotate(Math.PI / 180 * canvasConfig.rotate);
     var canvasxSpace = canvasConfig.xSpace,
     canvasySpace = canvasConfig.ySpace,
     textLength = canvasConfig.text.length,
@@ -164,12 +337,53 @@ Page({
     sizeHeight = canvasConfig.size * textLength + canvasxSpace,
     allSize = .72 * (canvasConfig.width + canvasConfig.height);
     canvasConfig.scale < 1 && (allSize /= canvasConfig.scale);
-
+    
     for (var y = canvasConfig.yStart; y < allSize + sizeWidth; y += sizeWidth) {
       for (var x = canvasConfig.xStart; x < allSize + sizeHeight; x += sizeHeight) {
         canvasContext.fillText(canvasConfig.text, x, y);
       }
     }
+  },
+
+  writeTimeAndLoc(ctx) {
+    let that = this;
+    var imgW = that.data.imgW,
+        imgH = that.data.imgH;
+
+    ctx.textBaseline = 'bottom';
+
+    var addr = that.data.address;
+    var dateStr = that.data.date;
+    var week = that.data.week;
+
+    var addrH = ctx.measureText(addr.slice(0, 1)).width;
+    var weekStrH = ctx.measureText(week.slice(0, 1)).width;
+
+    // 绘制地址
+    var chr = addr.split("");
+    var temp = "";
+    var row = [];
+    for (var a = 0; a < chr.length; a++) {
+      if (ctx.measureText(temp).width < (imgW-25)) {
+        temp += chr[a];
+      } else {
+        a--;
+        row.push(temp);
+        temp = "";
+      }
+    }
+    row.push(temp);
+    var rowLen = row.length;
+    for (var b = rowLen; b > 0; b--) {
+      ctx.fillText(row[rowLen-b], 10, imgH - (addrH + 5)*b);
+    }
+    var dateH = (addrH + 5)*rowLen + weekStrH + 10;
+    var weekH = (addrH + 5)*rowLen + weekStrH + 20 + weekStrH;
+
+    //绘制时间
+    ctx.fillText(dateStr + ' ' + that.data.time, 10, imgH - dateH);
+    //绘制星期
+    ctx.fillText(week, 10, imgH - weekH);
   },
 
 
@@ -310,6 +524,7 @@ Page({
     if (!this.data.draw){
 			wx.showToast({
 				title: '请上传图片',
+				icon: 'error',
 			});
 			return false;
 		}
@@ -361,35 +576,16 @@ Page({
 							}
 						}
 						ctx.restore();
-					}
+          }
+          
 					if(that.data.timeAndLocFlag) {
 						ctx.save();
 						ctx.globalAlpha = that.data.opacity;
-						ctx.font = `normal ${size}px null`;
+						ctx.font = `normal ${size}px sans-serif`;
 						ctx.fillStyle = that.data.color;
-						ctx.textBaseline = 'bottom';
 
-						var addr = that.data.address;
-						var dateStr = that.data.date;
-						var week = that.data.week;
-
-						var metrics = ctx.measureText(addr.slice(0, 1));
-						var addrH = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
-
-						var metrics = ctx.measureText(dateStr.slice(0, 1));
-						var dateStrH = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
-
-						var metrics = ctx.measureText(week.slice(0, 1));
-						var weekH = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
-
-						var maxH = addrH + dateStrH + weekH + 5*3;
-
-						// 绘制地址
-						ctx.fillText(addr, 10, imgH - (addrH + 5));
-						//绘制时间
-						ctx.fillText(dateStr + ' ' + that.data.time, 10, imgH - (addrH + dateStrH + 10));
-						//绘制星期
-						ctx.fillText(that.data.week, 10, imgH - maxH);
+            that.writeTimeAndLoc(ctx);
+            
 						ctx.restore();
 					}
 					
@@ -405,18 +601,20 @@ Page({
                   filePath: e.tempFilePath,
                   success: function() {
                     wx.hideLoading(),
-                      wx.showToast({
-                        title: '已保存到相册',
-                        icon: 'success',
-                        duration: 2e3
-                      })
+                    wx.showToast({
+                      title: '已保存到相册',
+                      icon: 'success',
+                      duration: 2e3
+                    })
                   }
                 })
               },
               fail(error) {
                 wx.showToast({
 									title: '图片生成失败',
-								})
+									icon: 'error',
+                });
+                wx.hideLoading();
                 console.log(error);
               }
             });
@@ -425,7 +623,8 @@ Page({
 
     that.setData({
       isSave: true
-    })
+    });
+    wx.hideLoading();
   },
 
   checkboxChange(e) {
@@ -453,14 +652,17 @@ Page({
         timeAndLocFlag: false
       });
     }
+    this.makeWater(this.getConfig());
   },
 
   chooseLocation() {
+    let that = this;
     wx.chooseLocation({
 			success: res => {
 				this.setData({
 					address: res.address
-				})
+        })
+        that.makeWater(that.getConfig());
 			},
 			fail: err => {
 				console.log(err)

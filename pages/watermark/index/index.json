@@ -1,3 +1,5 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "custom-action-sheet": "/component/action-sheet/action-sheet"
+  }
 }

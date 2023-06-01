@@ -446,7 +446,7 @@
     <doodle id="myDoodleCpt" bind:goBack="goBackFromDoodle" bind:saveImg2Canvas="saveImg2Canvas"></doodle>
   </view>
   <!--二级菜单照相功能-->
-  <view class="popbg" wx:if="{{menu.carema.showCamera}}" style="z-index: 99999;background: rgba(0, 0, 0, 0.9);">
+  <view class="popbg" wx:if="{{menu.camera.showCamera}}" style="z-index: 99999;background: rgba(0, 0, 0, 0.9);">
     <template is="cameraView" data="{{menu}}" />
   </view>
   <!--微调-->
