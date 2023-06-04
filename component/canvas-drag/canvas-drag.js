@@ -143,6 +143,16 @@ CanvasDrag.setBgOpacity = (alpha) => {
   }
 };
 
+//取消背景图
+CanvasDrag.clearBgImg = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+    return CanvasDrag().clearBgImg();
+  }
+};
+
 CanvasDrag.setOverturn = () => {
   const canvasDrag = CanvasDrag();
   if (!canvasDrag) {

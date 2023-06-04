@@ -19,7 +19,7 @@
       </view>
     </view>
 
-		<view class="my-item">
+		<view class="my-item" bindtap="jump" data-type="msg">
       <view class="myitem-name myitem-left">
         <text>留言反馈</text>
       </view>

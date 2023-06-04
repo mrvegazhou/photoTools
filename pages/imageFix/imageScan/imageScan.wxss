@@ -1,136 +1,28 @@
 @import "../../../template/theme.wxss";
 @import "../../../template/iconfont/iconfont.wxss";
-wx-slider .wx-slider-handle-wrapper{
-  height:0rpx;
-}
+
 .container {
 	padding-bottom: 100rpx;
 	overflow: visible;
 	box-sizing: border-box;
   background:#fff;
 }
-.component-slider {
-  height: 500rpx;
-  width: 100%;
-  position: relative;
-  margin-top: 16rpx;
-  padding: 80rpx 0 50rpx 0;
-  border: 1px dotted var(--primary-light-gray-color);
-}
-/* 盒子 */
-.slider-box { 
-  height: 100%;
-  width: 100%;
-  margin: 0 auto;
-  position: absolute;
-  left: 50%; 
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-/* 未选中区线 */
-.slider-line{ 
-  width: 100%;
-  height: 100%;
-  position: absolute; 
-  top: 0;
-}
-.background-img {
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  /* 让背景图基于容器大小伸缩 */
-  background-size: cover;
-  /* background-position: center center; */
-}
-.foreground-img {
-  /* width: 50%; */
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  /* 让背景图基于容器大小伸缩 */
-  background-size: cover;
-  /* background-position: center center; */
-}
-/* 选中区线 */
-.slider-line-active{
-  position: absolute;
-  height: 100%;
-  left: 0;
-  top: 0;
-}
 
-/* slider竖线 */
-.slider-vertical-line{
-  position: relative;
-  border-left: 3px solid #1D6DE5;
-  height: 100%;
-  width: 80rpx;
-  z-index: 102;
-  left: -3rpx;
-}
-
-/* slider按钮 */
-.slider-btn{
-  width: 80rpx;
-  height: 50rpx; 
-  background: #5B96F6;
-  border-radius: 20rpx;
-  position: absolute;
-  top: 46%;
-  left: -45rpx;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  z-index: 101;
-}
-.slider-btn::after {
-  content: '';
-  padding: 3px;
-  display: inline-block;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(-45deg);
-}
-.slider-btn::before {
-  content: '';
-  padding: 3px;
-  display: inline-block;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(135deg);
-}
-
-/* slider组件设置透明27 */
-slider{
-  opacity:0;
-  margin-top: 27%;
-}
-
-.container-opt-btn {
-	display: flex;
-	justify-content: space-between;
-  align-items: center;
-  padding: 10rpx 30rpx;
-}
 .container-btn{
-	width: 45%;
-	height: 90rpx;
-	margin-top:80rpx;
+  width: 45%;
+  padding: 19rpx;
+	margin-top: 30rpx;
 	border-radius: 10rpx;
 	color: #fff;
 	text-align: center;
-	line-height: 90rpx;
-	background: var(--primary-color);
+  background: var(--primary-color);
+  width: 230rpx;
+  margin-bottom: 30rpx;
+  font-size: var(--primary-font-size-2);
+  margin-left: auto;
+  margin-right: auto;
 }
-.tips {
-  width: 100%;
-	text-align: center;
-	color: var(--primary-light-gray-color);
-	line-height: 1;
-	height: 1em;
-  font-size: 30rpx;
-  padding-top: 20rpx;
-}
+
 .action-sheet-main {
   display: flex;
 	flex-direction: column;
@@ -159,30 +51,44 @@ slider{
   margin-top: 20rpx;
 }
 .sheet-text .sheet-text-1{
-  font-size: 35rpx;
+  font-size: 30rpx;
 }
 .sheet-text .cancel {
   font-size: 35rpx;
 }
 .sheet-text .sheet-text-2 {
   margin-top: 5rpx;
-  font-size: 26rpx;
-  color: var(--primary-light-gray-color);
+  font-size: 25rpx;
+  color: #74787a;
 }
 .action-sheet-item .sheet-icon {
   margin-top: 20rpx;
   margin-right: 80rpx;
 }
 .sheet-icon .iconfont {
-  font-size: 65rpx;
-  color: var(--primary-light-gray-color);
+  font-size: var(--primary-icon-size);
 }
 
-.marking {
-  margin: 30rpx 10rpx 10rpx 10rpx;
-  font-size: 30rpx;
-  color: var(--primary-light-gray-color);
-  display: flex;
+.container-opt-btn {
+	display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
+  margin-top: 30rpx;
+}
+
+.bgWord {
+  width: calc(100% - 22rpx);
+  height: 300rpx;
+  line-height: 300rpx;
+  text-align: center;
+  color: #979797;
+  z-index: 1;
+  cursor: pointer;
+  font-size: 100rpx;
+  border: 1px dotted var(--primary-light-gray-color);
+  margin: 10rpx;
+  padding: 35rpx 0;
+}
+.bgWord .iconfont-size{
+  font-size: 80rpx !important;
 }

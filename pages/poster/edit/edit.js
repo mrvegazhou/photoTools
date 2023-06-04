@@ -340,29 +340,39 @@ Page({
       }
     }
     
-    var menu = this.data.menu
+    // var menu = this.data.menu
     switch(type) {
       case 'txt':
-        this.initItem();
-        menu.secondMenu = 'txt.edit'
-        menu.txtPopHeight = '480rpx'
-        menu.showColorPicker = false
+        that.initItem();
+        that.setData({
+          'menu.secondMenu': 'txt.edit',
+          'menu.txtPopHeight': '480rpx',
+          'menu.showColorPicker': false,
+        });
+        
         break;
       case 'img':
-        this.initItem();
+        that.initItem();
         var left = e.target.offsetLeft
-        menu.menuShowLeft = left+5;
+        that.setData({
+          'menu.menuShowLeft': left+5,
+        });
+        break;
       case 'sys':
         break;
       case 'doodle':
-        menu.mainPageShow = 'doodle';
+        that.setData({
+          'menu.mainPageShow': 'doodle'
+        });
+        break;
       case 'layer':
         this.getSortList();
+        break;
       case 'sysScale':
         this.setData({'scaleStyles.display': this.data.scaleStyles.display=='block'?'none':'block'});
         break;
       case 'sysSave':
-        // CanvasDrag.downloadImg();
+
         break;
       case 'sysClear':
         wx.showModal({
@@ -382,10 +392,10 @@ Page({
 
         break;
       default:
-        menu.secondMenu = ''
+        this.setData({'menu.secondMenu': ''});
+        break;
     }
-    menu.menuShow = menuShow
-    this.setData({menu: menu})
+    this.setData({'menu.menuShow': menuShow});
     if(type=='sysScale' || type=='sysClear'){
       setTimeout(()=>{that.hideMenu();}, 1000);
     }
@@ -513,6 +523,7 @@ Page({
     }
     this.setData({
       'bg.color': this.data.bg.tmpColor,
+      'bg.img': '',
     })
     this.hideMenu()
   },
@@ -550,6 +561,7 @@ Page({
       that.setData({'menu.camera.use': 'bg'});
     else if(type=='bg.cancel'){
       that.setData({'menu.menuShow': '', 'menu.secondMenu':type});
+      CanvasDrag.clearBgImg();
       setTimeout(()=>{that.setData({'menu.secondMenu':''});}, 1000);
       return;
     }
@@ -569,6 +581,9 @@ Page({
           break;
       }
     });
+    that.setData({
+      'bg.color': ''
+    });
   },
   changeBgOpacity(e) {
     let alpha = e.detail.value;
@@ -578,6 +593,10 @@ Page({
   },
   bgOpacityOk() {
     if(this.data.bg.img=='') {
+      wx.showToast({
+        title: '请先设置背景图片',
+        icon: 'none',
+      });
       return;
     }
     let alpha = this.data.menu.bgOpacity;
@@ -1214,12 +1233,12 @@ Page({
   //图片透明化
   transImg(alpha, type) {
     let that = this;
-    let itemImg = CanvasDrag.getItem();
-    let url = type=='bg' ? this.data.bg.img : itemImg.url;
     wx.showLoading({
       title: '处理中',
       mask: true
     });
+    let itemImg = CanvasDrag.getItem();
+    let url = type=='bg' ? this.data.bg.img : itemImg.url;
     wx.getImageInfo({
       src: url,
       success: resInfo => {

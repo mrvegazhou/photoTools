@@ -12,11 +12,13 @@ Page({
    */
   data: {
     colorMap: [
-      ['0', '#808080'],
-      ['1', '#000000'],
-      ['2', '#ee0000'],
-      ['3', '#ffffff'],
-      ['4', '#87CEEB']
+      ['0', '#ee2746'], //淡曙红
+      ['1', '#1c0d1a'], //深牵牛紫
+      ['2', '#5bae23'], //鹦鹉绿
+      ['3', '#51c4d3'], //瀑布蓝
+      ['4', '#c4d7d6'], //穹灰
+      ['5', '#eed045'], //秋葵黄
+      ['6', '#ffffff']
     ],
     size: 20,
     density: 50,
@@ -47,7 +49,8 @@ Page({
       cameraHasImg: false,
       imgUrl: '',
       flush: 'off', //torch
-    }
+    },
+    canvasDisplay: true
   },
 
   /**
@@ -79,7 +82,8 @@ Page({
 
   chooseImg(sourceType) {
     this.setData({
-      actionShow: true
+      actionShow: true,
+      canvasDisplay: false
     });
   },
 
@@ -97,19 +101,30 @@ Page({
               'camera.imgUrl': '',
               'camera.cameraHasImg': false,
               actionShow: false,
-            });
+              canvasDisplay: true,
+            }, that.pageScrollToBottom());
+            
           } else {
             wx.authorize({
 							scope: 'scope.camera',
 							success () {
+                that.setData({
+                  canvasDisplay: true,
+                });
 							},
 							fail(){
                 that.openConfirm();
+                that.setData({
+                  canvasDisplay: true,
+                });
 							}
             })
           }
         },
 				fail () {
+          that.setData({
+            canvasDisplay: true,
+          });
 				}
       })
     } else if(sourceType==='album') {
@@ -125,7 +140,8 @@ Page({
           fail () {
             wx.showToast({ title: '取消选择', icon: 'none', duration: 2000 })
             that.setData({
-              "actionShow": false
+              "actionShow": false,
+              "canvasDisplay": true,
             })
           }
         })
@@ -139,6 +155,7 @@ Page({
           that.getImgInfo(tempFilePaths[0].path);
           that.setData({
             "actionShow": false,
+            "canvasDisplay": true,
           })
         }
       })
@@ -161,16 +178,23 @@ Page({
           imgW: imgW,
           imgH: imgH,
           imgUrl: imgUrl
-        });
+        }, that.pageScrollToBottom());
 
         let config = that.getConfig();
         that.makeWater(config);
         that.setData({
           "draw": true,
           "actionShow": false,
+          "canvasDisplay": true,
         });
       }
     })
+  },
+
+  cancel() {
+    this.setData({
+      "canvasDisplay": true,
+    });
   },
 
   openConfirm() {
@@ -318,17 +342,21 @@ Page({
     ctx.font = `normal ${config.size}px sans-serif`;
     ctx.globalAlpha = config.opacity;
     config.scale < 1 && ctx.scale(config.scale, config.scale);
-
+    
     if(this.data.fontWaterFlag) {
       this.writeText(ctx, config);
     }
+    
     if(this.data.timeAndLocFlag) {
+      console.log(3333)
       this.writeTimeAndLoc(ctx);
     }
+    
     ctx.restore();
   },
 
   writeText(canvasContext, canvasConfig) {
+    canvasContext.save();
     canvasContext.rotate(Math.PI / 180 * canvasConfig.rotate);
     var canvasxSpace = canvasConfig.xSpace,
     canvasySpace = canvasConfig.ySpace,
@@ -343,13 +371,14 @@ Page({
         canvasContext.fillText(canvasConfig.text, x, y);
       }
     }
+    canvasContext.restore();
   },
 
   writeTimeAndLoc(ctx) {
     let that = this;
     var imgW = that.data.imgW,
         imgH = that.data.imgH;
-
+    ctx.save();
     ctx.textBaseline = 'bottom';
 
     var addr = that.data.address;
@@ -384,6 +413,7 @@ Page({
     ctx.fillText(dateStr + ' ' + that.data.time, 10, imgH - dateH);
     //绘制星期
     ctx.fillText(week, 10, imgH - weekH);
+    ctx.restore();
   },
 
 
@@ -589,7 +619,6 @@ Page({
 						ctx.restore();
 					}
 					
-
           setTimeout(() => {
             wx.canvasToTempFilePath({
               canvasId: 'myCanvas2',
@@ -714,5 +743,18 @@ Page({
 				})
 			}
 		})
-	},
+  },
+  
+  // 自动到view底部
+  pageScrollToBottom() {
+    wx.createSelectorQuery().select('.container').boundingClientRect(function(rect) {
+      if (rect){
+        // 使页面滚动到底部
+        console.log(rect.height);
+        wx.pageScrollTo({
+           scrollTop: rect.height
+        })
+      }
+    }).exec()
+  },
 })

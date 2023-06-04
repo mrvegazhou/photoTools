@@ -1,29 +1,30 @@
 @import "../../../template/theme.wxss";
-@import "../../../template/iconfont/iconfont.wxss";
 page{
   background-color: #f2f2f2;
 }
+.container{
+  width: 100%;
+}
 .add-btn {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  text-align: center;
+  width: 230rpx;
   color: #ffffff;
-  width: 150rpx;
-  font-size: 28rpx;
+  font-size: var(--primary-font-size-2);
   z-index: 1;
   bottom: 60rpx;
   background-color: var(--primary-color);
-  padding: 15rpx;
+  padding: 19rpx;
   margin: 0 auto;
   position: absolute;
   left: 0; 
   right: 0;
   border-radius:3px;
-  justify-content: center;
 }
 .preview{
   width: 100%;
-  min-height: 71vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .preview canvas {
   width: 100%;
@@ -31,37 +32,29 @@ page{
   margin: 0 auto;
 }
 .preview-template{
-  width: 750rpx;
+  text-align: center;
 }
 .select-btn{
-  padding: 15rpx;
+  padding: 19rpx;
   width: 150rpx;
   text-align: center;
   background-color: var(--primary-light-gray-color);
-  font-size: 28rpx;
+  font-size: var(--primary-font-size-2);
   color: #ffffff;
   border-radius:3px;
   margin-right: 10rpx;
 }
 .save-btn{
-  padding: 15rpx;
-  width: 150rpx;
-  text-align: center;
-  background-color: var(--primary-color);
-  font-size: 28rpx;
-  border-radius:3px;
-  color: #ffffff;
+  background-color: var(--primary-color) !important;
 }
 .preview-btn{
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content:center;
-  position: absolute;
   z-index: 10;
-  bottom: 20rpx;
   width: 100%;
-  left: 0; 
-  right: 0;
-  margin: 15rpx auto;
+  margin: 35rpx auto 0 auto;
+  position: absolute;
+  bottom: 60rpx;
 }

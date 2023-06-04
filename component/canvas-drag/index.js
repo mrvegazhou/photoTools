@@ -111,7 +111,6 @@ Component({
         wx.getImageInfo({
           src: bgImg,
           success: res => {
-
             // 初始化数据
             item.width = res.width; //宽度
             item.height = res.height; //高度
@@ -452,6 +451,13 @@ Component({
     onBgImgChange(newItem, oldItem){
       this.initBg(newItem, '');
     },
+    // 清空背景图片
+    clearBgImg() {
+      this.setData({
+        'bgImg': '',
+        'bgData': {},
+      });
+    },
     // 触发背景色
     onBgColorChange(newItem, oldItem){
       this.initBg('', newItem);
@@ -722,19 +728,22 @@ Component({
       }
       // 若有图片被选中则当点击图片以外的区域取消选中状态（安全区域扩大10个像素）
       try {
-        let flag = (x < list[index].css.left - 10 || x > list[index].css.left + list[index].css.width + 10||
-          y < list[index].css.top - 10 || y > list[index].css.top + list[index].css.height + 10);
-        if(isActive && flag){
-          list[index].active = false;
-          this.setData({
-            itemList: list
-          })
+        var flag = false;
+        if(list.length>0) {
+          flag = (x < list[index].css.left - 10 || x > list[index].css.left + list[index].css.width + 10||
+            y < list[index].css.top - 10 || y > list[index].css.top + list[index].css.height + 10);
+          if(isActive && flag){
+            list[index].active = false;
+            this.setData({
+              itemList: list
+            })
+          }
         }
-        if(flag) {
+        if(flag || list.length==0) {
           this.triggerEvent('hideMenu', {});
         }
       } catch(err) {
-        //console.log(err);
+        console.log("error:", err);
       }
     },
 
@@ -813,7 +822,7 @@ Component({
         delete temp[i].active;
         delete temp[i].oScale;
 
-        let scale = temp[i].scale;
+        let scale = temp[i].scale ? temp[i].scale : 1;
         scale = Number(scale.toFixed(2));
         let width = temp[i].css.width*scale;
         let height = temp[i].css.height*scale;
@@ -959,6 +968,7 @@ Component({
         that.saveImageToPhotosAlbum(that.data.canvasTemImg);
       }).catch(()=>{
         // 拒绝、取消授权的操作
+        wx.hideLoading();
       });
       this.setData({overturn: false});
     },
@@ -973,8 +983,8 @@ Component({
                 icon: 'success',
                 duration: 2000
               });
-              wx.hideLoading();
             }
+            // setTimeout(()=>{wx.hideLoading()}, 2000);
         }
       })
     },

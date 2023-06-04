@@ -30,7 +30,7 @@
   </view>
   <view class="panel">
     <view class='label'>联系方式:</view>
-    <input value="{{msgContact}}"  class="contact-input" bindinput='textInputContact' placeholder="微信号/QQ/Email/电话" />
+    <input value="{{msgContact}}"  placeholder-class="place-holder" class="contact-input" bindinput='textInputContact' placeholder="微信号/QQ/Email/电话" />
   </view>
   <view class="panel">
     <view class="submit" bindtap="submit">提交</view>

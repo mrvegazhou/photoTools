@@ -20,7 +20,7 @@
   margin-left: 30rpx;
 }
 .btn{
-  border: 1rpx solid var(--primary-dark-gray-color);
+  border: 1rpx solid var(--primary-border-color);
   border-radius: 30rpx;
   margin-right: 30rpx;
   font-size: var(--primary-font-size);
@@ -28,6 +28,7 @@
   height: 45rpx;
   line-height: 45rpx;
   text-align: center;
+  color: var(--primary-light-gray-color);
 }
 .selected{
   background-color: var(--primary-select-bg);
@@ -36,7 +37,7 @@
 }
 .input{
   font-size: var(--primary-font-size);
-  border:1px solid var(--primary-light-gray-color);
+  border:1px solid var(--primary-border-color);
   border-radius: 10rpx;
   padding: 10rpx;
   width: 96%;
@@ -44,6 +45,9 @@
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 30rpx;
+}
+.place-holder{
+  color: var(--primary-light-gray-color);
 }
 .uploader-cell {
   width: 96%;
@@ -95,17 +99,17 @@
   color: var(--primary-light-gray-color);
   width: 130rpx;
   text-align: center;
-  margin: 0 auto;
-  bottom: -10rpx;
+  margin: 0 auto 7rpx auto; 
+  bottom: -15rpx;
   position: absolute;
 }
 .contact-input{
   font-size: var(--primary-font-size);
-  border:1px solid var(--primary-light-gray-color);
+  border:1px solid var(--primary-border-color);
   border-radius: 10rpx;
   height: 60rpx;
   line-height: 60rpx;
-  width: 500rpx;
+  width: 96%;
   padding-left: 10rpx;
 }
 .submit{

@@ -85,4 +85,11 @@ Page({
       url: '/pages/marquee/show/show?type=' + type
     });
   },
+  //返回首页
+  goHome() {
+    wx.switchTab({
+      url: '/pages/index/index',
+    });
+    
+  },
 })

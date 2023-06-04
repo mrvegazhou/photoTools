@@ -1,7 +1,7 @@
 <import src="../camera/camera.wxml" />
 <view class="container">
-  <view bindtap='chooseImg'>
-    <canvas type="2d" id="myCanvas" class="canvas" style="width:100%;height:{{canvasH}}px;"></canvas>
+  <view bindtap='chooseImg' style="{{canvasDisplay==false ? 'display:none;' : ''}}">
+    <canvas type="2d" id="myCanvas" class="canvas" style="width:100%;height:{{canvasH}}px; "></canvas>
     <view class="bgWord" wx:if="{{!draw}}">
         <text class="iconfont icon-tianjiatupian_huaban iconfont-size"></text>
     </view>
@@ -31,7 +31,7 @@
       <view class="right" bindtap="chooseLocation" style="display: flex;flex-direction: row;">
         <view class="set">设置</view>
 				<view class="notice" wx:if="{{address}}">{{address}}</view>
-        <view class="notice" wx:else>(请手动设置地址)</view>
+        <view class="notice" style="color: red !important;" wx:else>(请手动设置地址)</view>
       </view>
     </view>
     <view class="section section1" wx:if="{{fontWaterFlag}}">
@@ -94,8 +94,8 @@
 		<view class="time-picker-btn" bindtap="closePicker">完成</view>
 	</view>
 </view>
-
-<custom-action-sheet actionShow="{{actionShow}}" sheetHeight="auto">
+<view wx:if="{{canvasDisplay==false}}" style="z-index:99;top:0;background-color: rgba(0, 0, 0, 0.7); width: 100%; height: 100%; position: absolute;"></view>
+<custom-action-sheet actionShow="{{actionShow}}" sheetHeight="auto" bind:cancel="cancel">
   <view class="action-sheet-main">
     <view class="action-sheet-item" bindtap="doChooseImage" data-type="camera">
       <view class="sheet-text">
@@ -103,7 +103,7 @@
         <view class="sheet-text-2" catchtap="doChooseImage" data-type="camera">立即拍摄所需的照片</view>
       </view>
       <view class="sheet-icon" catchtap="doChooseImage" data-type="camera">
-        <text class="iconfont icon-zhaoxiangji"></text>
+        <text class="iconfont icon-zhaoxiangji" catchtap="doChooseImage" data-type="camera"></text>
       </view>
     </view>
     <view class="action-sheet-item" bindtap="doChooseImage" data-type="album">
@@ -112,7 +112,7 @@
         <view class="sheet-text-2" catchtap="doChooseImage" data-type="album">选择手机相册中的图片</view>
       </view>
       <view class="sheet-icon" catchtap="doChooseImage" data-type="album">
-        <text class="iconfont icon-tuku"></text>
+        <text class="iconfont icon-tuku" catchtap="doChooseImage" data-type="album"></text>
       </view>
     </view>
     <view class="action-sheet-item" bindtap="doChooseImage" data-type="talk">
@@ -121,7 +121,7 @@
         <view class="sheet-text-2" catchtap="doChooseImage" data-type="talk">从微信聊天记录中导入照片</view>
       </view>
       <view class="sheet-icon" catchtap="doChooseImage" data-type="talk">
-        <text class="iconfont icon-web-icon-"></text>
+        <text class="iconfont icon-web-icon-" catchtap="doChooseImage" data-type="talk"></text>
       </view>
     </view>
   </view>

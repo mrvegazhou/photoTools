@@ -63,7 +63,30 @@ Page({
 				this.getAuth()
 			}
 		})
-	},
+  },
+  
+  jump(event) {
+    var type = event.currentTarget.dataset.type;
+    var url = '';
+    if(type=='msg') {
+      url = '/pages/message/index/index';
+    } else {
+
+    }
+
+    wx.navigateTo({
+      url: url,
+      success: function (res) {
+        // success
+      },
+      fail: function () {
+        // fail
+      },
+      complete: function () {
+        // complete
+      }
+    })
+  },
 
   
   

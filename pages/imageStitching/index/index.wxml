@@ -1,17 +1,19 @@
 <view class="container">
   <view class="add-btn" bindtap="bindViewTap" wx:if="{{imgFiles.length < 1}}">
-    <text class="iconfont icon-tianjiatupian_huaban"></text>
-    <view class="add-btn-font">
     选择照片
-    </view>
   </view>
   <view class="preview" wx:else>
+    <scroll-view scroll-y="true" class="preview-template" style="height: {{windowHeight}}px;width: {{windowWidth}}px;">
+      <view style="width:{{windowWidth}}px;margin:0 10rpx;">
+      <image mode="aspectFit" bindtap="imgPreview" data-src="{{imgUrl}}" style="width:{{windowWidth}}px;height:{{canvas_h*windowWidth/canvas_w}}px;" src="{{imgUrl}}" wx:if="{{imgUrl!=''}}"/>
+      </view>
+    </scroll-view>
     <view class="preview-btn">
       <view class="select-btn" bindtap="bindViewTap">重新选择</view>
-      <view class="save-btn" bindtap="saveTempFilePath">保存到相册</view>
+      <view class="select-btn save-btn" bindtap="saveTempFilePath">保存到相册</view>
     </view>
-    <view class="preview-template">
-      <canvas canvas-id="previewCanvas" type="2d" id="previewCanvas" style="height:{{imgH}}px; width:{{imgW}}px"></canvas>
-    </view>
+  </view>
+  <view style='width:0px;height:0px;overflow:hidden;'>
+    <canvas type="2d" id="previewCanvas"></canvas>
   </view>
 </view>

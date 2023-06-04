@@ -52,7 +52,7 @@
 }
 .section .right{
   float: right;
-  width: 500rpx;
+  width: 550rpx;
   color: #888;
   font-size: 28rpx;
   text-align: left;
@@ -79,15 +79,16 @@
   text-align: center;
   margin-left: auto;
   margin-right: auto;
-  padding: 15rpx;
+  padding: 19rpx;
   margin-bottom: 30rpx;
+  font-size: var(--primary-font-size-2);
 }
 .gray{
   background: #979797;
 }
 .circle {
   display: inline-block;
-  margin: 20rpx 20rpx 0 0;
+  margin: 20rpx 18rpx 0 0;
   width: 58rpx;
   height: 58rpx;
   border-radius: 50%;

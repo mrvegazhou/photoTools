@@ -1,13 +1,15 @@
 <view class="container">
-  <view class="twinkle" bindtap="jump" data-type="flickering">
+  <view class="twinkle bgColor1" bindtap="jump" data-type="flickering">
     <view style="color:{{bgColor}};">
       文字闪烁效果
     </view>
   </view>
-  <view class="twinkle roll" style="position:relative;overflow:hidden;" bindtap="jump" data-type="roll">
+  <view class="twinkle roll bgColor2" style="position:relative;overflow:hidden;" bindtap="jump" data-type="roll">
     <view class="roll-font" style="left:{{offsetLeft}}px;">
       文字滚动效果
     </view>
   </view>
-  <view></view>
+  <view class="primary" bindtap="goHome">
+    返回首页
+  </view>
 </view>

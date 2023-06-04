@@ -1,34 +1,19 @@
 <!--pages/imageFix/index/index.wxml-->
 <view class="container">
-  <view bindtap='chooseImg' class="page_hd">
-    <canvas canvasId="myCanvas" class="canvas" style="width:100%;height:{{canvasH}}px;"></canvas>
-    <view class="bgWord" wx:if="{{!draw}}">
+  <view bindtap="chooseImage" style="text-align:center;{{canvasDisplay==false ? 'display:none;' : ''}}">
+    <view class="bgWord" wx:if="{{before==''}}">
         <text class="iconfont icon-tianjiatupian_huaban iconfont-size"></text>
     </view>
+    <image bindtap="imgPreview" data-src="{{before}}" src="{{before}}" mode="aspectFit" wx:else></image>
   </view>
-
-
-  <view class="component-slider">
-    <!-- 覆盖slider组件盒子 -->
-    <view class="slider-box">
-      <!-- 拖动按钮 -->
-      <view class="slider-vertical-line" style="margin-left: {{value}}%;">
-        <view class="slider-btn"></view>
-      </view>
-      <!-- 未显示区线 -->
-      <view bindtap='showImg' data-url="{{after}}" class="slider-line background-img" style="background-image: url('{{after}}');"></view>
-      <!-- 显示区线 -->
-      <view bindtap='showImg' data-url="{{before}}" class="slider-line-active foreground-img" style="background-image: url('{{before}}');width:{{value}}%;"></view>
-
-    </view>
-    <!-- slider组件 -->
-    <slider block-size="28" bindchange="sliderchange" bindchanging="sliderchanging" step="1" min="{{min}}" max="{{max}}" value="{{value}}"/>
+  <view wx:if="{{after}}" class="bgWord">
+    <image src="{{after}}" mode="aspectFit" style="width:{{width}}rpx;height:{{height}}rpx;" bindtap="imgPreview" data-src="{{after}}"></image>
   </view>
-  <view class="tips">左右滑动查看效果</view>
   <view class="container-opt-btn">
     <view bindtap="chooseImage" class="container-btn {{canClick==false ? 'disable_cls' : ''}}">选择图片</view>
     <view bindtap="handleImage" class="container-btn {{canClick==false ? 'disable_cls' : ''}}">处理图片</view>
   </view>
+  
 </view>
 
 <custom-action-sheet actionShow="{{actionShow}}" sheetHeight="auto">

@@ -8,13 +8,14 @@ Page({
    * 页面的初始数据
    */
   data: {
-    min: 0,  // 最小限制 
-    max: 100,   // 最大限制
-    value:50, // 当前value
     canClick: true,
     actionShow: false,
-    before: '../../../images/bgcolor.png',
-    after: '../../../images/bgcolor.png'
+
+    draw: false,
+    before: '',
+    after: '',
+    width: 0,
+    height: 0
   },
 
   /**
@@ -56,7 +57,7 @@ Page({
 							scope: 'scope.camera',
 							success () {
                 that.setData({
-                  canClick: true
+                  canClick: true,
                 })
 							},
 							fail(){
@@ -81,11 +82,11 @@ Page({
           sizeType: 'original',
           camera: 'back',
           success:(res)=> {
-            console.log(res.tempFiles[0].tempFilePath)
             that.setData({
               "before": res.tempFiles[0].tempFilePath,
               "actionShow": false,
-              "canClick": true
+              "canClick": true,
+              "after": '',
             })
             
           },
@@ -107,7 +108,8 @@ Page({
           that.setData({
             "canClick": true,
             "actionShow": false,
-            "before": tempFilePaths[0].path
+            "before": tempFilePaths[0].path,
+            "after": '',
           })
         }
       })
@@ -121,7 +123,8 @@ Page({
   doChooseImage(e) {
     const that = this
     const sourceType = e.target.dataset.type
-
+    that.chooseImage(sourceType);
+    return;
     checkLogin().then(res => {
       that.chooseImage(sourceType)
 
@@ -192,10 +195,8 @@ Page({
       apiRequest.scanImg(beforeImgUrl, {'openid':openid}).then(res => {
         const resData = JSON.parse(res.data)
         if(resData.code==200) {
-          const beforeImg = CONFIG.API_URL.WECHAT_STATIC_IMG+"/"+resData.data.oldImg
           const afterImg = CONFIG.API_URL.WECHAT_STATIC_IMG+"/"+resData.data.scannedImg
           that.setData({
-            'before': beforeImg,
             'after': afterImg
           })
           wx.hideLoading()
@@ -266,7 +267,8 @@ Page({
         photoSrc
       } = data
       this.setData({
-        before: photoSrc
+        "before": photoSrc,
+        "after": '',
       })
     })
   },
@@ -312,5 +314,13 @@ Page({
         })
       }
     })
-  }
+  },
+
+  imgPreview(event) {
+    var src = event.currentTarget.dataset.src;
+    wx.previewImage({
+      current: src, 
+      urls: [src]
+    })
+  },
 })

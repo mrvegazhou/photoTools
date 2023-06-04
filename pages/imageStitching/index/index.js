@@ -7,7 +7,10 @@ Page({
   data: {
     imgFiles: [],
     canvas_h: 0,
-    canvas_w: 0
+    canvas_w: 0,
+    windowWidth: 0,
+    windowHeight: 300,
+    imgUrl: '',
   },
 
   /**
@@ -28,7 +31,12 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    const sysInfo = wx.getSystemInfoSync();
+    this.setData({
+      windowHeight: sysInfo.windowHeight,
+      windowWidth: sysInfo.windowWidth,
 
+    });
   },
 
   bindViewTap() {
@@ -39,7 +47,6 @@ Page({
       sizeType: ['original'],
       camera: 'back',
       success: (res) => {
-        console.log(res)
         if (res.tempFiles.length < 2) {
           wx.showToast({
             title: '最少2张照片',
@@ -58,13 +65,14 @@ Page({
         }
         this.setData({
           imgFiles: res.tempFiles
-        })
-        this.drawPreview()
+        });
+        this.drawPreview();
       }
     });
   },
 
   async drawPreview() {
+    let that = this;
     let max_w = 0
     let max_h = 0
 
@@ -77,38 +85,67 @@ Page({
       }
       max_h += res.height
     }
-    const res = wx.getSystemInfoSync()
-    const canvas_h = res.windowHeight * 0.9
-    const canvas_w = max_w*canvas_h/max_h
+    const canvas_w = max_w;
+    const canvas_h = max_h;
     this.setData({
-      canvas_h,
-      canvas_w
-    })
-    // const canvas_r = canvas_w/canvas_h
+      canvas_h: canvas_h,
+      canvas_w: canvas_w,
+    });
+
     const query = wx.createSelectorQuery()
     query.select('#previewCanvas')
       .fields({ node: true, size: true })
       .exec(async (res) => {
+        wx.showLoading({
+          title: '处理中',
+          mask: true
+        });
         const canvas = res[0].node
         this.data.canvas = canvas
         const ctx = canvas.getContext('2d')
 
-        const dpr = wx.getSystemInfoSync().pixelRatio
-        canvas.width = canvas_w * dpr
-        canvas.height = canvas_h * dpr
-        ctx.scale(dpr, dpr)
-        ctx.fillStyle ='white'
+        // const dpr = wx.getSystemInfoSync().pixelRatio;
+        // canvas.width = canvas_w * dpr
+        // canvas.height = canvas_h * dpr
+        // ctx.scale(dpr, dpr)
+
+        canvas.width = canvas_w;
+        canvas.height = canvas_h;
+
+        ctx.fillStyle = 'white'
         ctx.fillRect(0, 0, canvas_w, canvas_h)
         let y = 0
         for (const iterator of this.data.imgFiles) {
           const image = await this.imageOnLoadSync(canvas, iterator.tempFilePath)
           // 将图片绘制到 canvas 上
-          const c_w = image.width < max_w ? image.width*canvas_h/max_h : canvas_w
-          const c_h = c_w * image.height/image.width
-
-          ctx.drawImage(image, 0, 0, image.width, image.height, (canvas_w - c_w)/2, y, c_w, c_h)
+          const c_w = image.width;// < canvas_w ? image.width : canvas_w;
+          const c_h = image.height;// * c_w / image.width;
+          ctx.drawImage(image, 0, 0, image.width, image.height, (canvas_w - c_w)/2, y, c_w, c_h);
           y += c_h
         }
+
+        setTimeout(() => {
+          wx.canvasToTempFilePath({
+            canvasId: 'previewCanvas',
+            canvas: canvas,
+            width: canvas_w,
+            height: canvas_h,
+            destWidth: canvas_w,
+            destHeight: canvas_h,
+            quality: 1,
+            success: function(e) {
+              that.setData({
+                imgUrl: e.tempFilePath
+              });
+              wx.hideLoading();
+            },
+            fail(error) {
+              console.log(error);
+              wx.hideLoading();
+            }
+          });
+        }, 100);
+        
       })
   },
 
@@ -145,21 +182,21 @@ Page({
   },
 
   saveTempFilePath() {
-    wx.canvasToTempFilePath({
-      canvasId: 'previewCanvas',
-      canvas: this.data.canvas,
-      success: (res) => {
-        this.saveImage(res.tempFilePath)
-      },
-      fail: (res) => {
-        console.log(res)
-        wx.showToast({
-          title: res.errMsg,
-          icon: 'error',
-          duration: 5000
-        })        
-      }
-    }, this);
+    wx.showLoading({
+      title: '处理中',
+      mask: true
+    });
+    let img = this.data.imgUrl;
+    if(img!='') {
+      this.saveImage(img);
+    } else {
+      wx.showToast({
+        title: '保存失败',
+        icon: 'error',
+        duration: 3000
+      })
+      wx.hideLoading();
+    }
   },
 
   saveImage(tempFilePath) {
@@ -171,9 +208,21 @@ Page({
             title: '保存成功',
             icon: 'success',
             duration: 2000
-          })          
+          });
+          wx.hideLoading();   
         }
+      },
+      fail: function (err) {
+        wx.hideLoading();
       }
+    })
+  },
+
+  imgPreview(event) {
+    var src = event.currentTarget.dataset.src;
+    wx.previewImage({
+      current: src, 
+      urls: [src]
     })
   },
 })

@@ -361,6 +361,7 @@
 /* 裁剪样式 begin */
 .img-edit-cropper{
   position:absolute;
+  z-index: 9999;
 }
 .edit-cropper-foot{
   border-top: none;

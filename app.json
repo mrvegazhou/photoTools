@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    
     "pages/takeIdPhoto/idPhoto/idPhoto",
     "pages/takeIdPhoto/preIdPhoto/preIdPhoto",
     "pages/takeIdPhoto/autoCamera/autoCamera",

@@ -96,6 +96,18 @@ Page({
     this.startMarquee();
   },
 
+  onHide() {
+    wx.setKeepScreenOn({
+      keepScreenOn: false,
+    });
+  },
+
+  onUnload() {
+    wx.setKeepScreenOn({
+      keepScreenOn: false,
+    });
+  },
+
   getFonts() {
     for(let i=0; i<families.length; i++) {
       let obj = families[i];
@@ -346,8 +358,16 @@ Page({
     that.startMarquee();
   },
 
-  goHome() {
+  goIndex() {
     this.stopMarquee();
+    wx.setKeepScreenOn({
+      keepScreenOn: false,
+       fail() {//如果失败 再进行调用
+         wx.setKeepScreenOn({
+             keepScreenOn: false
+         });
+       }
+    });
     wx.navigateTo({
       url: '/pages/marquee/index/index'
     });
