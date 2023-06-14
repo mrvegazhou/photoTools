@@ -31,6 +31,14 @@ Page({
     this.startTwinkleFont(1);
   },
 
+  onHide() {
+    this.cancelTwinkleBg();
+  },
+
+  onUnload() {
+    this.cancelTwinkleBg();
+  },
+
   startTwinkleFont(flag) {
     let that = this;
     that.cancelTwinkleBg();
@@ -39,18 +47,18 @@ Page({
       let viewWidth = rect.width;
       let twinkleBgInterval = setInterval(function() {
 
-        if(that.data.offsetLeft <= 0) {
+        if(that.data.offsetLeft >= 0) {
           that.setData({
-            offsetLeft: that.data.offsetLeft + that.data.pace,
+            offsetLeft: that.data.offsetLeft - that.data.pace,
           });
         } else {
-          if(that.data.offsetLeft >= windowWidth*0.9) {
+          if(that.data.offsetLeft <= -viewWidth) {
             that.setData({
-              offsetLeft: -viewWidth
+              offsetLeft: windowWidth*0.9
             });
           } else {
             that.setData({
-              offsetLeft: that.data.offsetLeft + that.data.pace,
+              offsetLeft: that.data.offsetLeft - that.data.pace,
             });
           }
         }

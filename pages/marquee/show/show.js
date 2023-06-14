@@ -9,7 +9,7 @@ Page({
   data: {
     isLandscape: true,
     text: '点击屏幕显示设置按钮',
-    background: '',
+    background: '#FFFFFF',
     fontSize: 25,
     interval: null,
     sec: 20, //时间间隔
@@ -29,7 +29,19 @@ Page({
     type: '',  //flickering、roll
     fontColor: 'black',
     showFontColorPicker: false,
-    opacity: 1
+    opacity: 1,
+    //彩虹七色
+    colors: [
+      '#000000',
+      '#FFFFFF',
+      '#FF0000',
+      '#FF7F00',
+      '#FFFF00',
+      '#00FF00',
+      '#00FFFF',
+      '#0000FF',
+      '#8B00FF',
+    ]
   },
 
   /**
@@ -92,7 +104,6 @@ Page({
     });
     //加载字体
     this.getFonts();
-
     this.startMarquee();
   },
 
@@ -151,18 +162,18 @@ Page({
     var that = this;
     //设置循环
     let interval = setInterval(function() {
-      if(that.data.offsetLeft <= 0) {
+      if(that.data.offsetLeft >= 0) {
         that.setData({
-          offsetLeft: that.data.offsetLeft + that.data.pace,
+          offsetLeft: that.data.offsetLeft - that.data.pace,
         });
       } else {
-        if(that.data.offsetLeft >= that.data.windowWidth) {
+        if(that.data.offsetLeft <= -that.data.fontLen*2) {
           that.setData({
-            offsetLeft: -that.data.fontLen,
+            offsetLeft: that.data.windowWidth,
           });
         } else {
           that.setData({
-            offsetLeft: that.data.offsetLeft + that.data.pace,
+            offsetLeft: that.data.offsetLeft - that.data.pace,
           });
         }
       }
@@ -205,7 +216,11 @@ Page({
       case 'roll':
         that.queryViewWidth('text').then(function(resolve) {
           that.data.fontLen = resolve;
-          that.excuseAnimation();
+          let leftPos = that.data.windowWidth/2 - resolve;
+          that.setData({'offsetLeft':leftPos});
+          setTimeout(() => {
+            that.excuseAnimation();
+          }, 300);
         });
         break;
     }
@@ -213,6 +228,7 @@ Page({
   },
 
   showSetting() {
+    console.log(2222)
     let that = this;
     this.setData({
       showSetting: !that.data.showSetting,
@@ -241,32 +257,36 @@ Page({
   },
 
   onChangeBackColor(e) {
-    let rgba = e.detail.rgba;
+    let color = e.currentTarget.dataset['color'];
     this.setData({
-      'background': rgba,
+      'background': color,
       'fontSelect': false,
-      'showFontColorPicker': false
+      'showFontColorPicker': false,
+      'showColorPicker': false,
     });
   },
 
   onChangeFontColor(e) {
-    let rgba = e.detail.rgba;
+    let color = e.currentTarget.dataset['color'];
     this.setData({
-      'fontColor': rgba,
+      'fontColor': color,
       'fontSelect': false,
-      'showColorPicker': false
+      'showColorPicker': false,
+      'showFontColorPicker': false,
     });
   },
 
   showColorPicker() {
     this.setData({
-      'showColorPicker': !this.data.showColorPicker
+      'showColorPicker': !this.data.showColorPicker,
+      'showFontColorPicker': false,
     });
   },
 
   showFontColorPicker() {
     this.setData({
-      'showFontColorPicker': !this.data.showFontColorPicker
+      'showFontColorPicker': !this.data.showFontColorPicker,
+      'showColorPicker': false,
     });
   },
 
@@ -291,12 +311,6 @@ Page({
   cancelColor() {
     this.setData({
       'background': ''
-    });
-  },
-
-  cancelFontColor() {
-    this.setData({
-      fontColor: 'black'
     });
   },
 

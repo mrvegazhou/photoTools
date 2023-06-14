@@ -10,8 +10,8 @@
 
 }
 .block-color{
-  width:150px;
-  height:40px;
+  width:120px;
+  height:25px;
   background:#fff;
   margin:10px auto;
 }

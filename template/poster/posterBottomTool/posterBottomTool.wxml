@@ -299,11 +299,12 @@
     <view class="popbg" bindtap="closePopEdit"></view>
     <view class="popup" style="height:{{menu.txtPopHeight}}">
       <!--颜色-->
-      <view class="color-picker-view" wx:if="{{menu.showColorPicker}}">
-        <view class="input-label" style="margin: 20rpx;">字体颜色: {{tools.getHexColor(menu.txtEditType=='update' ? itemText.css.color : menu.colorData.color)}}</view>
+      <view class="text-edit-css color-picker-view" wx:if="{{menu.secondMenu=='txt.color'}}">
+        <view class="input-label input-middle" bindtap="handleColorClick" data-type="fontColor">
+          常用色:<view class="{{menu.colorData.currentColorIndex==item[0]?'circle active':'circle'}}" id="{{item[0]}}" style="{{'background:'+item[1]}}" wx:for="{{menu.colorMap}}" wx:key="*this"></view>
+        </view>
         <view class="color-picker-content">
-          <color-picker2 colorData="{{menu.txtEditType=='update' ? itemText.css.color : menu.colorData.color}}" bindchangecolor="onChangeColor"></color-picker2>
-          <text bindtap="closeColorPicker" class="icon-item iconfont icon-queren1"></text>
+          <color-picker2 colorData="{{menu.txtEditType=='update' ? itemText.css.color : menu.colorData.color}}"  bindchangecolor="onChangeColor"></color-picker2>
         </view>
       </view>
       <!-- 字体样式 -->
@@ -355,26 +356,22 @@
       <view class="text-edit-css" wx:if="{{menu.secondMenu=='txt.background'}}">
         <view>
           <view style="display: flex;flex-direction: row;">
-            <text class="input-label">背景色:</text>
-            <view>{{itemText.css.background=='rgba(NaN,NaN,NaN,1)' ? '' : tools.getHexColor(itemText.css.background)}}</view>
+            <view class="input-label input-middle" bindtap="handleColorClick" data-type="bgColor">
+              常用色:<view class="{{menu.backgroundColor.currentColorIndex==item[0]?'circle active':'circle'}}" id="{{item[0]}}" style="{{'background:'+item[1]}}" wx:for="{{menu.colorMap}}" wx:key="*this"></view>
+            </view>
           </view>
-          <view class="edit-css-content text-background" style="width: 500rpx;margin-left: auto;margin-right: auto;">
+          <view class="edit-css-content text-background" style="width: 95%;margin-left: auto;margin-right: auto;">
             <color-picker2 colorData="{{menu.backgroundColor.color}}" bindchangecolor="onChangeBackColor"></color-picker2>
           </view>
         </view>
-        <!-- <view style="display: flex;flex-direction: row; margin-bottom: 20rpx;">
-          <text class="input-label">背景色边际与文字间距:</text>
-          <input value="{{itemText.css.padding}}"  class="text-input" maxlength="3" type="number" bindinput='paddingInput'/>
-        </view> -->
       </view>
       <!-- 阴影 -->
       <view class="text-edit-css" wx:if="{{menu.secondMenu=='txt.shadow'}}">
         <view>
-          <view style="display: flex;flex-direction: row;">
-            <text class="input-label">阴影颜色:</text>
-            <view>{{itemText.css.shadow=='rgba(NaN,NaN,NaN,1)' ? '' : tools.getHexColor(itemText.css.shadow)}}</view>
+          <view class="input-label input-middle" bindtap="handleColorClick" data-type="shadowColor">
+            常用色:<view class="{{menu.shadowColor.currentColorIndex==item[0]?'circle active':'circle'}}" id="{{item[0]}}" style="{{'background:'+item[1]}}" wx:for="{{menu.colorMap}}" wx:key="*this"></view>
           </view>
-          <view class="edit-css-content text-background" style="width: 500rpx;margin-left: auto;margin-right: auto;">
+          <view class="edit-css-content text-background" style="width: 95%;margin-left: auto;margin-right: auto;">
             <color-picker2 colorData="{{menu.shadowColor.color}}" bindchangecolor="onChangeShadowColor"></color-picker2>
           </view>
         </view>
@@ -393,7 +390,7 @@
           </view>
         </view>
       </view>
-      <view class="edit-pannel" style="display:{{(menu.secondMenu=='txt.edit')?'block':'none'}};">
+      <view class="edit-pannel" wx:if="{{menu.secondMenu=='txt.edit'}}">
         <textarea class="input" placeholder="请输入文字" placeholder-class="place-holder" maxlength='120' value="{{itemText.text}}" bindinput='textAreaInput'/>
       </view>
       <view class="text-edit-menu">
@@ -401,7 +398,7 @@
           <text class="iconfont icon-bianji">编辑</text>
         </view>
         <view class="item {{menu.secondMenu=='txt.color'?'select':''}}" bindtap="editText" data-type="txt.color">
-          <text class="iconfont icon-yanse" style="color:{{menu.txtEditType=='update' ? itemText.css.color : menu.colorData.color}}">颜色</text>
+          <text class="iconfont icon-yanse">颜色</text>
         </view>
         <view class="item {{menu.secondMenu=='txt.css'?'select':''}}" bindtap="editText" data-type="txt.css">
           <text class="iconfont icon--zitiyangshi">样式</text>

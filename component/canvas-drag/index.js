@@ -813,7 +813,6 @@ Component({
     // 清理元素无用属性
     async filterItemsAttr(){
       let temp = JSON.parse(JSON.stringify(this.data.itemList));
-      temp.reverse();
 
       let newTemp = []
       

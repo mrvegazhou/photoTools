@@ -166,6 +166,6 @@ App({
         family:'阿里妈妈数黑体 Bold',
         url: CONFIG.API_URL.WECHAT_STATIC_FONT+'/Alimama_ShuHeiTi_Bold.woff2'
       }
-    ]
+    ],
   }
 })

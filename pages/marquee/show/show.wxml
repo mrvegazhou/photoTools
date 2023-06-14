@@ -1,5 +1,5 @@
-<view style="background:{{background}};width:100%;height:{{windowHeight}}rpx;line-height:{{windowHeight}}rpx;" catchtap="showSetting">
-  <view class='text' style="{{type=='flickering' ? 'width:100%;text-align:center;opacity:'+opacity+';' : 'opacity:1;white-space:nowrap;'}}color:{{fontColor}};font-family:'{{fontVal}}';position:absolute;left:{{offsetLeft}}px;font-size:{{fontSize}}rpx;">
+<view style="background:{{background}};width:{{windowWidth}}rpx;height:{{windowHeight}}rpx;" bindtap="showSetting">
+  <view class='text' style="{{type=='flickering' ? 'width:'+windowWidth+'rpx;height:'+windowHeight+'rpx;display:table-cell;vertical-align: middle;text-align:center;opacity:'+opacity+';' : 'position:absolute;left:'+offsetLeft+'rpx;opacity:1;white-space:nowrap;height:'+windowHeight+'rpx;line-height:'+windowHeight+'rpx;'}}color:{{fontColor}};font-family:'{{fontVal}}';font-size:{{fontSize}}rpx;">
     {{text}}
   </view>
   <block wx:if="{{showSetting==true}}">
@@ -34,18 +34,20 @@
   <view class="setting-label">
     <view class="label">字体颜色:</view>
     <view class="color-block" style="background-color:{{fontColor}} !important;" catchtap="showFontColorPicker"></view>
-    <view class="color-picker" wx:if="{{showFontColorPicker==true}}">
-      <color-picker2 colorData="{{fontColor}}" bindchangecolor="onChangeFontColor"></color-picker2>
-    </view>
-    <view catchtap="cancelFontColor" class="cancel-color">取消</view>
+    <scroll-view scroll-y="true" class="select-box2" wx:if="{{showFontColorPicker==true}}">
+      <block wx:for="{{colors}}" wx:key="index">
+        <view class="select-one2" bindtap="onChangeFontColor" data-color="{{item}}" style="background-color:{{item}} !important;">{{item}}</view>
+      </block>
+    </scroll-view>
   </view>
   <view class="setting-label">
     <view class="label">背景色:</view>
     <view class="color-block" style="background-color:{{background}} !important;" catchtap="showColorPicker"></view>
-    <view class="color-picker" wx:if="{{showColorPicker==true}}">
-      <color-picker2 colorData="{{background}}" bindchangecolor="onChangeBackColor"></color-picker2>
-    </view>
-    <view catchtap="cancelColor" class="cancel-color">取消</view>
+    <scroll-view scroll-y="true" class="select-box2" style="left:145rpx !important;" wx:if="{{showColorPicker==true}}">
+      <block wx:for="{{colors}}" wx:key="index">
+        <view class="select-one2" bindtap="onChangeBackColor" data-color="{{item}}" style="background-color:{{item}} !important;">{{item}}</view>
+      </block>
+    </scroll-view>
   </view>
   <view class="setting-label">
     <view class="label">滚动速度:</view>

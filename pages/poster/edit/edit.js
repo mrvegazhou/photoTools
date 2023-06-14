@@ -1,5 +1,4 @@
 import ImageCropper from '../../../component/image-cropper/cropper';
-import MyDoodleCpt from '../../../component/doodle/doodle';
 import CanvasDrag from '../../../component/canvas-drag/canvas-drag';
 import AlloyImage from "../../../component/alloyimage/alloyImage.js"
 import { CONFIG } from '../../../utils/config'
@@ -31,17 +30,28 @@ Page({
       menuShowLeft: 0,
       secondMenu:'',
       dictShapes: dictShapes,
-      showColorPicker: false, // 颜色选择器
+      colorMap: [
+        ['0', '#EE2746'], //淡曙红
+        ['1', '#1c0d1a'], //深牵牛紫
+        ['2', '#5bae23'], //鹦鹉绿
+        ['3', '#51c4d3'], //瀑布蓝
+        ['4', '#c4d7d6'], //穹灰
+        ['5', '#eed045'], //秋葵黄
+        ['6', '#ffffff']
+      ],
       colorData: {
         transparency: 1,
         color: '#333333',
         done: false,
+        currentColorIndex: -1,
       },
       backgroundColor: {
         transparency: 1,
         color: '',
+        currentColorIndex: -1,
       },
       shadowColor:{
+        currentColorIndex: -1,
         transparency: 1,
         color: '',
         hShadow: 0,
@@ -332,24 +342,19 @@ Page({
   showSecondMenu(e) {
     let that = this;
     const type = e.currentTarget.dataset['type'];
-    var menuShow = type
     if(type!='sysScale' && type!='sysSave' && type!='sysClear'){
       if (type==this.data.menu.menuShow) {
         this.setData({'menu.menuShow': ''})
         return
       }
     }
-    
-    // var menu = this.data.menu
     switch(type) {
       case 'txt':
         that.initItem();
         that.setData({
           'menu.secondMenu': 'txt.edit',
           'menu.txtPopHeight': '480rpx',
-          'menu.showColorPicker': false,
         });
-        
         break;
       case 'img':
         that.initItem();
@@ -395,7 +400,7 @@ Page({
         this.setData({'menu.secondMenu': ''});
         break;
     }
-    this.setData({'menu.menuShow': menuShow});
+    this.setData({'menu.menuShow': type});
     if(type=='sysScale' || type=='sysClear'){
       setTimeout(()=>{that.hideMenu();}, 1000);
     }
@@ -859,34 +864,32 @@ Page({
       'menu.colorData.done': true,
       'menu.colorData.color': rgba,
       'menu.colorData.transparency': e.detail.alpha || 1,
+      'menu.colorData.currentColorIndex': -1,
       'itemText.css.color': rgba,
-      'menu.secondMenu': 'txt.edit'
-    })
-  },
-  //关闭拾色器
-  closeColorPicker() {
-    this.setData({
-      'menu.showColorPicker': false,
-      'menu.txtPopHeight':'470rpx'
     })
   },
   // 编辑文字样式
   editText(e) {
     const type = e.currentTarget.dataset['type'];
+    let txtPopHeight = '550rpx';
     switch (type) {
       case 'txt.color':
-        this.setData({'menu.showColorPicker': true, 'menu.txtPopHeight':'650rpx'});
+        txtPopHeight = '795rpx';
         break;
       case 'txt.background':
-        this.setData({'menu.txtPopHeight':'795rpx'});
+        txtPopHeight = '795rpx';
         break;
       case 'txt.shadow':
-        this.setData({'menu.txtPopHeight':'935rpx'});
+        txtPopHeight = '935rpx';
         break;
       default:
-        this.setData({'menu.txtPopHeight':'550rpx'});
+        txtPopHeight = '550rpx';
+        break;
     }
-    this.setData({'menu.secondMenu': type})
+    this.setData({
+      'menu.secondMenu': type,
+      'menu.txtPopHeight': txtPopHeight
+    });
   },
   // 选择字体
   selectFontFamily(e) {
@@ -922,6 +925,7 @@ Page({
     this.setData({
       'menu.backgroundColor.color': rgba,
       'menu.backgroundColor.transparency': e.detail.alpha || 1,
+      'menu.backgroundColor.currentColorIndex': -1,
       'itemText.css.background': rgba
     })
   },
@@ -934,6 +938,7 @@ Page({
     this.setData({
       'menu.shadowColor.color': rgba,
       'menu.shadowColor.transparency': e.detail.alpha || 1,
+      'menu.shadowColor.currentColorIndex': -1,
       'itemText.css.shadow': rgba
     })
   },
@@ -977,6 +982,40 @@ Page({
       'menu.fontFamilyDone': false,
       'menu.txtEditType': 'add'
     })
+  },
+  //常用色动作
+  handleColorClick(e) {
+    var id = e.target.id;
+    var type = e.currentTarget.dataset['type'];
+    if(id) {
+      if(type=="fontColor") {
+        if(this.data.menu.txtEditType=='update') {
+          if(this.data.itemText.css.color == this.data.menu.colorMap[id][1]) return false;
+          this.setData({
+            'itemText.css.color': this.data.colorMap[id][1],
+            'menu.colorData.currentColorIndex': id
+          });
+        } else {
+          if(this.data.menu.colorData.color == this.data.menu.colorMap[id][1]) return false;
+          this.setData({
+            'menu.colorData.color': this.data.menu.colorMap[id][1],
+            'menu.colorData.done': true,
+            'menu.colorData.transparency': 1,
+            'menu.colorData.currentColorIndex': id
+          });
+        }
+      } else if(type=="bgColor") {
+        this.setData({
+          'menu.backgroundColor.color': this.data.menu.colorMap[id][1],
+          'menu.backgroundColor.currentColorIndex': id
+        });
+      } else if(type=="shadowColor") {
+        this.setData({
+          'menu.shadowColor.color': this.data.menu.colorMap[id][1],
+          'menu.shadowColor.currentColorIndex': id
+        });
+      }
+    }
   },
   //-----------------------------------文字编辑 end---------------------------------------------------//
 
@@ -1491,7 +1530,6 @@ Page({
       this.setData({
         'menu.txtPopHeight':'650rpx',
         'menu.menuShow': 'txt',
-        'menu.showColorPicker': true,
         'itemText': itemText
       });
     } else if(editType=='txt.background') {

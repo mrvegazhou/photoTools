@@ -227,18 +227,15 @@
 }
 /* color picker */
 .color-picker-view {
-  position: absolute;
+  /* position: absolute; */
   width: 100%;
-  overflow: visible;
-  z-index: 99992;
+  /* overflow: visible; */
+  /* z-index: 99992; */
   background-color: #fff;
 }
 .color-picker-view .color-picker-content {
   text-align: center;
-  width: 500rpx;
-  margin-left: auto;
-  margin-right: auto;
-
+  width: 95%;
 }
 .color-picker-view .color-picker-content .current-color {
   width: 100%;
@@ -350,6 +347,11 @@
   font-size: 30rpx;
   color: var(--primary-dark-gray-color);
 }
+.text-edit-pop .input-middle{
+  display: flex;
+  flex: row;
+  align-items: center;
+}
 .text-edit-pop .text-input{
   border: 1rpx solid var(--primary-dark-gray-color);
   border-radius: 10rpx;
@@ -376,3 +378,16 @@
   font-size: 36rpx !important;
 }
 /* 裁剪样式 end */
+
+.circle {
+  display: inline-block;
+  margin: 0 8rpx 0 8rpx;
+  width: 53rpx;
+  height: 53rpx;
+  border-radius: 50%;
+  border: 1rpx solid #ccc;
+  background: #fff;
+}
+.active {
+  border: 1rpx solid #000 !important;
+}

@@ -12,6 +12,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.icon-line:before {
+  content: "\e6bb";
+}
+
 .icon-fanhui:before {
   content: "\e610";
 }
@@ -332,7 +336,8 @@ page{
 }
 .doodle-tool-children .select{
   font-size: 24rpx;
-  color: var(--primary-text-color);
+  text-decoration:underline;
+  color: var(--primary-text-color) !important;
 }
 .doodle-tool-children .tab-item{
   padding: 5px 10px;
@@ -375,5 +380,24 @@ page{
   display: inline-flex;
   justify-items: center;
   align-items: center;
+}
+
+.circle {
+  display: inline-block;
+  margin: 20rpx 18rpx 0 0;
+  width: 58rpx;
+  height: 58rpx;
+  border-radius: 50%;
+  border: 1rpx solid #ccc;
+  background: #000;
+}
+.active {
+  border: 1rpx solid #000000 !important;
+}
+.common-color{
+  min-height: 300rpx;
+  width: 80%;
+  text-align: left;
+  margin-top: 20rpx;
 }
 /* 涂鸦样式 end */

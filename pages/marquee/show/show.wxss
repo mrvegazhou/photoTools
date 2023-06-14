@@ -67,21 +67,6 @@ page{
   width: 300rpx;
   size: 20rpx;
 }
-.color-picker{
-  z-index: 5;
-  position: relative;
-  left:10rpx;
-  bottom: 150rpx;
-  background:#ffffff;
-  width: 250rpx;
-  height: 450rpx;
-  padding: 6rpx;
-  border-radius: 3rpx;
-  border: 1px solid var(--primary-border-color);
-  text-align: center;
-  transform: scale(0.6); 
-  transform-origin: 0 0;
-}
 .picker-content {
   height: 150rpx !important;
 }
@@ -103,6 +88,25 @@ page{
   line-height: 40rpx;
   border-bottom: 1px solid var(--primary-border-color);
 }
+.select-box2{
+  font-size: 15rpx;
+  text-align: center;
+  background-color: #eee;
+  width: 90rpx;
+  height: 150rpx;
+  position: absolute;
+  z-index: 3;
+  border-radius: 3rpx;
+  bottom: 10rpx;
+  left: 160rpx;
+  background:#ffffff;
+  border: 1px solid var(--primary-border-color);
+} 
+.select-one2 {
+  height: 30rpx;
+  line-height: 30rpx;
+  border-bottom: 1px solid var(--primary-border-color);
+}
 .font-sel{
   height: 30rpx;
   width: auto;
@@ -115,13 +119,4 @@ page{
   padding: 0 10rpx;
   white-space: nowrap;
   display: inline-block;
-}
-.cancel-color{
-  margin-left:20rpx;
-  color: var(--primary-color);
-}
-
-@font-palette-values --Grays {
-  font-family: Rocher;
-  base-palette: 9;
 }
